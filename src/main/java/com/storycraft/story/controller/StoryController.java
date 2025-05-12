@@ -84,17 +84,5 @@ public class StoryController {
                 new ApiResponseDto<>(200, "동화가 성공적으로 삭제되었습니다.", null)
         );
     }
-
-    @Getter
-    @AllArgsConstructor
-    static class ApiResponseDto<T> {
-        @Schema(description = "HTTP 응답 상태 코드", example = "200")
-        private int status;
-
-        @Schema(description = "응답 메시지", example = "동화 생성에 성공했습니다.")
-        private String message;
-
-        private T data;
-    }
 }
 
