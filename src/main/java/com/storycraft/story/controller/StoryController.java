@@ -88,6 +88,17 @@ public class StoryController {
     }
 
     @Operation(summary = "동화 수정", description = "동화 제목 및 내용을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "동화 수정에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StoryResponseDto.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "수정할 동화를 찾을 수 없습니다.")
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStory(
             @Parameter(description = "수정할 동화 ID", example = "1")
