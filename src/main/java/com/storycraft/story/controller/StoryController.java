@@ -1,5 +1,6 @@
 package com.storycraft.story.controller;
 
+import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryUpdateDto;
 import com.storycraft.story.service.StoryService;
