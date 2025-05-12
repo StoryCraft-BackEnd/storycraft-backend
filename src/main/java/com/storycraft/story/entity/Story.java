@@ -1,5 +1,7 @@
 package com.storycraft.story.entity;
 
+import com.storycraft.global.entity.BaseTimeEntity;
+import com.storycraft.story.dto.StoryResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
