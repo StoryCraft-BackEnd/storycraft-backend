@@ -28,7 +28,7 @@ public class StoryService {
 
         Story saved = storyRepository.save(story);
 
-        return toDto(saved);
+        return saved.toDto();
     }
 
     public StoryResponseDto getStory(Long id) {
