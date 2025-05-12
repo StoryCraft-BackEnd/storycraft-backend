@@ -45,6 +45,17 @@ public class StoryController {
     }
 
     @Operation(summary = "동화 상세 조회", description = "storyId로 특정 동화를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "동화 조회에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StoryResponseDto.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "동화를 찾을 수 없습니다.")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<?> getStory(
             @Parameter(description = "조회할 동화 ID", example = "1")
