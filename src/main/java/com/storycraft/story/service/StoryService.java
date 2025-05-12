@@ -56,7 +56,5 @@ public class StoryService {
     public void deleteStory(Long id) {
         storyRepository.deleteById(id);
     }
-
-
 }
 
