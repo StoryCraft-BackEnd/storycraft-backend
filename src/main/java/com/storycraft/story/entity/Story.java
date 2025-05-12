@@ -25,4 +25,14 @@ public class Story {
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    public StoryResponseDto toDto() {
+        return StoryResponseDto.builder()
+                .storyId(this.getStoryId())
+                .title(this.getTitle())
+                .content(this.getContent())
+                .createdAt(this.getCreatedAt().toString())
+                .updatedAt(this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : null)
+                .build();
+    }
 }
