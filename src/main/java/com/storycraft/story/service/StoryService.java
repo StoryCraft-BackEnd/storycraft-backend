@@ -57,14 +57,6 @@ public class StoryService {
         storyRepository.deleteById(id);
     }
 
-    private StoryResponseDto toDto(Story story) {
-        return StoryResponseDto.builder()
-                .storyId(story.getStoryId())
-                .title(story.getTitle())
-                .content(story.getContent())
-                .createdAt(story.getCreatedAt().toString())
-                .updatedAt(story.getUpdatedAt() != null ? story.getUpdatedAt().toString() : null)
-                .build();
-    }
+
 }
 
