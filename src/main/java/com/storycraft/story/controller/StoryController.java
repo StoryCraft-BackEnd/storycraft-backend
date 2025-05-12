@@ -111,6 +111,17 @@ public class StoryController {
     }
 
     @Operation(summary = "동화 삭제", description = "동화 ID로 해당 동화를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "동화 삭제에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponseDto.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "삭제할 동화를 찾을 수 없습니다.")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStory(
             @Parameter(description = "삭제할 동화 ID", example = "1")
