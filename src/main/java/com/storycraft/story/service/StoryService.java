@@ -18,6 +18,7 @@ public class StoryService {
 
     private final StoryRepository storyRepository;
 
+    // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
         // GPT 호출 대신 더미 생성
         Story story = Story.builder()
