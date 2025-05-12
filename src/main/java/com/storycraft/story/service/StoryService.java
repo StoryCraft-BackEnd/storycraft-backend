@@ -37,6 +37,7 @@ public class StoryService {
         return story.toDto();
     }
 
+    // 동화 목록 조회
     public List<StoryResponseDto> getStoryList(String childId) {
         return storyRepository.findAllByChildId(childId).stream()
                 .map(Story::toDto)
