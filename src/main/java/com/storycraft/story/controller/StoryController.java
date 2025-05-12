@@ -67,6 +67,16 @@ public class StoryController {
     }
 
     @Operation(summary = "동화 목록 조회", description = "자녀 ID 기준 동화 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "동화 목록 조회에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = StoryResponseDto.class))
+                    )
+            )
+    })
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
             @Parameter(description = "자녀 ID", example = "child-uuid-1234")
