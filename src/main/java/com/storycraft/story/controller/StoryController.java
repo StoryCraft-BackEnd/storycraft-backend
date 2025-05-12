@@ -2,6 +2,7 @@ package com.storycraft.story.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.story.dto.StoryRequestDto;
+import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StoryUpdateDto;
 import com.storycraft.story.service.StoryService;
 import io.swagger.v3.oas.annotations.Operation;
