@@ -53,6 +53,7 @@ public class StoryService {
         return storyRepository.save(story).toDto();
     }
 
+    // 동화 삭제
     public void deleteStory(Long id) {
         storyRepository.deleteById(id);
     }
