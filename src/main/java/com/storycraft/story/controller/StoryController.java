@@ -25,7 +25,14 @@ public class StoryController {
 
     @Operation(summary = "동화 생성", description = "prompt로 AI 기반 동화를 생성합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "동화 생성에 성공했습니다."),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "동화 생성에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StoryResponseDto.class)
+                    )
+            ),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @PostMapping
