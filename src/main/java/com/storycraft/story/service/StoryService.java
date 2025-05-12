@@ -50,7 +50,6 @@ public class StoryService {
 
         story.setTitle(dto.getTitle());
         story.setContent(dto.getContent());
-        story.setUpdatedAt(LocalDateTime.now());
 
         return toDto(storyRepository.save(story));
     }
