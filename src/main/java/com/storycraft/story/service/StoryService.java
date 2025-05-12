@@ -34,7 +34,7 @@ public class StoryService {
     public StoryResponseDto getStory(Long id) {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
-        return toDto(story);
+        return story.toDto();
     }
 
     public List<StoryResponseDto> getStoryList(String childId) {
