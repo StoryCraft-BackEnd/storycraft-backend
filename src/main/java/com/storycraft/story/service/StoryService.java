@@ -31,6 +31,7 @@ public class StoryService {
         return saved.toDto();
     }
 
+    // 동화 상세 조회
     public StoryResponseDto getStory(Long id) {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
