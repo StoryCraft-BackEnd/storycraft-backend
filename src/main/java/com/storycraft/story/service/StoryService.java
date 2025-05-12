@@ -39,7 +39,7 @@ public class StoryService {
 
     public List<StoryResponseDto> getStoryList(String childId) {
         return storyRepository.findAllByChildId(childId).stream()
-                .map(this::toDto)
+                .map(Story::toDto)
                 .collect(Collectors.toList());
     }
 
