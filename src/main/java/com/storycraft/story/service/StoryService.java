@@ -43,6 +43,7 @@ public class StoryService {
                 .collect(Collectors.toList());
     }
 
+    // 동화 수정
     public StoryResponseDto updateStory(Long id, StoryUpdateDto dto) {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
