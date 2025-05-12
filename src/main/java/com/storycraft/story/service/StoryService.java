@@ -24,7 +24,6 @@ public class StoryService {
                 .childId(dto.getChildId())
                 .title("AI가 생성한 제목")
                 .content("AI가 생성한 내용")
-                .createdAt(LocalDateTime.now())
                 .build();
 
         Story saved = storyRepository.save(story);
