@@ -50,7 +50,7 @@ public class StoryService {
         story.setTitle(dto.getTitle());
         story.setContent(dto.getContent());
 
-        return toDto(storyRepository.save(story));
+        return storyRepository.save(story).toDto();
     }
 
     public void deleteStory(Long id) {
