@@ -1,0 +1,24 @@
+package com.storycraft.illustration.dto;
+
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+
+@Getter @Setter
+@Builder
+@Schema(description = "삽화 응답 DTO")
+public class IllustrationResponseDto {
+
+    @Schema(description = "삽화 ID", example = "1")
+    private Long illustrationId;
+
+    @Schema(description = "이미지 URL", example = "https://cdn/story1.jpg")
+    private String imageUrl;
+
+    @Schema(description = "삽화 설명", example = "숲속에서 모험중인 꼬마용사와 강아지 친구")
+    private String description;
+
+    @Schema(description = "생성 일시", example = "2025-05-12T22:15:30")
+    private String createdAt;
+
+}

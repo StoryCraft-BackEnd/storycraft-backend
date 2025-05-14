@@ -1,8 +1,9 @@
 package com.storycraft.story.entity;
 
+import com.storycraft.global.entity.BaseTimeEntity;
+import com.storycraft.story.dto.StoryResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stories")
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Story {
+public class Story extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +27,13 @@ public class Story {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    public StoryResponseDto toDto() {
+        return StoryResponseDto.builder()
+                .storyId(this.getStoryId())
+                .title(this.getTitle())
+                .content(this.getContent())
+                .createdAt(this.getCreatedAt().toString())
+                .updatedAt(this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : null)
+                .build();
+    }
 }
