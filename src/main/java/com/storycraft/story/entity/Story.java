@@ -16,7 +16,7 @@ public class Story extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "story_id")
-    private Long StoryId;
+    private Long storyId;
 
     @Column(name = "child_id", nullable = false)
     private String childId;
