@@ -5,6 +5,8 @@ import com.storycraft.story.dto.StoryResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "stories")
 @Getter @Setter
