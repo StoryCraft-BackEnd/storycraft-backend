@@ -27,6 +27,16 @@ public class Story extends BaseTimeEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @OneToMany(mappedBy = "story", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Illustration> illustrations;
+
+    // 썸네일 추출 메서드
+    public String getThumbnailUrl() {
+        return (illustrations != null && !illustrations.isEmpty())
+                ? illustrations.get(0).getImageUrl()
+                : null;
+    }
+
     // 사용자에게 반환할 API 응답을 위한 메소드 toDto
     public StoryResponseDto toDto() {
         return StoryResponseDto.builder()
