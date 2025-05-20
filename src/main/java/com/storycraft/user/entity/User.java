@@ -26,8 +26,14 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, length = 50)
+    private String name;
+
     @Column(nullable = false, unique = true, length = 50)
     private String nickname;
+
+    @Column(nullable = false, length = 50)
+    private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChildProfile> children = new ArrayList<>();

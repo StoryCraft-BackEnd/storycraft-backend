@@ -22,6 +22,9 @@ public class ChildProfile extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer age;
 
+    @Column(length = 50)
+    private String learningLevel;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
