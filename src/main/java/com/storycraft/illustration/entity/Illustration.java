@@ -6,8 +6,6 @@ import com.storycraft.story.entity.Story;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "illustrations")
 @Getter @Setter

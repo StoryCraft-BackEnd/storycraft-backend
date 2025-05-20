@@ -19,6 +19,9 @@ public class StoryResponseDto {
     @Schema(description = "동화 내용", example = "옛날 옛적에...")
     private String content;
 
+    @Schema(description = "동화 썸네일 URL", example = "https://cdn/story1.jpg")
+    private String thumbnailUrl;
+
     @Schema(description = "생성일시", example = "2025-01-01T15:00:00")
     private String createdAt;
 

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface StoryRepository extends JpaRepository<Story, Long> {
     List<Story> findAllByChildId(String childId);
+
+    List<Story> findTop10ByChildIdNot(String childId);
 }
