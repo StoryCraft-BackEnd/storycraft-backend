@@ -1,5 +1,9 @@
 package com.storycraft.auth.service;
 
+import com.storycraft.auth.dto.LoginRequestDto;
+import com.storycraft.auth.jwt.JwtTokenProvider;
+import com.storycraft.global.exception.CustomException;
+import com.storycraft.global.exception.ErrorCode;
 import com.storycraft.user.entity.User;
 import com.storycraft.user.repository.UserRepository;
 import com.storycraft.auth.dto.SignupRequest;
@@ -7,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.storycraft.auth.dto.LoginRequestDto;
+import com.storycraft.auth.dto.LoginResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +20,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public boolean signup(SignupRequest request) {
@@ -35,4 +42,20 @@ public class AuthService {
 
         return true;
     }
+
+    public LoginResponseDto login(LoginRequestDto request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_LOGIN));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_LOGIN);
+        }
+
+        String accessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRole());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
+
+        return new LoginResponseDto(accessToken, refreshToken);
+    }
+
+
 }

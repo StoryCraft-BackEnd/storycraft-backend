@@ -1,12 +1,16 @@
 package com.storycraft.auth.controller;
 
+import com.storycraft.auth.dto.LoginRequestDto;
 import com.storycraft.auth.dto.SignupRequest;
 import com.storycraft.auth.service.AuthService;
+import com.storycraft.global.response.ApiResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.storycraft.auth.dto.LoginResponseDto;
 
 @RestController
 @RequestMapping("/auth")
@@ -15,6 +19,7 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "회원가입 API", description = "새로운 부모 사용자 회원가입")
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Validated @RequestBody SignupRequest request) {
         boolean result = authService.signup(request);
@@ -23,6 +28,15 @@ public class AuthController {
                 new ApiResponse(201, "회원가입이 완료되었습니다.", result)
         );
     }
+
+    @Operation(summary = "로그인 API", description = "회원 로그인, 인증에 성공하면 JWT 액세스 토큰 반환")
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponseDto<LoginResponseDto>> login(@RequestBody LoginRequestDto request) {
+        LoginResponseDto response = authService.login(request);
+        return ResponseEntity.ok(new ApiResponseDto<>(200, "로그인 성공", response));
+    }
+
+
 
     // 응답용 DTO
     private static class ApiResponse {
