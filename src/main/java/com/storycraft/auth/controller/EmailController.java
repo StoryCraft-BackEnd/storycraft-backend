@@ -19,11 +19,13 @@ public class EmailController {
     @PostMapping("/verification/exists")
     public ResponseEntity<ApiResponseDto<EmailCheckResponseDto>> checkEmailExists(@RequestBody EmailCheckRequestDto request) {
         boolean available = emailService.isEmailAvailable(request.getEmail());
+        String message = available ? "사용 가능한 이메일입니다." : "이미 사용 중인 이메일입니다.";
+        EmailCheckResponseDto data = new EmailCheckResponseDto(available);
+
         ApiResponseDto<EmailCheckResponseDto> response = new ApiResponseDto<>(
-                HttpStatus.OK.value(),
-                available ? "이메일 사용 가능" : "이미 사용 중인 이메일입니다.",
-                new EmailCheckResponseDto(available)
+                HttpStatus.OK.value(), message, data
         );
         return ResponseEntity.ok(response);
     }
+
 }
