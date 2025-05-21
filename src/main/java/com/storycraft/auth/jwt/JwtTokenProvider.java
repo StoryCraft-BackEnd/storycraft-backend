@@ -28,9 +28,8 @@ public class JwtTokenProvider {
     @PostConstruct
     public void init() {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes); // 디코딩된 키 사용
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-
 
     /**
      * Access Token 생성
@@ -88,12 +87,30 @@ public class JwtTokenProvider {
     }
 
     /**
-     * 토큰에서 role 추출 (optional)
+     * 토큰에서 role 추출
      */
     public String getRole(String token) {
         return (String) Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role");
+    }
+
+    /**
+     * RefreshToken으로부터 새 AccessToken 재발급
+     */
+    public String generateAccessTokenFromRefreshToken(String refreshToken) {
+        if (!validateToken(refreshToken)) {
+            throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
+        }
+
+        String email = getEmail(refreshToken);
+        // 기존 리프레시 토큰에는 role이 없을 수 있으므로 기본값 처리
+        String role = getRole(refreshToken);
+        if (role == null) {
+            role = "user"; // 기본값
+        }
+
+        return createToken(email, role);
     }
 }
