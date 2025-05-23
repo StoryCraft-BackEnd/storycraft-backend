@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/recommendations")
 @RequiredArgsConstructor
-@Tag(name = "추천", description = "동화 추천 및 피드백 API")
+@Tag(name = "Recommendation", description = "동화 추천 및 피드백 API")
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
