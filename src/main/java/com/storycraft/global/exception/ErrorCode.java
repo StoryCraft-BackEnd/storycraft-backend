@@ -25,7 +25,12 @@ public enum ErrorCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
 
     //닉네임 관련
-    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다.");
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
+
+    // 자녀 프로필 관련 에러 추가
+    CHILD_PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "자녀 프로필을 찾을 수 없습니다."),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+    INVALID_LEARNING_LEVEL(HttpStatus.BAD_REQUEST, "유효하지 않은 학습 수준입니다.");
 
 
     private final HttpStatus httpStatus;
