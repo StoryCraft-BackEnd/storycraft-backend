@@ -52,7 +52,6 @@ public class JwtTokenProvider {
 
     /**
      * Refresh Token 생성
-     * 보통 refresh token은 role 같은 클레임을 안 넣어도 됨
      */
     public String createRefreshToken(String email) {
         Date now = new Date();

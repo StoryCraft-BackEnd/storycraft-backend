@@ -45,7 +45,7 @@ public class SecurityConfig {
                                 "/auth/reset-password",
                                 "/email/verification/exists",
                                 "/auth/token/refresh",
-                                "/users/me"
+                                "/users/nickname/exists"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
