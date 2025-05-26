@@ -45,5 +45,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        userRepository.delete(user);
+    }
+
+
 
 }

@@ -37,5 +37,14 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponseDto<>(200, "닉네임 수정이 완료되었습니다.", true));
     }
 
+    @DeleteMapping("")
+    public ResponseEntity<ApiResponseDto<Boolean>> deleteUser(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        String email = SecurityUtil.getCurrentUserEmail();
+        userService.deleteUser(email);
+        return ResponseEntity.ok(new ApiResponseDto<>(200, "회원 탈퇴가 완료되었습니다.", true));
+    }
+
 
 }

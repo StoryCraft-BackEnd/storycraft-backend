@@ -96,4 +96,9 @@ public class AuthService {
 
         return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
     }
+
+    @Transactional
+    public void logout(String email) {
+        authTokenRepository.deleteByUserEmail(email);
+    }
 }
