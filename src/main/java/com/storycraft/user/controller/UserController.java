@@ -25,11 +25,16 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponseDto<>(200, "내 정보 조회 성공", userInfo));
     }
 
-    @PatchMapping("/users")
-    public ResponseEntity<?> updateNickname(@RequestBody NicknameUpdateRequestDto request) {
+    @PatchMapping("")
+    public ResponseEntity<ApiResponseDto<Boolean>> updateNickname(
+            @RequestBody NicknameUpdateRequestDto request,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+
         String email = SecurityUtil.getCurrentUserEmail();
+
         userService.updateNickname(email, request.getNickname());
-        return ResponseEntity.ok(new ApiResponseDto<>(200, "닉네임이 수정되었습니다", true));
+        return ResponseEntity.ok(new ApiResponseDto<>(200, "닉네임 수정이 완료되었습니다.", true));
     }
 
 

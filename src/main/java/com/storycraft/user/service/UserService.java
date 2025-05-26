@@ -42,6 +42,7 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         user.setNickname(newNickname);
+        userRepository.save(user);
     }
 
 
