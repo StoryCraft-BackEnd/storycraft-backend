@@ -1,6 +1,7 @@
 package com.storycraft.auth.entity;
 
 import com.storycraft.global.entity.BaseTimeEntity;
+import com.storycraft.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,8 +16,9 @@ public class EmailVerification extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String email;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, length = 6)
     private String verificationCode;

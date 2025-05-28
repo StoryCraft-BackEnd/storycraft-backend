@@ -6,14 +6,15 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "child_profiles")
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "child_profiles")
 public class ChildProfile extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 50)
@@ -22,10 +23,15 @@ public class ChildProfile extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer age;
 
-    @Column(length = 50)
-    private String learningLevel;
+    @Column(nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    private LearningLevel learningLevel;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
+
+    public enum LearningLevel {
+        초급, 중급, 고급
+    }
 }

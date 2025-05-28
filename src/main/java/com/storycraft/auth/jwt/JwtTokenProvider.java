@@ -1,5 +1,6 @@
 package com.storycraft.auth.jwt;
 
+import com.storycraft.user.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -27,6 +28,7 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
+        // Base64 디코딩된 시크릿 키를 HMAC SHA 키로 변환
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -34,15 +36,14 @@ public class JwtTokenProvider {
     /**
      * Access Token 생성
      */
-    public String createToken(String email, String role) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("role", role);
+    public String createAccessToken(User user) {
+
 
         Date now = new Date();
         Date expiry = new Date(now.getTime() + accessTokenExpirationMs);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(user.getEmail())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -80,37 +81,40 @@ public class JwtTokenProvider {
      * 토큰에서 이메일 추출
      */
     public String getEmail(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
     /**
-     * 토큰에서 role 추출
+     * 토큰에서 role 추출 (access token에만 role 있음)
      */
     public String getRole(String token) {
-        return (String) Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("role");
+        try {
+            Object role = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("role");
+            return role != null ? role.toString() : null;
+        } catch (Exception e) {
+            // role 정보가 없거나 토큰이 잘못되었을 때 null 리턴
+            return null;
+        }
     }
 
-    /**
-     * RefreshToken으로부터 새 AccessToken 재발급
-     */
+
     public String generateAccessTokenFromRefreshToken(String refreshToken) {
         if (!validateToken(refreshToken)) {
             throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
         }
 
         String email = getEmail(refreshToken);
-        // 기존 리프레시 토큰에는 role이 없을 수 있으므로 기본값 처리
-        String role = getRole(refreshToken);
-        if (role == null) {
-            role = "user"; // 기본값
-        }
 
-        return createToken(email, role);
+        return createAccessToken(User.builder().email(email).build());
     }
 }

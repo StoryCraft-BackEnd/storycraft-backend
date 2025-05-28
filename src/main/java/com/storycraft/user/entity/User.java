@@ -40,4 +40,6 @@ public class User extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private AuthToken authToken;
+
+
 }
