@@ -27,9 +27,7 @@ public class StoryService {
                 .content(content)
                 .build();
 
-        Story saved = storyRepository.save(story);
-
-        return saved.toDto();
+        return storyRepository.save(story).toDto();
     }
 
     // 동화 상세 조회
