@@ -23,8 +23,8 @@ public class StoryService {
 
         Story story = Story.builder()
                 .childId(dto.getChildId())
-                .title("AI가 생성한 제목")
-                .content("AI가 생성한 내용")
+                .title(dto.getPrompt() + " 이야기")
+                .content(content)
                 .build();
 
         Story saved = storyRepository.save(story);
