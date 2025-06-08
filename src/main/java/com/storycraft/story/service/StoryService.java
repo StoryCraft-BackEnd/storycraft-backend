@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class StoryService {
 
     private final StoryRepository storyRepository;
+    private final AiGptService aiGptService;
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
