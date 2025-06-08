@@ -19,7 +19,8 @@ public class StoryService {
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
-        // GPT 호출 대신 더미 생성, 추후에 GPT연동 예정 후 수정
+        String content = aiGptService.generateStoryContent(dto.getPrompt());
+
         Story story = Story.builder()
                 .childId(dto.getChildId())
                 .title("AI가 생성한 제목")
