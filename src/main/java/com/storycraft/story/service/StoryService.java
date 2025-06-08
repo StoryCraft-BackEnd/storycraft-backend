@@ -1,5 +1,6 @@
 package com.storycraft.story.service;
 
+import com.storycraft.ai.service.AiGptService;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StoryUpdateDto;
