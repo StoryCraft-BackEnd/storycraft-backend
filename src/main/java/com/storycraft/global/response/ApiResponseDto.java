@@ -16,7 +16,7 @@ public class ApiResponseDto<T> {
     @Schema(description = "HTTP 응답 상태 코드", example = "200")
     private int status;
 
-    @Schema(description = "응답 메시지")
+    @Schema(description = "응답 메시지", example = "요청 성공")
     private String message;
 
     @Schema(description = "실제 응답 데이터 (성공 시 결과)")
