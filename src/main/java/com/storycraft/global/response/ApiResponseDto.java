@@ -9,7 +9,7 @@ import lombok.Getter;
  * 모든 API 응답 형식을 통일하기 위한 제네릭 응답 클래스
  * @param <T>
  */
-
+@Schema(description = "API 응답 wrapper")
 @Getter
 @AllArgsConstructor
 public class ApiResponseDto<T> {
