@@ -21,7 +21,7 @@ public class UserService {
 
     public UserInfoResponseDto getMyInfo(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserInfoResponseDto(
                 user.getEmail(),
@@ -64,17 +64,12 @@ public class UserService {
 
     // 비밀번호 변경
     public boolean updatePassword(String email, String rawNewPassword) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
-            return false;
-        }
-        User user = userOpt.get();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         String encodedPassword = passwordEncoder.encode(rawNewPassword);
         user.setPassword(encodedPassword);
         userRepository.save(user);
         return true;
     }
-
-
-
 }
