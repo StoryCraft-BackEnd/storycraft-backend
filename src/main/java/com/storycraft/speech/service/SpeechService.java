@@ -86,6 +86,15 @@ public class SpeechService {
                         .childId(childId)
                         .build();
 
-        return Arrays.asList(whisperTranscript.split(" "));
+                Story saved = storyRepository.save(story);
+                return StoryResponseDto.fromEntity(saved);
+
+            } finally {
+                tempFile.delete();
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("STT 기반 동화 생성 실패: " + e.getMessage());
+        }
     }
 }
