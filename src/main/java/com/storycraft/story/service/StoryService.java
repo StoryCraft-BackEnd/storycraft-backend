@@ -21,7 +21,7 @@ public class StoryService {
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
-        String content = aiGptService.generateStoryContent(dto.getPrompt());
+        StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(dto.getPrompt()));
 
         Story story = Story.builder()
                 .childId(dto.getChildId())
