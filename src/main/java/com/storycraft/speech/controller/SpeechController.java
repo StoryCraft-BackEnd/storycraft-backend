@@ -50,10 +50,7 @@ public class SpeechController {
         );
     }
 
-    @Operation(
-            summary = "STT 변환",
-            description = "사용자의 음성 파일을 텍스트로 변환하고 키워드를 추출합니다."
-    )
+    @Operation(summary = "STT 변환", description = "사용자의 음성 파일을 텍스트로 변환하고 키워드를 추출합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
