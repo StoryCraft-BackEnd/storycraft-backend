@@ -7,6 +7,7 @@ import com.storycraft.speech.dto.SttResponseDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.speech.entity.Tts;
 import com.storycraft.speech.repository.TtsRepository;
+import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.repository.StoryRepository;
 import lombok.RequiredArgsConstructor;
