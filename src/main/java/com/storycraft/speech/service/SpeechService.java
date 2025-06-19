@@ -79,8 +79,12 @@ public class SpeechService {
                 String title = storyContent.getTitle();
                 String content = storyContent.getContent();
 
-        // TODO: Whisper 연동후 수정 예정
-        String whisperTranscript = "The dog is sleeping in the forest.";
+                // 3. 저장
+                Story story = Story.builder()
+                        .title(title)
+                        .content(content)
+                        .childId(childId)
+                        .build();
 
         return Arrays.asList(whisperTranscript.split(" "));
     }
