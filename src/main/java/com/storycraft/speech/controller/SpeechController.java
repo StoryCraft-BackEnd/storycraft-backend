@@ -5,6 +5,7 @@ import com.storycraft.speech.dto.SttResponseDto;
 import com.storycraft.speech.dto.TtsCreateRequestDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.speech.service.SpeechService;
+import com.storycraft.story.dto.StoryResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
