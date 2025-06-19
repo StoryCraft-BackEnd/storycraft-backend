@@ -76,4 +76,25 @@ public class SpeechController {
                         .build())
         );
     }
+
+    @Operation(summary = "STT 기반 동화 생성", description = "음성 파일을 업로드하여 STT로 키워드를 추출하고, 이를 기반으로 GPT가 동화를 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "동화 생성 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StoryResponseDto.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PostMapping(value = "/generate-from-stt", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    public ApiResponseDto<StoryResponseDto> generateStoryFromStt(
+            @RequestPart(name = "file") MultipartFile file,
+            @RequestParam(name = "childId") String childId
+    ) {
+        StoryResponseDto response = speechService.generateStoryFromStt(file, childId);
+        return new ApiResponseDto<>(200, "동화 생성 성공", response);
+    }
 }
