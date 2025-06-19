@@ -40,7 +40,44 @@ public class SpeechService {
     /**
      * STT 변환 메소드
      */
-    public List<String> transcribeStt(MultipartFile file) {
+    public SttResponseDto transcribeStt(MultipartFile audioFile) {
+        try {
+            File tempFile = File.createTempFile("audio", ".mp3");
+            try {
+                audioFile.transferTo(tempFile);
+                String transcript = aiWhisperService.transcribeAudio(tempFile);
+                List<String> keywords = Arrays.stream(transcript.split("\\s+"))
+                        .filter(word -> word.length() > 1) // 한 글자 제거 등 전처리
+                        .toList();
+                return SttResponseDto.builder().keywords(keywords).build();
+            } finally {
+                tempFile.delete(); // 임시 파일 삭제
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("STT 실패: " + e.getMessage());
+        }
+    }
+
+    /**
+     * STT 기반 동화 생성 메소드
+     */
+    public StoryResponseDto generateStoryFromStt(MultipartFile file, String childId) {
+        try {
+            File tempFile = File.createTempFile("audio", ".mp3");
+            try {
+                file.transferTo(tempFile);
+
+                // 1. Whisper STT
+                String transcript = aiWhisperService.transcribeAudio(tempFile);
+                List<String> keywords = Arrays.stream(transcript.split("\\s+"))
+                        .filter(word -> word.length() > 1)
+                        .toList();
+
+                // 2. GPT 생성
+                StoryContentDto storyContent = aiGptService.generateStoryContent(keywords);
+
+                String title = storyContent.getTitle();
+                String content = storyContent.getContent();
 
         // TODO: Whisper 연동후 수정 예정
         String whisperTranscript = "The dog is sleeping in the forest.";
