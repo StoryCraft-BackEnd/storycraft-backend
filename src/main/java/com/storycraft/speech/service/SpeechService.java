@@ -33,7 +33,7 @@ public class SpeechService {
         Story story = storyRepository.findById(storyID)
                 .orElseThrow(() -> new IllegalArgumentException("해당 동화가 없습니다.  ID : " + storyID));
 
-        // TODO: 추후 AWS Polly 연동뒤에 수정
+        // TODO: 추후 AWS Polly 연동 예정
         String pollyUrl = "https://dummy-url.com/audio.mp3";
 
         Tts saved = ttsRepository.save(Tts.builder()
