@@ -68,7 +68,7 @@ public class SpeechController {
     public ResponseEntity<?> transcribeStt(
             @RequestPart(name = "audioFile") MultipartFile audioFile
     ) {
-        List<String> keywords = speechService.transcribeStt(audioFile);
+        List<String> keywords = speechService.transcribeStt(audioFile).getKeywords();
 
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "STT 변환 성공", SttResponseDto.builder()
