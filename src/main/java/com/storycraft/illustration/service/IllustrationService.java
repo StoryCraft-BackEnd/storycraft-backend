@@ -18,6 +18,7 @@ public class IllustrationService {
 
     private final IllustrationRepository illustrationRepository;
     private final StoryRepository storyRepository;
+    private final AiDalleService aiDalleService;
 
     // 삽화 생성
     public IllustrationResponseDto createIllustration(IllustrationRequestDto dto) {
