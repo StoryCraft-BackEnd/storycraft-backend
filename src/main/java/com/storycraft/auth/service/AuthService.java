@@ -78,11 +78,11 @@ public class AuthService {
         String oldRefreshToken = request.getRefreshToken();
 
         if (!jwtTokenProvider.validateToken(oldRefreshToken)) {
-            throw new RuntimeException("유효하지 않은 리프레시 토큰입니다.");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         AuthToken authToken = authTokenRepository.findByRefreshToken(oldRefreshToken)
-                .orElseThrow(() -> new RuntimeException("DB에 저장된 리프레시 토큰이 아닙니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.TOKEN_NOT_FOUND));
 
         User user = authToken.getUser();
 

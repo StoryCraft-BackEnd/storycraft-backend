@@ -24,6 +24,9 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-token-expiration-ms}")
     private long refreshTokenExpirationMs;
 
+    @Value("${jwt.reset-token-expiration-ms}")
+    private long resetTokenExpirationMs;
+
     private Key key;
 
     @PostConstruct
@@ -116,5 +119,20 @@ public class JwtTokenProvider {
         String email = getEmail(refreshToken);
 
         return createAccessToken(User.builder().email(email).build());
+    }
+
+    /**
+     * Reset Token 생성 (이메일만 필요)
+     */
+    public String createResetToken(String email) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + resetTokenExpirationMs);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 }
