@@ -25,8 +25,8 @@ public class StoryService {
 
         Story story = Story.builder()
                 .childId(dto.getChildId())
-                .title(dto.getPrompt() + " 이야기")
-                .content(content)
+                .title(result.getTitle())
+                .content(result.getContent())
                 .build();
 
         return storyRepository.save(story).toDto();
