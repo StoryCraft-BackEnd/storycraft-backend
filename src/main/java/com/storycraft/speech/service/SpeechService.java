@@ -1,5 +1,9 @@
 package com.storycraft.speech.service;
 
+import com.storycraft.ai.dto.StoryContentDto;
+import com.storycraft.ai.service.AiGptService;
+import com.storycraft.ai.service.AiWhisperService;
+import com.storycraft.speech.dto.SttResponseDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.speech.entity.Tts;
 import com.storycraft.speech.repository.TtsRepository;
