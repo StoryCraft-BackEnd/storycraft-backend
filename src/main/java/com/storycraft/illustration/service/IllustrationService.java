@@ -1,6 +1,7 @@
 package com.storycraft.illustration.service;
 
 
+import com.storycraft.ai.service.AiDalleService;
 import com.storycraft.illustration.dto.IllustrationRequestDto;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.entity.Illustration;
@@ -18,12 +19,17 @@ public class IllustrationService {
 
     private final IllustrationRepository illustrationRepository;
     private final StoryRepository storyRepository;
+    private final AiDalleService aiDalleService;
 
     // 삽화 생성
     public IllustrationResponseDto createIllustration(IllustrationRequestDto dto) {
         Story story = storyRepository.findById(dto.getStoryId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 storyId입니다."));
-        String imageUrl = "https://storycraft-bucket.s3.amazonaws.com/illustrations/story1_1.png"; //추후 Dalle 및 S3 연동후 수정
+
+        String prompt = "이 동화의 썸네일 삽화를 그려줘 \n" + story.getContent()+"cartoon풍의 귀여운 느낌으로!";
+        //+ "\n \n처음 고른 삽화 스타일 대로."; -> TODO:스타일 추가 후 수정
+
+        String imageUrl = aiDalleService.generateImage(prompt);
 
         Illustration illustration = Illustration.builder()
                 .story(story)

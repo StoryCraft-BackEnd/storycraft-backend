@@ -1,0 +1,94 @@
+package com.storycraft.ai.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.storycraft.ai.dto.StoryContentDto;
+import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
+
+
+@Service
+public class AiGptService {
+
+    private String apiKey;
+    private String gptUrl;
+    private String gptModel;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public AiGptService(){
+        Dotenv dotenv = Dotenv.configure().load();
+
+        this.apiKey = dotenv.get("OPENAI_API_KEY");
+        this.gptModel = dotenv.get("OPENAI_GPT_MODEL");
+        this.gptUrl = dotenv.get("OPENAI_GPT_URL");
+    }
+
+    public StoryContentDto generateStoryContent(List<String> keyword) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(apiKey);
+
+
+        Map<String, Object> system = Map.of(
+                "role","system",
+                "content", "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.");
+
+        String keywordStr = String.join(", ", keyword);
+
+        //초기 개발 단계엔 500자 제한 TODO: 글자수 수정
+        String prompt = """
+                다음 JSON 형식으로 유아 영어 교육용 짧은 동화를 만들어줘.
+                키워드: %s
+                다음 형식의 JSON만 응답해줘. 설명이나 기타 문장 없이, 반드시 아래 형식 그대로 응답해:
+                {
+                  "title": "동화 제목",
+                  "content": "영어로 된 동화 내용 (500자 이내)"
+                }
+                """.formatted(keywordStr);
+
+        Map<String, Object> user = Map.of("role", "user", "content", prompt);
+        Map<String, Object> body = Map.of(
+                "model", gptModel,
+                "messages", List.of(system, user),
+                "temperature", 0.8
+        );
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
+
+        List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
+        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
+        String rawJson = (String) message.get("content");
+
+        try {
+            // GPT가 ```json ... ``` 으로 감쌀 경우 제거
+            rawJson = rawJson
+                    .replaceAll("(?i)^```json", "")
+                    .replaceAll("^```", "")
+                    .replaceAll("```$", "")
+                    .trim();
+
+            Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
+            String title = parsed.getOrDefault("title", "동화 제목 없음").trim();
+            String content = parsed.getOrDefault("content", "").trim();
+
+            if (title.length() > 255) {
+                title = title.substring(0, 255);
+            }
+
+            return new StoryContentDto(title, content.length() > 500 ? content.substring(0, 500) : content);
+
+        } catch (Exception e) {
+            throw new RuntimeException("GPT 응답 파싱 실패: " + e.getMessage());
+        }
+    }
+}

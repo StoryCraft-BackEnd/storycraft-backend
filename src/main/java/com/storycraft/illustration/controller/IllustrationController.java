@@ -70,7 +70,7 @@ public class IllustrationController {
         );
     }
 
-    @Operation(summary = "삽화 목록 조회", description = "삽화 목록 조회에 성공했습니다.")
+    @Operation(summary = "삽화 목록 조회", description = "삽화 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

@@ -5,6 +5,7 @@ import com.storycraft.speech.dto.SttResponseDto;
 import com.storycraft.speech.dto.TtsCreateRequestDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.speech.service.SpeechService;
+import com.storycraft.story.dto.StoryResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,10 +52,7 @@ public class SpeechController {
         );
     }
 
-    @Operation(
-            summary = "STT 변환",
-            description = "사용자의 음성 파일을 텍스트로 변환하고 키워드를 추출합니다."
-    )
+    @Operation(summary = "STT 변환", description = "사용자의 음성 파일을 텍스트로 변환하고 키워드를 추출합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -68,12 +67,33 @@ public class SpeechController {
     public ResponseEntity<?> transcribeStt(
             @RequestPart(name = "audioFile") MultipartFile audioFile
     ) {
-        List<String> keywords = speechService.transcribeStt(audioFile);
+        List<String> keywords = speechService.transcribeStt(audioFile).getKeywords();
 
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "STT 변환 성공", SttResponseDto.builder()
                         .keywords(keywords)
                         .build())
         );
+    }
+
+    @Operation(summary = "STT 기반 동화 생성", description = "음성 파일을 업로드하여 STT로 키워드를 추출하고, 이를 기반으로 GPT가 동화를 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "동화 생성 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StoryResponseDto.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PostMapping(value = "/generate-from-stt", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    public ApiResponseDto<StoryResponseDto> generateStoryFromStt(
+            @RequestPart(name = "file") MultipartFile file,
+            @RequestParam(name = "childId") String childId
+    ) {
+        StoryResponseDto response = speechService.generateStoryFromStt(file, childId);
+        return new ApiResponseDto<>(200, "동화 생성 성공", response);
     }
 }

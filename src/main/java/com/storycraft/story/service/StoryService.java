@@ -1,5 +1,7 @@
 package com.storycraft.story.service;
 
+import com.storycraft.ai.dto.StoryContentDto;
+import com.storycraft.ai.service.AiGptService;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StoryUpdateDto;
@@ -8,6 +10,7 @@ import com.storycraft.story.repository.StoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,19 +19,19 @@ import java.util.stream.Collectors;
 public class StoryService {
 
     private final StoryRepository storyRepository;
+    private final AiGptService aiGptService;
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
-        // GPT 호출 대신 더미 생성, 추후에 GPT연동 예정 후 수정
+        StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(dto.getPrompt()));
+
         Story story = Story.builder()
                 .childId(dto.getChildId())
-                .title("AI가 생성한 제목")
-                .content("AI가 생성한 내용")
+                .title(result.getTitle())
+                .content(result.getContent())
                 .build();
 
-        Story saved = storyRepository.save(story);
-
-        return saved.toDto();
+        return storyRepository.save(story).toDto();
     }
 
     // 동화 상세 조회
