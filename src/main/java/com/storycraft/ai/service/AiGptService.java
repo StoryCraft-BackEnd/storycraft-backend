@@ -91,4 +91,71 @@ public class AiGptService {
             throw new RuntimeException("GPT 응답 파싱 실패: " + e.getMessage());
         }
     }
+
+    public List<AiQuizResponseDto> generateQuizFromContentAndKeywords(String content, List<String> keywords) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(apiKey);
+
+        Map<String, Object> system = Map.of(
+                "role", "system",
+                "content", "너는 유아를 위한 교육적인 퀴즈를 잘 만드는 AI야."
+        );
+
+        String keywordStr = String.join(", ", keywords);
+        //TODO: 추후 총 10개의 퀴즈 생성으로 수정
+        String prompt = """
+                아래 동화 내용과 하이라이트된 단어를 중심으로 1개의 객관식 퀴즈를 만들어줘.
+                반드시 JSON 형식으로만 응답해줘. 설명 문장 없이.
+                
+                동화 내용:
+                %s
+                
+                하이라이트 키워드: %s
+                
+                예시:
+                [
+                    {
+                        "question": "Which animal went on the Adventure?",
+                        "options": {
+                            "A": "Lion",
+                            "B": "Cat",
+                            "C": "Dog",
+                            "D": "Rabbit"
+                        },
+                        "answer": "D"
+                    }
+                ]
+                """.formatted(content, keywordStr);
+
+        Map<String, Object> user = Map.of("role", "user", "content", prompt);
+        Map<String, Object> body = Map.of(
+                "model", gptModel,
+                "messages", List.of(system, user),
+                "temperature", 0.7
+        );
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
+
+        List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
+        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
+        String rawJson = (String) message.get("content");
+
+        try {
+            // GPT가 ```json ... ``` 으로 감쌀 경우 제거
+            rawJson = rawJson
+                    .replaceAll("(?i)^```json", "")
+                    .replaceAll("^```", "")
+                    .replaceAll("```$", "")
+                    .trim();
+            return objectMapper.readValue(rawJson, new TypeReference<>() {
+            });
+
+        } catch (Exception e) {
+            throw new RuntimeException("GPT 퀴즈 응답 파싱 실패: " + e.getMessage());
+        }
+    }
 }
