@@ -21,7 +21,7 @@ import org.springframework.http.MediaType;
 @RestController
 @RequestMapping("/ai/whisper")
 @RequiredArgsConstructor
-@Tag(name = "Whisper", description = "Whisper 관련 API")
+@Tag(name = "AI", description = "Whisper 관련 API")
 public class AiWhisperController {
 
     private final AiWhisperService aiWhisperService;

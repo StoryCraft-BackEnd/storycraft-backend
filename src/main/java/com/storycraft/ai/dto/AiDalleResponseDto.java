@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AiDalleResponseDto {
 
-    @Schema(description = "생성된 이미지 URL")
+    @Schema(description = "생성된 이미지 URL", example = "https://cdn/story1.jpg")
     private String imageUrl;
 }
