@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/ai/dalle")
 @RequiredArgsConstructor
-@Tag(name = "DALLE", description = "삽화 생성 AI 관련 API")
+@Tag(name = "AI", description = "삽화 생성 AI 관련 API")
 public class AiDalleController {
 
     private final AiDalleService aiDalleService;
