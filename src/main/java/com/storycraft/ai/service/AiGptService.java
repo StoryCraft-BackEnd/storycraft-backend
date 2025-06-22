@@ -1,6 +1,8 @@
 package com.storycraft.ai.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.storycraft.ai.dto.AiQuizResponseDto;
 import com.storycraft.ai.dto.StoryContentDto;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.HttpEntity;
