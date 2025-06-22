@@ -24,7 +24,7 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/ai/gpt")
 @RequiredArgsConstructor
-@Tag(name = "GPT", description = "동화 생성 관련 API")
+@Tag(name = "AI", description = "동화 생성 관련 API")
 public class AiStoryController {
     private final AiGptService aiGptService;
     private final StoryRepository storyRepository;
