@@ -64,4 +64,12 @@ public class IllustrationService {
         }
         illustrationRepository.deleteById(id);
     }
+
+    public String getUrlByStoryId(Long storyId) {
+        List<Illustration> illustrations = illustrationRepository.findAllByStory_StoryId(storyId);
+        if (illustrations == null || illustrations.isEmpty()) {
+            throw new IllegalArgumentException("해당 동화의 삽화가 존재하지 않습니다.");
+        }
+        return illustrations.get(0).getImageUrl(); // 첫 번째 삽화의 URL 사용 (썸네일 용도)
+    }
 }
