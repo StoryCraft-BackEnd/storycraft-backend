@@ -105,4 +105,10 @@ public class SpeechService {
             throw new RuntimeException("STT 기반 동화 생성 실패: " + e.getMessage());
         }
     }
+
+    public String getTtsUrlByStoryId(Long storyId) {
+        Tts tts = ttsRepository.findByStory_StoryId(storyId)
+                .orElseThrow(() -> new IllegalArgumentException("TTS가 생성되지 않은 동화입니다."));
+        return tts.getTtsUrl();
+    }
 }
