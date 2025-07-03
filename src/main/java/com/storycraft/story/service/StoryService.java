@@ -63,5 +63,11 @@ public class StoryService {
     public void deleteStory(Long id) {
         storyRepository.deleteById(id);
     }
+
+    // 통합 조회 등을 위한 엔티티 직접 조회용 메서드
+    public Story getStoryEntityById(Long id) {
+        return storyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
+    }
 }
 
