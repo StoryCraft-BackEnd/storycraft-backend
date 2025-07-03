@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface TtsRepository extends JpaRepository<Tts, Long> {
     List<Tts> findAllByStory(Story story);
+
+    Optional<Tts> findByStory_StoryId(Long storyId);
 }
