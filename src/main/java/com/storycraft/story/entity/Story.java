@@ -2,6 +2,7 @@ package com.storycraft.story.entity;
 
 import com.storycraft.global.entity.BaseTimeEntity;
 import com.storycraft.illustration.entity.Illustration;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.story.dto.StoryResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
