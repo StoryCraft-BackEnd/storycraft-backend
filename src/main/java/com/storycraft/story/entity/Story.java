@@ -21,8 +21,9 @@ public class Story extends BaseTimeEntity {
     @Column(name = "story_id")
     private Long storyId;
 
-    @Column(name = "child_id", nullable = false)
-    private String childId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "child_id", nullable = false)
+    private ChildProfile childId;
 
     @Column(name = "title", nullable = false)
     private String title;
