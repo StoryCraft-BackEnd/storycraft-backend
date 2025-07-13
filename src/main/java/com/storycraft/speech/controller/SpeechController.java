@@ -91,7 +91,7 @@ public class SpeechController {
 
     public ApiResponseDto<StoryResponseDto> generateStoryFromStt(
             @RequestPart(name = "file") MultipartFile file,
-            @RequestParam(name = "childId") String childId
+            @RequestParam(name = "childId") ChildProfile childId
     ) {
         StoryResponseDto response = speechService.generateStoryFromStt(file, childId);
         return new ApiResponseDto<>(200, "동화 생성 성공", response);
