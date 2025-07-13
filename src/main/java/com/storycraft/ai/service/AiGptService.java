@@ -45,7 +45,7 @@ public class AiGptService {
                 "content", "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.");
 
         String keywordStr = String.join(", ", keyword);
-        
+
         String prompt = """
                 다음 JSON 형식으로 유아 영어 교육용 동화를 만들어줘.
                 키워드: %s
