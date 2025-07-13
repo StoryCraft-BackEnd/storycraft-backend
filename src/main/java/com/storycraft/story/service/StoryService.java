@@ -20,6 +20,7 @@ public class StoryService {
 
     private final StoryRepository storyRepository;
     private final AiGptService aiGptService;
+    private final StorySectionService storySectionService;
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
