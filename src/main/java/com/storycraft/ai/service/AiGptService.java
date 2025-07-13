@@ -53,7 +53,7 @@ public class AiGptService {
                 다음 형식의 JSON만 응답해줘. 설명이나 기타 문장 없이, 반드시 아래 형식 그대로 응답해:
                 {
                   "title": "동화 제목",
-                  "content": "영어로 된 동화 내용 (500자 이내)"
+                  "content": "영어로 된 단락1 내용.\\n\\n 영어로 된 단락2 내용.\\n\\n 영어로 된 단락3 내용."
                 }
                 """.formatted(keywordStr);
 
