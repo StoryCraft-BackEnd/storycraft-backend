@@ -13,5 +13,5 @@ public class StoryRequestDto {
     private String prompt;
 
     @Schema(description = "자녀 ID", example = " child-uuid-1234")
-    private String childId;
+    private ChildProfile childId;
 }
