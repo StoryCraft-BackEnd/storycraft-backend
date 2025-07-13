@@ -69,7 +69,7 @@ public class SpeechService {
     /**
      * STT 기반 동화 생성 메소드
      */
-    public StoryResponseDto generateStoryFromStt(MultipartFile file, String childId) {
+    public StoryResponseDto generateStoryFromStt(MultipartFile file, ChildProfile childId) {
         try {
             File tempFile = File.createTempFile("audio", ".mp3");
             try {
