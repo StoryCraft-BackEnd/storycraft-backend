@@ -32,7 +32,11 @@ public class StoryService {
                 .content(result.getContent())
                 .build();
 
-        return storyRepository.save(story).toDto();
+        storyRepository.save(story);
+
+        storySectionService.saveSectionsFromContent(story, result.getContent());
+
+        return story.toDto();
     }
 
     // 동화 상세 조회
