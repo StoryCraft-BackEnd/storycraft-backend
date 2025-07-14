@@ -6,6 +6,7 @@ import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StorySectionDto;
 import com.storycraft.story.dto.StoryUpdateDto;
+import com.storycraft.story.service.StorySectionService;
 import com.storycraft.story.service.StoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
