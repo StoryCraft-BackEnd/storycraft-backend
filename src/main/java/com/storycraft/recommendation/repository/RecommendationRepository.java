@@ -12,7 +12,7 @@ public interface RecommendationRepository extends JpaRepository<StoryRecommendat
     Optional<StoryRecommendationFeedback> findByChildIdAndStory_StoryId(ChildProfile childId, Long storyId);
 
     // 자녀가 남긴 모든 피드백 조회
-    List<StoryRecommendationFeedback> findAllByChildId(String childId);
+    List<StoryRecommendationFeedback> findAllByChildId(ChildProfile childId);
 
     // 동화별 남겨진 모든 피드백 조회
     List<StoryRecommendationFeedback> findAllByStory_StoryId(Long storyId);
