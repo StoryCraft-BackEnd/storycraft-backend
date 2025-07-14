@@ -4,6 +4,7 @@ import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
+import com.storycraft.story.dto.StorySectionDto;
 import com.storycraft.story.dto.StoryUpdateDto;
 import com.storycraft.story.service.StoryService;
 import io.swagger.v3.oas.annotations.Operation;
