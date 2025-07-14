@@ -47,7 +47,7 @@ public class StoryService {
     }
 
     // 동화 목록 조회
-    public List<StoryResponseDto> getStoryList(String childId) {
+    public List<StoryResponseDto> getStoryList(ChildProfile childId) {
         return storyRepository.findAllByChildId(childId).stream()
                 .map(Story::toDto)
                 .collect(Collectors.toList());
