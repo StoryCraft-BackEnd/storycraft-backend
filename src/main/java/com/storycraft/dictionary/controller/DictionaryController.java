@@ -4,6 +4,7 @@ import com.storycraft.dictionary.dto.SaveWordResponseDto;
 import com.storycraft.dictionary.dto.WordResponseDto;
 import com.storycraft.dictionary.service.DictionaryService;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
