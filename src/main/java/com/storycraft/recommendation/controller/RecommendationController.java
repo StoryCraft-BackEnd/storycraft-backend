@@ -39,7 +39,7 @@ public class RecommendationController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping
-    public ApiResponseDto<?> getRecommendations(@RequestParam String childId) {
+    public ApiResponseDto<?> getRecommendations(@RequestParam ChildProfile childId) {
         List<RecommendResponseDto> recommendations = recommendationService.getRecommendations(childId);
         return new ApiResponseDto<>(200, "동화 추천 결과", recommendations);
     }
