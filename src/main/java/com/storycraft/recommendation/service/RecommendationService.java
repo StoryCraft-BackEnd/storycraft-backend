@@ -1,5 +1,6 @@
 package com.storycraft.recommendation.service;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.recommendation.dto.RecommendationFeedbackRequestDto;
 import com.storycraft.recommendation.dto.RecommendResponseDto;
 import com.storycraft.recommendation.entity.StoryRecommendationFeedback;
