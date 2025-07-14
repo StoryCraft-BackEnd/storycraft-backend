@@ -4,28 +4,29 @@ import com.storycraft.global.exception.CustomException;
 import com.storycraft.global.exception.ErrorCode;
 import com.storycraft.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private final AwsSesService awsSesService;
     private final UserRepository userRepository;
 
     public void sendResetCode(String toEmail, String code) {
-
         if (!userRepository.existsByEmail(toEmail)) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(toEmail);
-        message.setSubject("StoryCraft 비밀번호 재설정 인증 코드");
-        message.setText("안녕하세요, 인증 코드는 " + code + " 입니다. 10분 내에 입력하세요.");
-        mailSender.send(message);
+        try {
+            awsSesService.sendResetCodeEmail(toEmail, code);
+            log.info("비밀번호 재설정 인증코드 발송 완료: {}", toEmail);
+        } catch (Exception e) {
+            log.error("비밀번호 재설정 인증코드 발송 실패: {}, Error: {}", toEmail, e.getMessage());
+            throw new CustomException(ErrorCode.EMAIL_SEND_FAILED);
+        }
     }
 
     public boolean isEmailAvailable(String email) {

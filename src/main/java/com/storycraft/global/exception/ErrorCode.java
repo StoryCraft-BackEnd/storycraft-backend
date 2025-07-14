@@ -27,6 +27,7 @@ public enum ErrorCode {
     // 인증코드 관련
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "DB에 저장된 토큰이 아닙니다."),
+    EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 발송에 실패했습니다."),
 
 
     //닉네임 관련
