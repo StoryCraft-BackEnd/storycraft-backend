@@ -9,7 +9,7 @@ import lombok.Setter;
 public class RecommendationFeedbackRequestDto {
 
     @Schema(description = "자녀 프로필 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "동화 ID", example = "1")
     private Long storyId;
