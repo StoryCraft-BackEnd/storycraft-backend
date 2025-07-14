@@ -80,7 +80,7 @@ public class QuizController {
     @GetMapping("/results")
     public ResponseEntity<?> getQuizResult(
             @RequestParam Long storyId,
-            @RequestParam String childId
+            @RequestParam ChildProfile childId
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "퀴즈 결과 조회 성공", quizService.getQuizResultSummary(storyId, childId))
