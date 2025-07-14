@@ -4,6 +4,7 @@ import com.storycraft.auth.dto.RefreshTokenRequestDto;
 import com.storycraft.auth.dto.RefreshTokenResponseDto;
 import com.storycraft.auth.service.RefreshTokenService;
 import com.storycraft.global.response.ApiResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class RefreshTokenController {
     public RefreshTokenController(RefreshTokenService refreshTokenService) {
         this.refreshTokenService = refreshTokenService;
     }
-
+    @Operation(summary = "액세스 토큰 재발급", description = "만료된 액세스 토큰을 리프레시 토큰을 이용하여 재발급")
     @PostMapping("/token/refresh")
     public ResponseEntity<ApiResponseDto<RefreshTokenResponseDto>> reissueAccessToken(@RequestBody RefreshTokenRequestDto request) {
         RefreshTokenResponseDto data = refreshTokenService.reissueAccessToken(request.getRefreshToken());

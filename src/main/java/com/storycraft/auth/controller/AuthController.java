@@ -56,6 +56,7 @@ public class AuthController {
     }
 
     // 1. 이메일 인증코드 발송
+    @Operation(summary = "이메일 인증코드 발송", description = "사용자가 이메일을 입력하면 해당 이메일로 6자리 인증코드를 전송")
     @PostMapping("/request-reset-code")
     public ResponseEntity<?> requestResetCode(@Valid @RequestBody RequestResetCodeDto dto) {
         String code = generate6DigitCode();
@@ -72,6 +73,7 @@ public class AuthController {
 
 
     // 2. 이메일 인증코드 검증 + 리셋 토큰 발급
+    @Operation(summary = "이메일 인증코드 검증 + 리셋 토큰 발급", description = "이메일과 인증코드를 검증하고, 성공시 리셋토큰 발급")
     @PostMapping("/verify-reset-code")
     public ResponseEntity<?> verifyResetCode(@Valid @RequestBody VerifyResetCodeDto dto) {
         String storedCode = redisService.getCode(dto.getEmail());
@@ -85,6 +87,7 @@ public class AuthController {
     }
 
     // 3. 비밀번호 재설정
+    @Operation(summary = "비밀번호 재설정", description = "리셋토큰을 사용해서 새로운 비밀번호 설정")
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDto dto) {
         String email = resetTokenService.verifyResetToken(dto.getResetToken());

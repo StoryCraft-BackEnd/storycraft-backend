@@ -4,6 +4,7 @@ import com.storycraft.auth.dto.EmailCheckRequestDto;
 import com.storycraft.auth.dto.EmailCheckResponseDto;
 import com.storycraft.auth.service.EmailService;
 import com.storycraft.global.response.ApiResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
 
     private final EmailService emailService;
-
+    @Operation(summary = "이메일 중복확인")
     @PostMapping("/verification/exists")
     public ResponseEntity<ApiResponseDto<Boolean>> checkEmailExists(@RequestBody EmailCheckRequestDto request) {
         boolean available = emailService.isEmailAvailable(request.getEmail());
