@@ -3,6 +3,7 @@ package com.storycraft.user.controller;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.user.dto.NicknameCheckRequestDto;
 import com.storycraft.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ public class NicknameController {
         this.userService = userService;
     }
 
+    @Operation(summary = "닉네임 중복확인")
     @PostMapping("/exists")
     public ResponseEntity<ApiResponseDto<Boolean>> checkNickname(@RequestBody NicknameCheckRequestDto request) {
         boolean exists = userService.isNicknameExists(request.getNickname());
