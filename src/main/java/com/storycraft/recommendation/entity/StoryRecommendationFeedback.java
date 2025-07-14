@@ -20,8 +20,9 @@ public class StoryRecommendationFeedback {
     @Column(name = "feedback_id")
     private Long feedbackId;
 
-    @Column(name = "child_id",nullable = false)
-    private String childId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "child_id",nullable = false)
+    private ChildProfile childId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "story_id",nullable = false)
