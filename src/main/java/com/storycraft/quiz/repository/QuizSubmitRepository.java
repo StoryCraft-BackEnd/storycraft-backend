@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface QuizSubmitRepository extends JpaRepository<QuizSubmit, Long> {
-    List<QuizSubmit> findByChildId(String childId);
+    List<QuizSubmit> findByChildId(ChildProfile childId);
 
     List<QuizSubmit> findByQuizCreate_QuizId(Long quizId);
 }
