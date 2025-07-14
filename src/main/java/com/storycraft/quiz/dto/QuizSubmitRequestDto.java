@@ -9,7 +9,7 @@ import lombok.*;
 public class QuizSubmitRequestDto {
 
     @Schema(description = "퀴즈를 푼 자녀 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "사용자가 선택한 보기", example = "C")
     private String selectedAnswer;
