@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface RecommendationRepository extends JpaRepository<StoryRecommendationFeedback, Long> {
 
     // 특정 자녀가 특정 동화에 남긴 피드백 조회 (중복 저장 방지)
-    Optional<StoryRecommendationFeedback> findByChildIdAndStory_StoryId(String childId, Long storyId);
+    Optional<StoryRecommendationFeedback> findByChildIdAndStory_StoryId(ChildProfile childId, Long storyId);
 
     // 자녀가 남긴 모든 피드백 조회
     List<StoryRecommendationFeedback> findAllByChildId(String childId);
