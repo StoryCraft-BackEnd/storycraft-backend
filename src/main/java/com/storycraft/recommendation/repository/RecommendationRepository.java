@@ -1,5 +1,6 @@
 package com.storycraft.recommendation.repository;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.recommendation.entity.StoryRecommendationFeedback;
 import org.springframework.data.jpa.repository.JpaRepository;
 
