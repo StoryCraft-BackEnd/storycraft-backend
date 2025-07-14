@@ -1,6 +1,7 @@
 package com.storycraft.speech.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.speech.dto.SttResponseDto;
 import com.storycraft.speech.dto.TtsCreateRequestDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
