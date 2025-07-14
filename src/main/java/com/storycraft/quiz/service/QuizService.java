@@ -79,7 +79,7 @@ public class QuizService {
     /**
      * 퀴즈 결과 조회 (총 10문제 고정, 문제당 배점 10점)
      */
-    public QuizResultSummaryResponseDto getQuizResultSummary(Long storyId, String childId) {
+    public QuizResultSummaryResponseDto getQuizResultSummary(Long storyId, ChildProfile childId) {
         // 1. 동화 ID로 퀴즈 목록 조회 (총 10문제 기준)
         List<QuizCreate> quizzes = quizCreateRepository.findAllByStory_StoryId(storyId);
 
