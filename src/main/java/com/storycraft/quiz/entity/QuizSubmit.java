@@ -1,5 +1,6 @@
 package com.storycraft.quiz.entity;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.quiz.dto.QuizSubmitResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
