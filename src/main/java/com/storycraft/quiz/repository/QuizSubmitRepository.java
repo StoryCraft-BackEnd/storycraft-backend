@@ -1,5 +1,6 @@
 package com.storycraft.quiz.repository;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.quiz.entity.QuizSubmit;
 import org.springframework.data.jpa.repository.JpaRepository;
 
