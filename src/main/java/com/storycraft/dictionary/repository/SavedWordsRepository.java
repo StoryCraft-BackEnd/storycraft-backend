@@ -14,7 +14,7 @@ public interface SavedWordsRepository extends JpaRepository<SavedWords, Long> {
     //단어 사전(Words.API)에서 단어 검색
     List<SavedWords> findByWord(DictionaryWords word);
 
-    boolean existsByChildIdAndWord(String childId, DictionaryWords word);
+    boolean existsByChildIdAndWord(ChildProfile childId, DictionaryWords word);
 
     Optional<SavedWords> findByChildIdAndWord(String childId, DictionaryWords dictionaryWords);
 }
