@@ -41,7 +41,7 @@ public class DictionaryService {
     /**
      * 자녀의 사용자 사전에 단어 저장
      */
-    public SaveWordResponseDto savedWord(String childId, String word) {
+    public SaveWordResponseDto savedWord(ChildProfile childId, String word) {
         DictionaryWords dictionaryWords = getOrFetchWord(word);     //항상 저장할 수 있도록 보장
 
         boolean alreadySaved = savedWordsRepository.existsByChildIdAndWord(childId, dictionaryWords);
