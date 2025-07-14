@@ -19,8 +19,9 @@ public class SavedWords {
     @Column(name = "saved_id")
     private Long savedId;
 
-    @Column(name = "child_id", nullable = false)
-    private String childId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn (name = "child_id", nullable = false)
+    private ChildProfile childId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_id", nullable = false)
