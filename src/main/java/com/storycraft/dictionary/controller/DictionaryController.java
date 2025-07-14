@@ -59,7 +59,7 @@ public class DictionaryController {
     })
     @PostMapping("/words/save")
     public ResponseEntity<?> saveWord(
-            @Parameter(description = "자녀 프로필 ID") @RequestParam String childId,
+            @Parameter(description = "자녀 프로필 ID") @RequestParam ChildProfile childId,
             @Parameter(description = "하이라이트된 단어") @RequestParam String word
     ) {
         return ResponseEntity.status(201).body(
