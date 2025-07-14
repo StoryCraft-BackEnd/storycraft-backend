@@ -1,5 +1,6 @@
 package com.storycraft.story.repository;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.story.entity.Story;
 import org.springframework.data.jpa.repository.JpaRepository;
 
