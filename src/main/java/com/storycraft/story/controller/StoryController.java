@@ -49,6 +49,28 @@ public class StoryController {
         );
     }
 
+    @Operation(summary = "동화 단락 조회", description = "storyId에 해당하는 동화 단락들을 순서대로 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "단락 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = StorySectionDto.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "해당 동화가 존재하지 않습니다.")
+    })
+    @GetMapping("/{id}/sections")
+    public ResponseEntity<?> getStorySections(
+            @Parameter(description = "동화 ID", example = "1")
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(
+                new ApiResponseDto<>(200, "단락 조회에 성공했습니다.", storySectionService.getSectionsByStoryId(id))
+        );
+    }
+
     @Operation(summary = "동화 상세 조회", description = "storyId로 특정 동화를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(
