@@ -9,7 +9,7 @@ import lombok.Setter;
 public class SaveWordRequestDto {
 
     @Schema(description = "자녀 프로필 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "하이라이트 표시한 단어", example = "adventure")
     private String word;
