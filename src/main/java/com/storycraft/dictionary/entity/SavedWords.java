@@ -1,6 +1,7 @@
 package com.storycraft.dictionary.entity;
 
 import com.storycraft.dictionary.dto.SaveWordResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
