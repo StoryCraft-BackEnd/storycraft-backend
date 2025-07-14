@@ -7,6 +7,7 @@ import com.storycraft.dictionary.entity.SavedWords;
 import com.storycraft.dictionary.external.WordsApiClient;
 import com.storycraft.dictionary.repository.DictionaryWordsRepository;
 import com.storycraft.dictionary.repository.SavedWordsRepository;
+import com.storycraft.profile.entity.ChildProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class DictionaryService {
     /**
      * 자녀의 사용자 사전에 단어 저장
      */
-    public SaveWordResponseDto savedWord(String childId, String word) {
+    public SaveWordResponseDto savedWord(ChildProfile childId, String word) {
         DictionaryWords dictionaryWords = getOrFetchWord(word);     //항상 저장할 수 있도록 보장
 
         boolean alreadySaved = savedWordsRepository.existsByChildIdAndWord(childId, dictionaryWords);

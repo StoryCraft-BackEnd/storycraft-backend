@@ -1,5 +1,6 @@
 package com.storycraft.quiz.dto;
 
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class QuizSubmitResponseDto {
     private Long quizId;
 
     @Schema(description = "퀴즈를 푼 자녀 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "정답 여부", example = "true")
     private boolean isCorrect;

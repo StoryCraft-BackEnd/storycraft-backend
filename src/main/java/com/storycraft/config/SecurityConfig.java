@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
                                 "/swagger-ui.html",
+                                "/swagger-api-docs",
                                 "/webjars/**",
                                 "/auth/login",
                                 "/auth/signup",
@@ -45,7 +46,13 @@ public class SecurityConfig {
                                 "/auth/reset-password",
                                 "/email/verification/exists",
                                 "/auth/token/refresh",
-                                "/users/nickname/exists"
+                                "/users/nickname/exists",
+                                "/ai/**",                   //추후 삭제
+                                "/story/**",
+                                "/quiz/**",
+                                "/speech/**",
+                                "/illustration",
+                                "/integration"              //여기까지
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -58,4 +65,8 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 }
+
+

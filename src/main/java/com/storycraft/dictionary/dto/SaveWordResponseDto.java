@@ -1,5 +1,6 @@
 package com.storycraft.dictionary.dto;
 
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class SaveWordResponseDto {
     private Long savedId;
 
     @Schema(description = "자녀 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "단어", example = "adventure")
     private String word;

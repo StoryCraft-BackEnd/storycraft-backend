@@ -1,5 +1,6 @@
 package com.storycraft.ai.dto;
 
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +14,5 @@ public class AiStoryRequestDto {
     private String keyword;
 
     @Schema(description = "자녀 ID", example = "child-uuid-1234")
-    private String childId;
+    private ChildProfile childId;
 }

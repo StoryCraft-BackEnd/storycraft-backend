@@ -1,5 +1,6 @@
 package com.storycraft.quiz.dto;
 
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,7 +38,7 @@ import java.util.List;
 public class QuizResultSummaryResponseDto {
 
     @Schema(description = "퀴즈를 푼 자녀 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "퀴즈의 기반이 된 동화 ID", example = "1")
     private Long storyId;

@@ -1,9 +1,12 @@
 package com.storycraft.story.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
+import com.storycraft.story.dto.StorySectionDto;
 import com.storycraft.story.dto.StoryUpdateDto;
+import com.storycraft.story.service.StorySectionService;
 import com.storycraft.story.service.StoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,13 +15,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/stories")
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 public class StoryController {
 
     private final StoryService storyService;
+    private final StorySectionService storySectionService;
 
     @Operation(summary = "동화 생성", description = "prompt로 AI 기반 동화를 생성합니다.")
     @ApiResponses(value = {
@@ -45,6 +50,28 @@ public class StoryController {
     ) {
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201, "동화 생성에 성공했습니다.", storyService.createStory(dto))
+        );
+    }
+
+    @Operation(summary = "동화 단락 조회", description = "storyId에 해당하는 동화 단락들을 순서대로 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "단락 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = StorySectionDto.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "해당 동화가 존재하지 않습니다.")
+    })
+    @GetMapping("/{id}/sections")
+    public ResponseEntity<?> getStorySections(
+            @Parameter(description = "동화 ID", example = "1")
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(
+                new ApiResponseDto<>(200, "단락 조회에 성공했습니다.", storySectionService.getSectionsByStoryId(id))
         );
     }
 
@@ -84,7 +111,7 @@ public class StoryController {
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
             @Parameter(description = "자녀 ID", example = "child-uuid-1234")
-            @RequestParam String childId
+            @RequestParam ChildProfile childId
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(childId))

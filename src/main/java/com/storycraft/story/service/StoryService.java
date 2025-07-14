@@ -2,6 +2,8 @@ package com.storycraft.story.service;
 
 import com.storycraft.ai.dto.StoryContentDto;
 import com.storycraft.ai.service.AiGptService;
+import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StoryUpdateDto;
@@ -20,18 +22,27 @@ public class StoryService {
 
     private final StoryRepository storyRepository;
     private final AiGptService aiGptService;
+    private final StorySectionService storySectionService;
+    private final ChildProfileRepository childProfileRepository;
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
         StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(dto.getPrompt()));
 
+        ChildProfile child = childProfileRepository.findById(dto.getChildId())
+                .orElseThrow(() -> new RuntimeException("해당 ID의 아이 프로필을 찾을 수 없습니다"));
+
         Story story = Story.builder()
-                .childId(dto.getChildId())
+                .childId(child)
                 .title(result.getTitle())
                 .content(result.getContent())
                 .build();
 
-        return storyRepository.save(story).toDto();
+        storyRepository.save(story);
+
+        storySectionService.saveSectionsFromContent(story, result.getContent());
+
+        return story.toDto();
     }
 
     // 동화 상세 조회
@@ -42,7 +53,7 @@ public class StoryService {
     }
 
     // 동화 목록 조회
-    public List<StoryResponseDto> getStoryList(String childId) {
+    public List<StoryResponseDto> getStoryList(ChildProfile childId) {
         return storyRepository.findAllByChildId(childId).stream()
                 .map(Story::toDto)
                 .collect(Collectors.toList());
@@ -62,6 +73,12 @@ public class StoryService {
     // 동화 삭제
     public void deleteStory(Long id) {
         storyRepository.deleteById(id);
+    }
+
+    // 통합 조회 등을 위한 엔티티 직접 조회용 메서드
+    public Story getStoryEntityById(Long id) {
+        return storyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
     }
 }
 

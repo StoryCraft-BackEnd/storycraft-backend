@@ -3,6 +3,7 @@ package com.storycraft.speech.service;
 import com.storycraft.ai.dto.StoryContentDto;
 import com.storycraft.ai.service.AiGptService;
 import com.storycraft.ai.service.AiWhisperService;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.speech.dto.SttResponseDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.speech.entity.Tts;
@@ -69,7 +70,7 @@ public class SpeechService {
     /**
      * STT 기반 동화 생성 메소드
      */
-    public StoryResponseDto generateStoryFromStt(MultipartFile file, String childId) {
+    public StoryResponseDto generateStoryFromStt(MultipartFile file, ChildProfile childId) {
         try {
             File tempFile = File.createTempFile("audio", ".mp3");
             try {
@@ -104,5 +105,11 @@ public class SpeechService {
         } catch (Exception e) {
             throw new RuntimeException("STT 기반 동화 생성 실패: " + e.getMessage());
         }
+    }
+
+    public String getTtsUrlByStoryId(Long storyId) {
+        Tts tts = ttsRepository.findByStory_StoryId(storyId)
+                .orElseThrow(() -> new IllegalArgumentException("TTS가 생성되지 않은 동화입니다."));
+        return tts.getTtsUrl();
     }
 }

@@ -1,9 +1,11 @@
 package com.storycraft.quiz.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.quiz.dto.*;
 import com.storycraft.quiz.service.QuizService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,24 +24,24 @@ public class QuizController {
 
     private final QuizService quizService;
 
-    @Operation(summary = "퀴즈 생성", description = "사전에 저장된 단어들과 동화 내용 위주의 퀴즈 생성")
+    @Operation(summary = "퀴즈 생성", description = "GPT 기반으로 퀴즈 여러 개를 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
                     description = "퀴즈가 생성되었습니다.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = QuizCreateResponseDto.class)
+                            array = @ArraySchema(schema = @Schema(implementation = QuizCreateResponseDto.class))
                     )
             ),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @PostMapping
     public ResponseEntity<?> createQuiz(
-            @RequestBody @Valid QuizCreateRequestDto dto
+            @RequestBody @Valid QuizBatchCreateRequestDto dto
     ) {
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "퀴즈가 생성되었습니다.", quizService.createQuiz(dto))
+                new ApiResponseDto<>(201, "퀴즈가 생성되었습니다.", quizService.createQuizList(dto.getStoryId(), dto.getQuizList()))
         );
     }
 
@@ -80,7 +82,7 @@ public class QuizController {
     @GetMapping("/results")
     public ResponseEntity<?> getQuizResult(
             @RequestParam Long storyId,
-            @RequestParam String childId
+            @RequestParam ChildProfile childId
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "퀴즈 결과 조회 성공", quizService.getQuizResultSummary(storyId, childId))

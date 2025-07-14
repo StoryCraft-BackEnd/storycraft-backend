@@ -4,6 +4,7 @@ import com.storycraft.dictionary.dto.SaveWordResponseDto;
 import com.storycraft.dictionary.dto.WordResponseDto;
 import com.storycraft.dictionary.service.DictionaryService;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,7 +60,7 @@ public class DictionaryController {
     })
     @PostMapping("/words/save")
     public ResponseEntity<?> saveWord(
-            @Parameter(description = "자녀 프로필 ID") @RequestParam String childId,
+            @Parameter(description = "자녀 프로필 ID") @RequestParam ChildProfile childId,
             @Parameter(description = "하이라이트된 단어") @RequestParam String word
     ) {
         return ResponseEntity.status(201).body(

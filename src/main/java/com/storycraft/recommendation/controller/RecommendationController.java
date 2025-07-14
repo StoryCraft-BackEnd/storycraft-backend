@@ -1,6 +1,7 @@
 package com.storycraft.recommendation.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.recommendation.dto.RecommendResponseDto;
 import com.storycraft.recommendation.dto.RecommendationFeedbackRequestDto;
 import com.storycraft.recommendation.service.RecommendationService;
@@ -39,7 +40,7 @@ public class RecommendationController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping
-    public ApiResponseDto<?> getRecommendations(@RequestParam String childId) {
+    public ApiResponseDto<?> getRecommendations(@RequestParam ChildProfile childId) {
         List<RecommendResponseDto> recommendations = recommendationService.getRecommendations(childId);
         return new ApiResponseDto<>(200, "동화 추천 결과", recommendations);
     }

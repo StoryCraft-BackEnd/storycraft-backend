@@ -1,5 +1,6 @@
 package com.storycraft.quiz.entity;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.quiz.dto.QuizSubmitResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,8 +24,9 @@ public class QuizSubmit {
     @JoinColumn(name = "quiz_id", nullable = false)
     private QuizCreate quizCreate;
 
-    @Column(name = "child_id", nullable = false)
-    private String childId; // 추후 Child Entity 생성시 객체 연결 및 수정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn (name = "child_id", nullable = false)
+    private ChildProfile childId;
 
     @Column(name = "selected_answer", nullable = false)
     private String selectedAnswer;

@@ -1,5 +1,6 @@
 package com.storycraft.dictionary.dto;
 
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 public class SaveWordRequestDto {
 
     @Schema(description = "자녀 프로필 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "하이라이트 표시한 단어", example = "adventure")
     private String word;
