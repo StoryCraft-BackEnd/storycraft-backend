@@ -1,5 +1,6 @@
 package com.storycraft.quiz.service;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.quiz.dto.*;
 import com.storycraft.quiz.entity.QuizCreate;
 import com.storycraft.quiz.entity.QuizSubmit;
@@ -23,37 +24,23 @@ public class QuizService {
     /**
      *  퀴즈 생성 (GPT 기반 -> 추후 연동 예정)
      */
-    public List<QuizCreateResponseDto> createQuiz(QuizCreateRequestDto dto) {
+    public List<QuizCreateResponseDto> createQuizList(Long storyId, List<QuizCreateRequestDto> dtoList) {
+        Story story = Story.builder().storyId(storyId).build();
 
-        // 임시 더미 생성 -> GPT 연동후 수정
-        List<QuizCreate> quizList = List.of(
-            QuizCreate.builder()
-                .story(Story.builder().storyId(dto.getStoryId()).build())
-                .question("Which animal went on the Adventure?")
-                .optionA("The Bird")
-                .optionB("The Dragon")
-                .optionC("The Dog")
-                .optionD("The Rabbit")
-                .correctAnswer('C')     //GPT 연동후 정답-보기 매칭 자동화 필요
-                .build(),
-
-
-            QuizCreate.builder()
-                .story(Story.builder().storyId(dto.getStoryId()).build())
-                .question("What did the child carry?")
-                .optionA("A book")
-                .optionB("A lantern")
-                .optionC("A bag")
-                .optionD("A toy")
-                .correctAnswer('C')
-                .build()
-    );
-
-        List<QuizCreate> savedList = quizCreateRepository.saveAll(quizList);
-
-        return savedList.stream()
-                .map(QuizCreate::toDto)
+        List<QuizCreate> quizList = dtoList.stream()
+                .map(dto -> QuizCreate.builder()
+                        .story(story)
+                        .question(dto.getQuestion())
+                        .optionA(dto.getOptions().get("A"))
+                        .optionB(dto.getOptions().get("B"))
+                        .optionC(dto.getOptions().get("C"))
+                        .optionD(dto.getOptions().get("D"))
+                        .correctAnswer(dto.getAnswer().charAt(0))  // 문자열 "A" → 문자 'A'
+                        .build())
                 .toList();
+
+        List<QuizCreate> saved = quizCreateRepository.saveAll(quizList);
+        return saved.stream().map(QuizCreate::toDto).toList();
     }
 
     /**

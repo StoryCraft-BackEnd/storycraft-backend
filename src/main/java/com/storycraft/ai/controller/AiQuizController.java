@@ -4,6 +4,8 @@ import com.storycraft.ai.dto.AiQuizRequestDto;
 import com.storycraft.ai.dto.AiQuizResponseDto;
 import com.storycraft.ai.service.AiQuizService;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.quiz.dto.QuizCreateRequestDto;
+import com.storycraft.quiz.dto.QuizCreateResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,26 +30,26 @@ public class AiQuizController {
 
     private final AiQuizService aiQuizService;
 
-    @Operation(summary = "GPT 기반 퀴즈 생성", description = "저장된 동화 ID와 하이라이트된 단어들을 기반으로 퀴즈를 생성합니다.")
+    @Operation(summary = "GPT 기반 퀴즈 생성 및 저장", description = "저장된 동화 ID와 하이라이트된 단어들을 기반으로 퀴즈를 생성하고 저장합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "퀴즈 생성 성공",
+                    description = "퀴즈 저장 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = AiQuizResponseDto.class)
+                            schema = @Schema(implementation = QuizCreateRequestDto.class)
                     )
             ),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "404", description = "해당 동화를 찾을 수 없습니다.")
     })
     @PostMapping
-    public ResponseEntity<ApiResponseDto<List<AiQuizResponseDto>>> generateQuiz(
+    public ResponseEntity<ApiResponseDto<List<QuizCreateResponseDto>>> generateQuiz(
             @RequestBody @Valid AiQuizRequestDto requestDto
     ) {
-        List<AiQuizResponseDto> result = aiQuizService.generateQuizFromStory(requestDto);
+        List<QuizCreateResponseDto> saved = aiQuizService.generateAndSaveQuiz(requestDto);
         return ResponseEntity.status(200).body(
-                new ApiResponseDto<>(200, "퀴즈 생성 완료", result)
+                new ApiResponseDto<>(200, "퀴즈 생성 완료", saved)
         );
     }
 }

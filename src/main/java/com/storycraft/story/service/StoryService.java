@@ -3,6 +3,7 @@ package com.storycraft.story.service;
 import com.storycraft.ai.dto.StoryContentDto;
 import com.storycraft.ai.service.AiGptService;
 import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StoryUpdateDto;
@@ -22,13 +23,17 @@ public class StoryService {
     private final StoryRepository storyRepository;
     private final AiGptService aiGptService;
     private final StorySectionService storySectionService;
+    private final ChildProfileRepository childProfileRepository;
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
         StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(dto.getPrompt()));
 
+        ChildProfile child = childProfileRepository.findById(dto.getChildId())
+                .orElseThrow(() -> new RuntimeException("해당 ID의 아이 프로필을 찾을 수 없습니다"));
+
         Story story = Story.builder()
-                .childId(dto.getChildId())
+                .childId(child)
                 .title(result.getTitle())
                 .content(result.getContent())
                 .build();
