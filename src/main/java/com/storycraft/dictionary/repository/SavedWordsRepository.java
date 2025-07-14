@@ -16,5 +16,5 @@ public interface SavedWordsRepository extends JpaRepository<SavedWords, Long> {
 
     boolean existsByChildIdAndWord(ChildProfile childId, DictionaryWords word);
 
-    Optional<SavedWords> findByChildIdAndWord(String childId, DictionaryWords dictionaryWords);
+    Optional<SavedWords> findByChildIdAndWord(ChildProfile childId, DictionaryWords dictionaryWords);
 }
