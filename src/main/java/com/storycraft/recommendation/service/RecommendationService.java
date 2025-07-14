@@ -23,7 +23,7 @@ public class RecommendationService {
     /**
      * 자녀 ID 기준 추천 동화 리스트 조회 (자기 동화 제외)
      */
-    public List<RecommendResponseDto> getRecommendations(String childId) {
+    public List<RecommendResponseDto> getRecommendations(ChildProfile childId) {
         List<Story> stories = storyRepository.findTop10ByChildIdNot(childId);
 
         return stories.stream()
