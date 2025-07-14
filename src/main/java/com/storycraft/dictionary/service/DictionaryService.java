@@ -7,6 +7,7 @@ import com.storycraft.dictionary.entity.SavedWords;
 import com.storycraft.dictionary.external.WordsApiClient;
 import com.storycraft.dictionary.repository.DictionaryWordsRepository;
 import com.storycraft.dictionary.repository.SavedWordsRepository;
+import com.storycraft.profile.entity.ChildProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
