@@ -14,7 +14,7 @@ public class QuizSubmitResponseDto {
     private Long quizId;
 
     @Schema(description = "퀴즈를 푼 자녀 ID", example = "123")
-    private String childId;
+    private ChildProfile childId;
 
     @Schema(description = "정답 여부", example = "true")
     private boolean isCorrect;
