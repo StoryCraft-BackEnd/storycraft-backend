@@ -1,5 +1,6 @@
 package com.storycraft.recommendation.entity;
 
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.recommendation.dto.RecommendResponseDto;
 import com.storycraft.story.entity.Story;
 import jakarta.persistence.*;
