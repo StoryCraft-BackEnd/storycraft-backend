@@ -1,6 +1,7 @@
 package com.storycraft.recommendation.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.recommendation.dto.RecommendResponseDto;
 import com.storycraft.recommendation.dto.RecommendationFeedbackRequestDto;
 import com.storycraft.recommendation.service.RecommendationService;
