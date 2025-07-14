@@ -84,7 +84,7 @@ public class StoryController {
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
             @Parameter(description = "자녀 ID", example = "child-uuid-1234")
-            @RequestParam String childId
+            @RequestParam ChildProfile childId
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(childId))
