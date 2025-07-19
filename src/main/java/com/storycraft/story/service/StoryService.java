@@ -74,7 +74,9 @@ public class StoryService {
 
     // 동화 삭제
     public void deleteStory(Long id) {
-        storyRepository.deleteById(id);
+        Story story = storyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 동화를 찾을 수 없습니다."));
+        storyRepository.delete(story);
     }
 
     // 통합 조회 등을 위한 엔티티 직접 조회용 메서드
