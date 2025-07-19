@@ -29,7 +29,7 @@ public class IllustrationController {
     @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "201",
-                description = "삽화 생성에 성공했습니다.",
+                description = "삽화(썸네일) 생성에 성공했습니다.",
                 content = @Content(
                         mediaType = "application/json",
                         schema = @Schema(implementation = IllustrationResponseDto.class)
