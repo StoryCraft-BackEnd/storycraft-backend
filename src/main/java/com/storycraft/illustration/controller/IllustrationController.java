@@ -3,6 +3,8 @@ package com.storycraft.illustration.controller;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.illustration.dto.IllustrationRequestDto;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
+import com.storycraft.illustration.dto.SectionIllustrationRequestDto;
+import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.service.IllustrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
