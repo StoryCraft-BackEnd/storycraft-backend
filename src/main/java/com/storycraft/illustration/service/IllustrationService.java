@@ -20,6 +20,7 @@ public class IllustrationService {
     private final IllustrationRepository illustrationRepository;
     private final StoryRepository storyRepository;
     private final AiDalleService aiDalleService;
+    private final StorySectionRepository storySectionRepository;
 
     // 삽화(썸네일) 생성
     public IllustrationResponseDto createIllustration(IllustrationRequestDto dto) {
