@@ -26,4 +26,15 @@ public class IllustrationResponseDto {
     @Schema(description = "생성 일시", example = "2025-05-12T22:15:30")
     private String createdAt;
 
+
+    public static IllustrationResponseDto from(Illustration illustration, StorySection section) {
+        return IllustrationResponseDto.builder()
+                .illustrationId(illustration.getIllustrationId())
+                .orderIndex(section.getOrderIndex())
+                .imageUrl(illustration.getImageUrl())
+                .description(illustration.getDescription())
+                .createdAt(illustration.getCreatedAt().toString())
+                .build();
+    }
+
 }
