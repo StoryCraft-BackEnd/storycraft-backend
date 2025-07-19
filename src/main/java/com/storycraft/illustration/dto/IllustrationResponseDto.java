@@ -1,6 +1,8 @@
 package com.storycraft.illustration.dto;
 
 
+import com.storycraft.illustration.entity.Illustration;
+import com.storycraft.story.entity.StorySection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
