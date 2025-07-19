@@ -23,6 +23,9 @@ public class StoryResponseDto {
     @Schema(description = "동화 썸네일 URL", example = "https://cdn/story1.jpg")
     private String thumbnailUrl;
 
+    @Schema(description = "동화 생성에 사용된 키워드 목록", example = "[\"고양이\", \"숲\", \"우정\"]")
+    private List<String> keywords;
+
     @Schema(description = "생성일시", example = "2025-01-01T15:00:00")
     private String createdAt;
 
