@@ -10,6 +10,7 @@ import com.storycraft.illustration.repository.IllustrationRepository;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.entity.StorySection;
 import com.storycraft.story.repository.StoryRepository;
+import com.storycraft.story.repository.StorySectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
