@@ -25,7 +25,7 @@ public class IllustrationController {
 
     private final IllustrationService illustrationService;
 
-    @Operation(summary = "삽화 생성",description = "DALL·E 기반 삽화 이미지를 생성합니다.")
+    @Operation(summary = "삽화(썸네일) 생성",description = "DALL·E 기반 삽화(썸네일) 이미지를 생성합니다.")
     @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "201",
