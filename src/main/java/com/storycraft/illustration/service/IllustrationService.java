@@ -43,6 +43,33 @@ public class IllustrationService {
 
     }
 
+    //단락별 삽화 생성
+    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 동화입니다."));
+
+        List<StorySection> sections = storySectionRepository.findAllByStoryOrderByOrderIndex(story);
+
+        List<IllustrationResponseDto> responses = new ArrayList<>();
+
+        for (StorySection section : sections) {
+            String prompt = section.getParagraphText() + "의 동화 내용을 어린이 동화 스타일로 그려줘."; //TODO: 이미지 생성 Prompt 고도화 및 스타일 고정 필요
+            String imageUrl = aiDalleService.generateImage(prompt);
+
+            Illustration illustration = illustrationRepository.save(Illustration.builder()
+                    .story(story)
+                    .imageUrl(imageUrl)
+                    .description(section.getParagraphText())                                //TODO: GPT로 단락 요약해서 넣기
+                    .build());
+
+            responses.add(IllustrationResponseDto.from(illustration, section));
+        }
+        return SectionIllustrationResponseDto.builder()
+                .storyId(storyId)
+                .illustrations(responses)
+                .build();
+    }
+
     // 삽화 상세 조회
     public IllustrationResponseDto getIllustration(Long id) {
         Illustration illustration = illustrationRepository.findById(id)
