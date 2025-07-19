@@ -123,7 +123,7 @@ public class StoryController {
         );
     }
 
-    @Operation(summary = "동화 수정", description = "동화 제목 및 내용을 수정합니다.")
+    @Operation(summary = "동화 수정", description = "키워드를 다시 받아 동화 제목 및 내용을 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
