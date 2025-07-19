@@ -46,6 +46,33 @@ public class IllustrationController {
         );
     }
 
+    @Operation(summary = "동화 단락별 삽화 생성", description = "storyId를 기반으로 해당 동화의 각 단락 내용으로부터 삽화를 자동 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "단락별 삽화 생성에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = SectionIllustrationResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 형식이 잘못되었습니다."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 storyId입니다."
+            )
+    })
+    @PostMapping("/sections")
+    public ResponseEntity<ApiResponseDto<SectionIllustrationResponseDto>> createIllustrationsByStory(
+            @RequestBody @Valid SectionIllustrationRequestDto requestDto) {
+        return ResponseEntity.status(201).body(
+                new ApiResponseDto<>(201,"단락별 삽화 생성에 성공했습니다.",illustrationService.createSectionIllustrations(requestDto.getStoryId()))
+        );
+    }
+
     @Operation(summary = "삽화 상세 조회", description = "삽화 ID로 특정 삽화를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(
