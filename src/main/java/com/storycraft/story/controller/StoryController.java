@@ -2,6 +2,7 @@ package com.storycraft.story.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StorySectionDto;
