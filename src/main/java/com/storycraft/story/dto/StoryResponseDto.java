@@ -37,6 +37,7 @@ public class StoryResponseDto {
                 .storyId(story.getStoryId())
                 .title(story.getTitle())
                 .content(story.getContent())
+                .keywords(story.getKeywords())
                 .createdAt(story.getCreatedAt().toString())
                 .build();
     }
