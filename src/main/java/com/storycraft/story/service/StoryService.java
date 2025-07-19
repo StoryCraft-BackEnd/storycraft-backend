@@ -64,8 +64,10 @@ public class StoryService {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
 
-        story.setTitle(dto.getTitle());
-        story.setContent(dto.getContent());
+        StoryContentDto regenerate = aiGptService.generateStoryContent(dto.getKeywords());
+
+        story.setTitle(regenerate.getTitle());
+        story.setContent(regenerate.getContent());
 
         return storyRepository.save(story).toDto();
     }
