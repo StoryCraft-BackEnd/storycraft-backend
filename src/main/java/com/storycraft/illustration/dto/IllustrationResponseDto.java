@@ -12,6 +12,9 @@ public class IllustrationResponseDto {
     @Schema(description = "삽화 ID", example = "1")
     private Long illustrationId;
 
+    @Schema(description = "단락 순서", example = "2")
+    private int orderIndex;
+
     @Schema(description = "이미지 URL", example = "https://cdn/story1.jpg")
     private String imageUrl;
 
