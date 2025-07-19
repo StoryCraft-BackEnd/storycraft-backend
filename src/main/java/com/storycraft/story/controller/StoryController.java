@@ -31,6 +31,7 @@ public class StoryController {
 
     private final StoryService storyService;
     private final StorySectionService storySectionService;
+    private final ChildProfileRepository childProfileRepository;
 
     @Operation(summary = "동화 생성", description = "prompt로 AI 기반 동화를 생성합니다.")
     @ApiResponses(value = {
