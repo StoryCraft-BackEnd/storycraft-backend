@@ -117,7 +117,7 @@ public class StoryController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 자녀가 존재하지 않습니다"));
 
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(childId))
+                new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(child))
         );
     }
 
