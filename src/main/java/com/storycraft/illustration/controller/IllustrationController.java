@@ -44,7 +44,7 @@ public class IllustrationController {
        @RequestBody @Valid IllustrationRequestDto dto
     ) {
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "삽화 생성에 성공했습니다.", illustrationService.createIllustration(dto))
+                new ApiResponseDto<>(201, "삽화(썸네일) 생성에 성공했습니다.", illustrationService.createIllustration(dto))
         );
     }
 
