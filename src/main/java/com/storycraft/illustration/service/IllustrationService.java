@@ -8,6 +8,7 @@ import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.entity.Illustration;
 import com.storycraft.illustration.repository.IllustrationRepository;
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StorySection;
 import com.storycraft.story.repository.StoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
