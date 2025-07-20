@@ -32,6 +32,11 @@ public class Story extends BaseTimeEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @ElementCollection              // 동화 별 키워드 테이블 자동 생성 -> 키워드 출력용
+    @CollectionTable(name = "story_keywords", joinColumns = @JoinColumn(name = "story_id"))
+    @Column(name = "keyword")
+    private List<String> keywords;
+
     @OneToMany(mappedBy = "story", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Illustration> illustrations;
 
@@ -48,6 +53,7 @@ public class Story extends BaseTimeEntity {
                 .storyId(this.getStoryId())
                 .title(this.getTitle())
                 .content(this.getContent())
+                .keywords(this.getKeywords())
                 .thumbnailUrl(this.getThumbnailUrl())
                 .createdAt(this.getCreatedAt().toString())
                 .updatedAt(this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : null)
