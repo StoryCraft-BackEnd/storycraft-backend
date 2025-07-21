@@ -14,6 +14,9 @@ public class IllustrationResponseDto {
     @Schema(description = "삽화 ID", example = "1")
     private Long illustrationId;
 
+    @Schema(description = "동화 ID", example = "1")
+    private Long storyId;
+
     @Schema(description = "단락 순서", example = "2")
     private int orderIndex;
 
