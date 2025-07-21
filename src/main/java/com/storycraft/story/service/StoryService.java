@@ -36,6 +36,7 @@ public class StoryService {
                 .childId(child)
                 .title(result.getTitle())
                 .content(result.getContent())
+                .keywords(dto.getKeywords())
                 .build();
 
         storyRepository.save(story);
