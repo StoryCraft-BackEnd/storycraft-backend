@@ -50,7 +50,7 @@ public class Story extends BaseTimeEntity {
     // 사용자에게 반환할 API 응답을 위한 메소드 toDto
     public StoryResponseDto toDto() {
         return StoryResponseDto.builder()
-                .storyId(this.getStoryId())
+                .storyId(this.getId())
                 .title(this.getTitle())
                 .content(this.getContent())
                 .keywords(this.getKeywords())
