@@ -32,7 +32,8 @@ public class IllustrationResponseDto {
 
     public static IllustrationResponseDto from(Illustration illustration, StorySection section) {
         return IllustrationResponseDto.builder()
-                .illustrationId(illustration.getIllustrationId())
+                .illustrationId(illustration.getId())
+                .storyId(illustration.getStory().getId())
                 .orderIndex(section.getOrderIndex())
                 .imageUrl(illustration.getImageUrl())
                 .description(illustration.getDescription())
