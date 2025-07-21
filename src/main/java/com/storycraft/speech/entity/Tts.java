@@ -30,7 +30,7 @@ public class Tts extends BaseTimeEntity {
     public TtsCreateResponseDto toDto() {
         return TtsCreateResponseDto.builder()
                 .ttsId(this.getTtsId())
-                .storyId(story.getStoryId())
+                .storyId(story.getId())
                 .ttsUrl(this.ttsUrl)
                 .createdAt(this.getCreatedAt())
                 .build();
