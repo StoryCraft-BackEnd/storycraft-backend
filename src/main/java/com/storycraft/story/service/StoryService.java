@@ -76,6 +76,7 @@ public class StoryService {
     }
 
     // 동화 삭제
+    @Transactional
     public void deleteStory(Long id) {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 동화를 찾을 수 없습니다."));
