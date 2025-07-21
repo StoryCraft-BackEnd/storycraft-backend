@@ -98,7 +98,7 @@ public class IllustrationService {
     }
 
     public String getUrlByStoryId(Long storyId) {
-        List<Illustration> illustrations = illustrationRepository.findAllByStory_StoryId(storyId);
+        List<Illustration> illustrations = illustrationRepository.findAllByStory_Id(storyId);
         if (illustrations == null || illustrations.isEmpty()) {
             throw new IllegalArgumentException("해당 동화의 삽화가 존재하지 않습니다.");
         }
