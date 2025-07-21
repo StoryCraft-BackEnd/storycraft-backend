@@ -11,5 +11,5 @@ import java.util.List;
 public interface IllustrationRepository extends JpaRepository<Illustration, Long> {
     List<Illustration> findAllByStory(Story story);
 
-    List<Illustration> findAllByStory_StoryId(Long storyId);
+    List<Illustration> findAllByStory_Id(Long storyId);
 }
