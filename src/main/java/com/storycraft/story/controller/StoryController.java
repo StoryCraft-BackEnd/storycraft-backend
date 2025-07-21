@@ -70,7 +70,7 @@ public class StoryController {
     @GetMapping("/{id}/sections")
     public ResponseEntity<?> getStorySections(
             @Parameter(description = "동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단락 조회에 성공했습니다.", storySectionService.getSectionsByStoryId(id))
