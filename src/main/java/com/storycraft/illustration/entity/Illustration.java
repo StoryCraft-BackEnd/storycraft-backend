@@ -26,7 +26,7 @@ public class Illustration extends BaseTimeEntity {
     @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     // 사용자에게 반환할 API 응답을 위한 메소드
