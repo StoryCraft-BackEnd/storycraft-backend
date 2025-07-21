@@ -8,4 +8,9 @@ import java.util.List;
 
 public interface StorySectionRepository extends JpaRepository<StorySection, Long> {
     List<StorySection> findAllByStoryOrderByOrderIndex(Story story);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM StorySection s WHERE s.story = :story")
+    void deleteAllByStory(@Param("story") Story story);
 }
