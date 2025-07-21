@@ -67,7 +67,11 @@ public class StoryService {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
 
-        StoryContentDto regenerate = aiGptService.generateStoryContent(dto.getKeywords());
+        //새로운 제목/내용 생성
+        StoryContentDto updatedStory = aiGptService.generateStoryContent(dto.getKeywords());
+
+        //동화 업데이트
+        story.updateContent(updatedStory.getTitle(), updatedStory.getContent(), dto.getKeywords());
 
         //기존 단락 삭제
         storySectionRepository.deleteAllByStory(story);
