@@ -23,7 +23,7 @@ public class Illustration extends BaseTimeEntity {
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
 
-    @Column(name = "order_index")
+    @Column(name = "order_index", nullable = false)
     private int orderIndex;
 
     @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
