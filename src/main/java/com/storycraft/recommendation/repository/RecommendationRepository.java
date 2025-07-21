@@ -19,5 +19,5 @@ public interface RecommendationRepository extends JpaRepository<StoryRecommendat
     List<StoryRecommendationFeedback> findAllByStory_Id(Long storyId);
 
     // 피드백 존재 여부 확인
-    boolean existsByChildIdAndStory_StoryId(ChildProfile childId, Long storyId);
+    boolean existsByChildIdAndStory_Id(ChildProfile childId, Long storyId);
 }
