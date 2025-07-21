@@ -91,7 +91,7 @@ public class IllustrationController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getIllustration(
             @Parameter(description = "조회할 삽화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
 
         return ResponseEntity.ok(
