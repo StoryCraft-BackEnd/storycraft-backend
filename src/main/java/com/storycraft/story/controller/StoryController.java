@@ -92,7 +92,7 @@ public class StoryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getStory(
             @Parameter(description = "조회할 동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyService.getStory(id))
