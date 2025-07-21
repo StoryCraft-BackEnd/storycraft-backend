@@ -27,7 +27,7 @@ public class StorySectionDto {
                 .sectionId(section.getSectionId())
                 .orderIndex(section.getOrderIndex())
                 .paragraphText(section.getParagraphText())
-                .storyId(section.getStory().getStoryId())
+                .storyId(section.getStory().getId())
                 .build();
     }
 }
