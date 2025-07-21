@@ -32,7 +32,7 @@ public class Illustration extends BaseTimeEntity {
     // 사용자에게 반환할 API 응답을 위한 메소드
     public IllustrationResponseDto toDto() {
         return IllustrationResponseDto.builder()
-                .illustrationId(this.getIllustrationId())
+                .illustrationId(this.getId())
                 .imageUrl(this.getImageUrl())
                 .description(this.getDescription())
                 .createdAt(this.getCreatedAt().toString())
