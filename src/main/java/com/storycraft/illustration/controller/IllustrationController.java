@@ -133,7 +133,7 @@ public class IllustrationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteIllustration(
             @Parameter(description = "삭제할 삽화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         illustrationService.deleteIllustration(id);
         return ResponseEntity.ok(
