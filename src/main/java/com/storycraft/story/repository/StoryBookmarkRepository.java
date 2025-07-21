@@ -11,5 +11,5 @@ public interface StoryBookmarkRepository extends JpaRepository<StoryBookmark, Lo
 
     boolean existsByStory_IdAndChildId(Long storyId, ChildProfile childId);
 
-    void deleteByStory_StoryIdAndChildId(Long storyId, ChildProfile childId);
+    void deleteByStory_IdAndChildId(Long storyId, ChildProfile childId);
 }
