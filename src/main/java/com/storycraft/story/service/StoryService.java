@@ -66,8 +66,11 @@ public class StoryService {
 
         StoryContentDto regenerate = aiGptService.generateStoryContent(dto.getKeywords());
 
-        story.setTitle(regenerate.getTitle());
-        story.setContent(regenerate.getContent());
+        //기존 단락 삭제
+        storySectionRepository.deleteAllByStory(story);
+
+        //새로 생성된 단락 저장
+        storySectionService.saveSectionsFromContent(story, updatedStory.getContent());
 
         return storyRepository.save(story).toDto();
     }
