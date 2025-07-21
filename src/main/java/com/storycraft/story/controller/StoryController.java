@@ -161,7 +161,7 @@ public class StoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStory(
             @Parameter(description = "삭제할 동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         storyService.deleteStory(id);
         return ResponseEntity.ok(
