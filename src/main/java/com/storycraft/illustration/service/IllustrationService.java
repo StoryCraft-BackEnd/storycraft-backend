@@ -44,7 +44,6 @@ public class IllustrationService {
 
         Illustration saved = illustrationRepository.save(illustration);
         return saved.toDto();
-
     }
 
     //단락별 삽화 생성
