@@ -24,6 +24,7 @@ public class StoryService {
     private final AiGptService aiGptService;
     private final StorySectionService storySectionService;
     private final ChildProfileRepository childProfileRepository;
+    private final StorySectionRepository storySectionRepository;
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
