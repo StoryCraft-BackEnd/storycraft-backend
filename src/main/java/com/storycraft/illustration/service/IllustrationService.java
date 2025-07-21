@@ -36,6 +36,8 @@ public class IllustrationService {
 
         String imageUrl = aiDalleService.generateImage(prompt);
 
+        int nextOrderIndex = illustrationRepository.findMaxOrderIndexByStory(story).orElse(-1) + 1;
+
         Illustration illustration = Illustration.builder()
                 .story(story)
                 .imageUrl(imageUrl)
