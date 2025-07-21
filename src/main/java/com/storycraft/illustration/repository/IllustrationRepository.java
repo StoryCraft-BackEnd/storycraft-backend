@@ -12,4 +12,7 @@ public interface IllustrationRepository extends JpaRepository<Illustration, Long
     List<Illustration> findAllByStory(Story story);
 
     List<Illustration> findAllByStory_Id(Long storyId);
+
+    @Query("SELECT MAX(i.orderIndex) FROM Illustration i WHERE i.story = :story")
+    Optional<Integer> findMaxOrderIndexByStory(@Param("story") Story story);
 }
