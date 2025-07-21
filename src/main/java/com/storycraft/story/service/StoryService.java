@@ -27,7 +27,7 @@ public class StoryService {
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
-        StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(dto.getPrompt()));
+        StoryContentDto result = aiGptService.generateStoryContent(dto.getKeywords());
 
         ChildProfile child = childProfileRepository.findById(dto.getChildId())
                 .orElseThrow(() -> new RuntimeException("해당 ID의 아이 프로필을 찾을 수 없습니다"));
