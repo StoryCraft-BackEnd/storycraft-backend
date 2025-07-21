@@ -47,6 +47,12 @@ public class Story extends BaseTimeEntity {
                 : null;
     }
 
+    public void updateContent(String title, String content, List<String> keywords) {
+        this.title = title;
+        this.content = content;
+        this.keywords = keywords;
+    }
+
     // 사용자에게 반환할 API 응답을 위한 메소드 toDto
     public StoryResponseDto toDto() {
         return StoryResponseDto.builder()
