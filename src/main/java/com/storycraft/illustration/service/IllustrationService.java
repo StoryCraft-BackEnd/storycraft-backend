@@ -67,6 +67,7 @@ public class IllustrationService {
 
             Illustration illustration = illustrationRepository.save(Illustration.builder()
                     .story(story)
+                    .orderIndex(section.getOrderIndex())
                     .imageUrl(imageUrl)
                     .description(section.getParagraphText())                                //TODO: GPT로 단락 요약해서 넣기
                     .build());
