@@ -31,7 +31,11 @@ public class IllustrationService {
         Story story = storyRepository.findById(dto.getStoryId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 storyId입니다."));
 
-        String prompt = "이 동화의 썸네일 삽화를 그려줘 \n" + story.getContent()+", 어린이 동화 스타일로!";
+        List<String> keywords = story.getKeywords();
+
+        String prompt = "이 동화의 썸네일 삽화를 이 키워드들을 바탕으로 그려줘: "
+                + String.join(", ", keywords)
+                +" (어린이 동화 스타일로)";
         //+ "\n \n처음 고른 삽화 스타일 대로."; -> TODO:스타일 추가 후 수정
 
         String imageUrl = aiDalleService.generateImage(prompt);
