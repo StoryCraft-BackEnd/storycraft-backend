@@ -36,6 +36,8 @@ public class Illustration extends BaseTimeEntity {
     public IllustrationResponseDto toDto() {
         return IllustrationResponseDto.builder()
                 .illustrationId(this.getId())
+                .storyId(story.getId())
+                .orderIndex(this.getOrderIndex())
                 .imageUrl(this.getImageUrl())
                 .description(this.getDescription())
                 .createdAt(this.getCreatedAt().toString())
