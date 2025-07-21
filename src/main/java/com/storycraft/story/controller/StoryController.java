@@ -137,8 +137,8 @@ public class StoryController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStory(
-            @Parameter(description = "수정할 동화 ID", example = "1")
-            @PathVariable Long id,
+            @Parameter(name = "id", description = "수정할 동화 ID", example = "1")
+            @PathVariable(name = "id") Long id,
             @RequestBody StoryUpdateDto dto
     ) {
         return ResponseEntity.ok(
