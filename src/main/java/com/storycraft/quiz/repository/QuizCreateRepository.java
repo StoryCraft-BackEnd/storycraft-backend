@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface QuizCreateRepository extends JpaRepository<QuizCreate, Long> {
-    List<QuizCreate> findAllByStory_StoryId(Long storyID);
+    List<QuizCreate> findAllByStory_Id(Long storyID);
 }
