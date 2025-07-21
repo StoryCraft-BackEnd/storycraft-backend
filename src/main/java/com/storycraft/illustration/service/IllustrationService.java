@@ -45,7 +45,7 @@ public class IllustrationService {
         Illustration illustration = Illustration.builder()
                 .story(story)
                 .imageUrl(imageUrl)
-                .description(dto.getPrompt())
+                .description("(" + String.join(", ", keywords) + ")")
                 .build();
 
         Illustration saved = illustrationRepository.save(illustration);
