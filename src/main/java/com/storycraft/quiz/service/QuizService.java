@@ -25,7 +25,7 @@ public class QuizService {
      *  퀴즈 생성 (GPT 기반 -> 추후 연동 예정)
      */
     public List<QuizCreateResponseDto> createQuizList(Long storyId, List<QuizCreateRequestDto> dtoList) {
-        Story story = Story.builder().storyId(storyId).build();
+        Story story = Story.builder().id(storyId).build();
 
         List<QuizCreate> quizList = dtoList.stream()
                 .map(dto -> QuizCreate.builder()
