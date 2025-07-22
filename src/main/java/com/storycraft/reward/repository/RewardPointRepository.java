@@ -13,4 +13,5 @@ public interface RewardPointRepository extends JpaRepository<RewardPoint, Long> 
 
     List<RewardPoint> findAllByChildAndCreatedAtBetween(ChildProfile child, java.time.LocalDateTime from, java.time.LocalDateTime to);
     int countByChildAndRewardType(ChildProfile child, String rewardType);
+    int countByChildAndRewardTypeAndCreatedAtBetween(ChildProfile child, String rewardType, java.time.LocalDateTime from, java.time.LocalDateTime to);
 } 
