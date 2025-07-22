@@ -44,7 +44,7 @@ public class RecommendationService {
         Story story = storyRepository.findById(dto.getStoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 동화를 찾을 수 없습니다."));
 
-        recommendationRepository.findByChildIdAndStory_StoryId(dto.getChildId(), dto.getStoryId())
+        recommendationRepository.findByChildIdAndStory_Id(dto.getChildId(), dto.getStoryId())
                 .ifPresentOrElse(
                         feedback -> {
                             feedback.setLiked(dto.getLiked());

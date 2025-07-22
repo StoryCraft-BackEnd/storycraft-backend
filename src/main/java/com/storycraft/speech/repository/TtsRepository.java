@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface TtsRepository extends JpaRepository<Tts, Long> {
     List<Tts> findAllByStory(Story story);
 
-    Optional<Tts> findByStory_StoryId(Long storyId);
+    Optional<Tts> findByStory_Id(Long storyId);
 }

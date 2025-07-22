@@ -70,7 +70,7 @@ public class StoryController {
     @GetMapping("/{id}/sections")
     public ResponseEntity<?> getStorySections(
             @Parameter(description = "동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단락 조회에 성공했습니다.", storySectionService.getSectionsByStoryId(id))
@@ -92,7 +92,7 @@ public class StoryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getStory(
             @Parameter(description = "조회할 동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyService.getStory(id))
@@ -113,7 +113,7 @@ public class StoryController {
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
             @Parameter(description = "자녀 ID", example = "1")
-            @RequestParam Long childId
+            @RequestParam(name = "id") Long childId
     ) {
         ChildProfile child = childProfileRepository.findById(childId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 자녀가 존재하지 않습니다"));
@@ -137,8 +137,8 @@ public class StoryController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStory(
-            @Parameter(description = "수정할 동화 ID", example = "1")
-            @PathVariable Long id,
+            @Parameter(name = "id", description = "수정할 동화 ID", example = "1")
+            @PathVariable(name = "id") Long id,
             @RequestBody StoryUpdateDto dto
     ) {
         return ResponseEntity.ok(
@@ -161,7 +161,7 @@ public class StoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStory(
             @Parameter(description = "삭제할 동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         storyService.deleteStory(id);
         return ResponseEntity.ok(

@@ -36,7 +36,7 @@ public class StoryResponseDto {
 
     public static StoryResponseDto fromEntity(Story story) {
         return StoryResponseDto.builder()
-                .storyId(story.getStoryId())
+                .storyId(story.getId())
                 .title(story.getTitle())
                 .content(story.getContent())
                 .keywords(story.getKeywords())
