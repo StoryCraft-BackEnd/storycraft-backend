@@ -27,11 +27,16 @@ public class RewardPointService {
         // TODO: userEmail과 child.user.email 일치 여부 체크(보안)
 
         // 포인트 지급
+        int points = getPointValue(request.getRewardType());
+        if (points == 0) {
+            throw new IllegalArgumentException("유효하지 않은 rewardType입니다: " + request.getRewardType());
+        }
+
         RewardPoint rewardPoint = RewardPoint.builder()
                 .child(child)
                 .rewardType(request.getRewardType())
                 .context(request.getContext())
-                .points(getPointValue(request.getRewardType()))
+                .points(points)
                 .build();
         rewardPointRepository.save(rewardPoint);
 
@@ -40,7 +45,30 @@ public class RewardPointService {
     }
 
     private int getPointValue(String rewardType) {
-        // TODO: rewardType별 포인트 정책 적용(임시로 30점)
-        return 30;
+        return switch (rewardType) {
+            case "POINT_STORY_READ" -> 30;
+            case "POINT_WORD_CLICK" -> 5;
+            case "POINT_QUIZ_CORRECT" -> 10;
+            case "POINT_DAILY_MISSION" -> 100;
+            case "POINT_STREAK_3" -> 50;
+            case "POINT_STREAK_7" -> 100;
+            case "POINT_STREAK_14" -> 200;
+            default -> 0;
+        };
+    }
+
+    /**
+     * 유효한 rewardType 목록 반환 (문서화/검증용)
+     */
+    public static String[] getValidRewardTypes() {
+        return new String[]{
+                "POINT_STORY_READ",      // 동화 1편 읽기 완료 (+30pt)
+                "POINT_WORD_CLICK",      // 단어 1회 클릭 (+5pt)
+                "POINT_QUIZ_CORRECT",    // 퀴즈 1문제 정답 (+10pt)
+                "POINT_DAILY_MISSION",   // 데일리 미션 전체 달성 (+100pt)
+                "POINT_STREAK_3",        // 3일 연속 학습 (+50pt)
+                "POINT_STREAK_7",        // 7일 연속 학습 (+100pt)
+                "POINT_STREAK_14"        // 14일 연속 학습 (+200pt)
+        };
     }
 } 
