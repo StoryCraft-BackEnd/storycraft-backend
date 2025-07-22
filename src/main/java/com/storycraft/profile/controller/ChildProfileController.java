@@ -41,6 +41,11 @@ public class ChildProfileController {
         String email = SecurityUtil.getCurrentUserEmail();
         List<ChildProfileResponseDto> response = childProfileService.getChildProfiles(email);
 
+        if (response.isEmpty()) {
+            return ResponseEntity.ok(
+                    new ApiResponseDto<>(200, "등록된 자녀 프로필이 없습니다.", null));
+        }
+
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "자녀 프로필 목록 조회에 성공했습니다.", response));
     }
