@@ -4,13 +4,17 @@ package com.storycraft.illustration.service;
 import com.storycraft.ai.service.AiDalleService;
 import com.storycraft.illustration.dto.IllustrationRequestDto;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
+import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.entity.Illustration;
 import com.storycraft.illustration.repository.IllustrationRepository;
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StorySection;
 import com.storycraft.story.repository.StoryRepository;
+import com.storycraft.story.repository.StorySectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,26 +24,60 @@ public class IllustrationService {
     private final IllustrationRepository illustrationRepository;
     private final StoryRepository storyRepository;
     private final AiDalleService aiDalleService;
+    private final StorySectionRepository storySectionRepository;
 
-    // 삽화 생성
+    // 삽화(썸네일) 생성
     public IllustrationResponseDto createIllustration(IllustrationRequestDto dto) {
         Story story = storyRepository.findById(dto.getStoryId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 storyId입니다."));
 
-        String prompt = "이 동화의 썸네일 삽화를 그려줘 \n" + story.getContent()+"cartoon풍의 귀여운 느낌으로!";
+        List<String> keywords = story.getKeywords();
+
+        String prompt = "이 동화의 썸네일 삽화를 이 키워드들을 바탕으로 그려줘: "
+                + String.join(", ", keywords)
+                +" (어린이 동화 스타일로)";
         //+ "\n \n처음 고른 삽화 스타일 대로."; -> TODO:스타일 추가 후 수정
 
         String imageUrl = aiDalleService.generateImage(prompt);
 
+        int nextOrderIndex = illustrationRepository.findMaxOrderIndexByStory(story).orElse(-1) + 1;
+
         Illustration illustration = Illustration.builder()
                 .story(story)
                 .imageUrl(imageUrl)
-                .description(dto.getPrompt())
+                .description("(" + String.join(", ", keywords) + ")")
                 .build();
 
         Illustration saved = illustrationRepository.save(illustration);
         return saved.toDto();
+    }
 
+    //단락별 삽화 생성
+    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 동화입니다."));
+
+        List<StorySection> sections = storySectionRepository.findAllByStoryOrderByOrderIndex(story);
+
+        List<IllustrationResponseDto> responses = new ArrayList<>();
+
+        for (StorySection section : sections) {
+            String prompt = section.getParagraphText() + "의 동화 내용을 어린이 동화 스타일로 그려줘."; //TODO: 이미지 생성 Prompt 고도화 및 스타일 고정 필요
+            String imageUrl = aiDalleService.generateImage(prompt);
+
+            Illustration illustration = illustrationRepository.save(Illustration.builder()
+                    .story(story)
+                    .orderIndex(section.getOrderIndex())
+                    .imageUrl(imageUrl)
+                    .description(section.getParagraphText())                                //TODO: GPT로 단락 요약해서 넣기
+                    .build());
+
+            responses.add(IllustrationResponseDto.from(illustration, section));
+        }
+        return SectionIllustrationResponseDto.builder()
+                .storyId(storyId)
+                .illustrations(responses)
+                .build();
     }
 
     // 삽화 상세 조회
@@ -66,7 +104,7 @@ public class IllustrationService {
     }
 
     public String getUrlByStoryId(Long storyId) {
-        List<Illustration> illustrations = illustrationRepository.findAllByStory_StoryId(storyId);
+        List<Illustration> illustrations = illustrationRepository.findAllByStory_Id(storyId);
         if (illustrations == null || illustrations.isEmpty()) {
             throw new IllegalArgumentException("해당 동화의 삽화가 존재하지 않습니다.");
         }

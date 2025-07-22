@@ -25,7 +25,7 @@ public class QuizService {
      *  퀴즈 생성 (GPT 기반 -> 추후 연동 예정)
      */
     public List<QuizCreateResponseDto> createQuizList(Long storyId, List<QuizCreateRequestDto> dtoList) {
-        Story story = Story.builder().storyId(storyId).build();
+        Story story = Story.builder().id(storyId).build();
 
         List<QuizCreate> quizList = dtoList.stream()
                 .map(dto -> QuizCreate.builder()
@@ -68,7 +68,7 @@ public class QuizService {
      */
     public QuizResultSummaryResponseDto getQuizResultSummary(Long storyId, ChildProfile childId) {
         // 1. 동화 ID로 퀴즈 목록 조회 (총 10문제 기준)
-        List<QuizCreate> quizzes = quizCreateRepository.findAllByStory_StoryId(storyId);
+        List<QuizCreate> quizzes = quizCreateRepository.findAllByStory_Id(storyId);
 
         // 2. 자녀가 제출한 퀴즈 결과 전체 조회
         List<QuizSubmit> submits = quizSubmitRepository.findByChildId(childId);

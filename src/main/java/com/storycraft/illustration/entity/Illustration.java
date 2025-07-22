@@ -17,22 +17,27 @@ public class Illustration extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "illustration_id")
-    private Long illustrationId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
 
+    @Column(name = "order_index", nullable = false)
+    private int orderIndex;
+
     @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     // 사용자에게 반환할 API 응답을 위한 메소드
     public IllustrationResponseDto toDto() {
         return IllustrationResponseDto.builder()
-                .illustrationId(this.getIllustrationId())
+                .illustrationId(this.getId())
+                .storyId(story.getId())
+                .orderIndex(this.getOrderIndex())
                 .imageUrl(this.getImageUrl())
                 .description(this.getDescription())
                 .createdAt(this.getCreatedAt().toString())

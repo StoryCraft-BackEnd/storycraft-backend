@@ -9,7 +9,7 @@ import java.util.List;
 public interface StoryBookmarkRepository extends JpaRepository<StoryBookmark, Long> {
     List<StoryBookmark> findAllByChildId(ChildProfile childId);
 
-    boolean existsByStory_StoryIdAndChildId(Long storyId, ChildProfile childId);
+    boolean existsByStory_IdAndChildId(Long storyId, ChildProfile childId);
 
-    void deleteByStory_StoryIdAndChildId(Long storyId, ChildProfile childId);
+    void deleteByStory_IdAndChildId(Long storyId, ChildProfile childId);
 }

@@ -1,6 +1,8 @@
 package com.storycraft.illustration.dto;
 
 
+import com.storycraft.illustration.entity.Illustration;
+import com.storycraft.story.entity.StorySection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -12,6 +14,12 @@ public class IllustrationResponseDto {
     @Schema(description = "삽화 ID", example = "1")
     private Long illustrationId;
 
+    @Schema(description = "동화 ID", example = "1")
+    private Long storyId;
+
+    @Schema(description = "단락 순서", example = "2")
+    private int orderIndex;
+
     @Schema(description = "이미지 URL", example = "https://cdn/story1.jpg")
     private String imageUrl;
 
@@ -20,5 +28,17 @@ public class IllustrationResponseDto {
 
     @Schema(description = "생성 일시", example = "2025-05-12T22:15:30")
     private String createdAt;
+
+
+    public static IllustrationResponseDto from(Illustration illustration, StorySection section) {
+        return IllustrationResponseDto.builder()
+                .illustrationId(illustration.getId())
+                .storyId(illustration.getStory().getId())
+                .orderIndex(section.getOrderIndex())
+                .imageUrl(illustration.getImageUrl())
+                .description(illustration.getDescription())
+                .createdAt(illustration.getCreatedAt().toString())
+                .build();
+    }
 
 }

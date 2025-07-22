@@ -20,7 +20,7 @@ public class Story extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "story_id")
-    private Long storyId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id", nullable = false)
@@ -32,6 +32,11 @@ public class Story extends BaseTimeEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @ElementCollection              // 동화 별 키워드 테이블 자동 생성 -> 키워드 출력용
+    @CollectionTable(name = "story_keywords", joinColumns = @JoinColumn(name = "story_id"))
+    @Column(name = "keyword")
+    private List<String> keywords;
+
     @OneToMany(mappedBy = "story", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Illustration> illustrations;
 
@@ -42,12 +47,19 @@ public class Story extends BaseTimeEntity {
                 : null;
     }
 
+    public void updateContent(String title, String content, List<String> keywords) {
+        this.title = title;
+        this.content = content;
+        this.keywords = keywords;
+    }
+
     // 사용자에게 반환할 API 응답을 위한 메소드 toDto
     public StoryResponseDto toDto() {
         return StoryResponseDto.builder()
-                .storyId(this.getStoryId())
+                .storyId(this.getId())
                 .title(this.getTitle())
                 .content(this.getContent())
+                .keywords(this.getKeywords())
                 .thumbnailUrl(this.getThumbnailUrl())
                 .createdAt(this.getCreatedAt().toString())
                 .updatedAt(this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : null)

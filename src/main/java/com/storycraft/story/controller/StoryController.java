@@ -2,6 +2,7 @@ package com.storycraft.story.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StorySectionDto;
@@ -31,6 +32,7 @@ public class StoryController {
 
     private final StoryService storyService;
     private final StorySectionService storySectionService;
+    private final ChildProfileRepository childProfileRepository;
 
     @Operation(summary = "동화 생성", description = "prompt로 AI 기반 동화를 생성합니다.")
     @ApiResponses(value = {
@@ -68,7 +70,7 @@ public class StoryController {
     @GetMapping("/{id}/sections")
     public ResponseEntity<?> getStorySections(
             @Parameter(description = "동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단락 조회에 성공했습니다.", storySectionService.getSectionsByStoryId(id))
@@ -90,7 +92,7 @@ public class StoryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getStory(
             @Parameter(description = "조회할 동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyService.getStory(id))
@@ -110,15 +112,18 @@ public class StoryController {
     })
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
-            @Parameter(description = "자녀 ID", example = "child-uuid-1234")
-            @RequestParam ChildProfile childId
+            @Parameter(description = "자녀 ID", example = "1")
+            @RequestParam(name = "id") Long childId
     ) {
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 자녀가 존재하지 않습니다"));
+
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(childId))
+                new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(child))
         );
     }
 
-    @Operation(summary = "동화 수정", description = "동화 제목 및 내용을 수정합니다.")
+    @Operation(summary = "동화 수정", description = "키워드를 다시 받아 동화 제목 및 내용을 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -132,8 +137,8 @@ public class StoryController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStory(
-            @Parameter(description = "수정할 동화 ID", example = "1")
-            @PathVariable Long id,
+            @Parameter(name = "id", description = "수정할 동화 ID", example = "1")
+            @PathVariable(name = "id") Long id,
             @RequestBody StoryUpdateDto dto
     ) {
         return ResponseEntity.ok(
@@ -156,7 +161,7 @@ public class StoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStory(
             @Parameter(description = "삭제할 동화 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         storyService.deleteStory(id);
         return ResponseEntity.ok(

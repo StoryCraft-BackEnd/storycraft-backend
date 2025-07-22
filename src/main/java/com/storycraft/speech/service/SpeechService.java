@@ -108,7 +108,7 @@ public class SpeechService {
     }
 
     public String getTtsUrlByStoryId(Long storyId) {
-        Tts tts = ttsRepository.findByStory_StoryId(storyId)
+        Tts tts = ttsRepository.findByStory_Id(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("TTS가 생성되지 않은 동화입니다."));
         return tts.getTtsUrl();
     }

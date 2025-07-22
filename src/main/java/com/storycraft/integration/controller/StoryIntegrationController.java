@@ -49,7 +49,7 @@ public class StoryIntegrationController {
         String ttsUrl = speechService.getTtsUrlByStoryId(storyId);          // TTS MP3 S3 URL
 
         StoryIntegrationDto dto = new StoryIntegrationDto(
-                story.getStoryId(),
+                story.getId(),
                 story.getTitle(),
                 story.getContent(),
                 imageUrl,

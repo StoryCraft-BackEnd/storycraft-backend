@@ -46,7 +46,7 @@ public class StoryRecommendationFeedback {
 
     public RecommendResponseDto toDto() {
         return RecommendResponseDto.builder()
-                .storyId(this.story.getStoryId())
+                .storyId(this.story.getId())
                 .title(this.story.getTitle())
                 .summary(this.story.getContent())
                 .thumbnailUrl(this.story.getThumbnailUrl())
