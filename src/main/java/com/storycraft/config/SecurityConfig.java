@@ -47,6 +47,7 @@ public class SecurityConfig {
                                 "/email/verification/exists",
                                 "/auth/token/refresh",
                                 "/users/nickname/exists",
+                                "/actuator/health",
                                 "/ai/**",                   //추후 삭제
                                 "/story/**",
                                 "/quiz/**",
