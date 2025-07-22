@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface RewardBadgeRepository extends JpaRepository<RewardBadge, Long> {
     List<RewardBadge> findAllByChildAndCreatedAtBetween(ChildProfile child, LocalDateTime from, LocalDateTime to);
+    boolean existsByChildAndBadgeCode(ChildProfile child, String badgeCode);
+    List<RewardBadge> findAllByChild(ChildProfile child);
 } 
