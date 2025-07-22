@@ -64,7 +64,6 @@ public class RewardPointService {
             BadgeCheckRequestDto badgeRequest = new BadgeCheckRequestDto();
             badgeRequest.setChildId(request.getChildId());
             badgeRequest.setActivityType(getActivityTypeFromRewardType(request.getRewardType()));
-            badgeRequest.setTargetId(request.getTargetId());
             
             BadgeCheckResponseDto badgeResponse = rewardBadgeCheckService.checkAndGrantBadges(userEmail, badgeRequest);
             newBadges = badgeResponse.getNewBadges();

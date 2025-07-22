@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/rewards/check-level-up")
 @RequiredArgsConstructor
-@Tag(name = "Reward Level", description = "레벨업 체크 및 보상 API")
+@Tag(name = "Rewards", description = "보상 시스템 관련 API")
 public class RewardLevelController {
     private final RewardLevelService rewardLevelService;
 

@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rewards/history")
 @RequiredArgsConstructor
-@Tag(name = "Reward History", description = "보상 히스토리 조회 API")
+@Tag(name = "Rewards", description = "보상 시스템 관련 API")
 public class RewardHistoryController {
     private final RewardHistoryService rewardHistoryService;
 

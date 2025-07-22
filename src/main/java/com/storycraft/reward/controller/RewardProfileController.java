@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/rewards/profiles")
 @RequiredArgsConstructor
-@Tag(name = "Reward Profile", description = "보상 현황 조회 API")
+@Tag(name = "Rewards", description = "보상 시스템 관련 API")
 public class RewardProfileController {
     private final RewardProfileService rewardProfileService;
 

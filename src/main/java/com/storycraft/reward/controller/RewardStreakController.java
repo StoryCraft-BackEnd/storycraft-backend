@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/rewards/check-streak")
 @RequiredArgsConstructor
-@Tag(name = "Reward Streak", description = "연속 학습 보상 관련 API")
+@Tag(name = "Rewards", description = "보상 시스템 관련 API")
 public class RewardStreakController {
     private final RewardStreakService rewardStreakService;
 

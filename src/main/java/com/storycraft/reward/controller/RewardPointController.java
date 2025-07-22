@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/rewards/points")
 @RequiredArgsConstructor
-@Tag(name = "Reward Points", description = "포인트 지급 관련 API")
+@Tag(name = "Rewards", description = "보상 시스템 관련 API")
 public class RewardPointController {
     private final RewardPointService rewardPointService;
 
@@ -94,8 +94,7 @@ public class RewardPointController {
                         {
                           "childId": 1,
                           "rewardType": "POINT_STORY_READ",
-                          "context": "STORY_READ",
-                          "targetId": 123
+                          "context": "STORY_READ"
                         }
                         """
                     ),
@@ -105,8 +104,7 @@ public class RewardPointController {
                         {
                           "childId": 1,
                           "rewardType": "POINT_WORD_CLICK",
-                          "context": "WORD_CLICK",
-                          "targetId": null
+                          "context": "WORD_CLICK"
                         }
                         """
                     ),
@@ -116,8 +114,7 @@ public class RewardPointController {
                         {
                           "childId": 1,
                           "rewardType": "POINT_QUIZ_CORRECT",
-                          "context": "QUIZ_CORRECT",
-                          "targetId": 456
+                          "context": "QUIZ_CORRECT"
                         }
                         """
                     )

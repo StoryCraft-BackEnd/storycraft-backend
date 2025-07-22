@@ -151,7 +151,6 @@ public class DailyMissionService {
         pointRequest.setChildId(childId);
         pointRequest.setRewardType("POINT_DAILY_MISSION");
         pointRequest.setContext("DAILY_MISSION");
-        pointRequest.setTargetId(null);
         rewardPointService.grantPoint(userEmail, pointRequest);
 
         return new DailyMissionCheckResponseDto(100, false);

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/rewards/badges")
 @RequiredArgsConstructor
-@Tag(name = "Reward Badges", description = "배지 관련 API")
+@Tag(name = "Rewards", description = "보상 시스템 관련 API")
 public class RewardBadgeController {
     private final RewardBadgeService rewardBadgeService;
     private final ChildProfileRepository childProfileRepository;
@@ -89,68 +89,6 @@ public class RewardBadgeController {
                 .collect(Collectors.toList());
         
         return ResponseEntity.ok(new ApiResponseDto<>(200, "사용 가능한 배지 목록 조회 완료", badges));
-    }
-
-    @Operation(
-        summary = "자녀 배지 목록 조회", 
-        description = "특정 자녀가 획득한 배지 목록을 조회합니다."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "자녀 배지 목록 조회 완료",
-            content = @Content(
-                mediaType = "application/json",
-                array = @ArraySchema(schema = @Schema(implementation = BadgeInfoDto.class)),
-                examples = {
-                    @ExampleObject(
-                        name = "자녀 배지 목록",
-                        value = """
-                        {
-                          "status": 200,
-                          "message": "자녀 배지 목록 조회 완료",
-                          "data": [
-                            {
-                              "badgeCode": "BADGE_STORY_1",
-                              "badgeName": "첫 번째 동화 읽기",
-                              "condition": "",
-                              "category": "BASIC_LEARNING"
-                            },
-                            {
-                              "badgeCode": "BADGE_WORD_100",
-                              "badgeName": "단어 수집가",
-                              "condition": "",
-                              "category": "MILESTONE"
-                            }
-                          ]
-                        }
-                        """
-                    )
-                }
-            )
-        ),
-        @ApiResponse(responseCode = "400", description = "존재하지 않는 자녀입니다.")
-    })
-    @GetMapping("/child/{childId}")
-    public ResponseEntity<ApiResponseDto<List<BadgeInfoDto>>> getChildBadges(
-        @Parameter(description = "자녀 ID", example = "1")
-        @PathVariable Long childId
-    ) {
-        String userEmail = SecurityUtil.getCurrentUserEmail();
-        
-        ChildProfile child = childProfileRepository.findById(childId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 자녀입니다."));
-        
-        List<BadgeInfoDto> badges = rewardBadgeService.getChildBadges(child).stream()
-                .map(badge -> BadgeInfoDto.builder()
-                        .badgeCode(badge.getBadgeCode())
-                        .badgeName(badge.getBadgeName())
-                        .condition("") // 이미 획득한 배지는 조건 표시 불필요
-                        .category(getBadgeCategory(badge.getBadgeCode()))
-                        .build())
-                .collect(Collectors.toList());
-        
-        return ResponseEntity.ok(new ApiResponseDto<>(200, "자녀 배지 목록 조회 완료", badges));
     }
 
     private String getBadgeCategory(String badgeCode) {

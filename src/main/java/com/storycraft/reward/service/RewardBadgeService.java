@@ -44,9 +44,7 @@ public class RewardBadgeService {
         );
 
         public static final List<BadgeInfo> SPECIAL_CHALLENGE_BADGES = Arrays.asList(
-                new BadgeInfo("BADGE_DAILY_7", "데일리 마스터 7일 연속", "데일리 미션 7일 연속 수행"),
-                new BadgeInfo("BADGE_ALL_CLEAR", "하루 만점 완수!", "당일 동화, 단어, 퀴즈 모두 완료 & 정답률 100%"),
-                new BadgeInfo("BADGE_RETURN_USER", "다시 만난 너!", "7일 이상 쉬었다가 다시 학습 시작 시")
+                new BadgeInfo("BADGE_DAILY_7", "데일리 마스터 7일 연속", "데일리 미션 7일 연속 수행")
         );
 
         public static List<BadgeInfo> getAllBadges() {
