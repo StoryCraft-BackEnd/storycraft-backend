@@ -6,6 +6,10 @@ import com.storycraft.reward.dto.DailyMissionStatusDto;
 import com.storycraft.reward.entity.DailyMissionStatus;
 import com.storycraft.reward.repository.DailyMissionStatusRepository;
 import com.storycraft.reward.repository.RewardPointRepository;
+import com.storycraft.reward.dto.DailyMissionCheckResponseDto;
+import com.storycraft.reward.dto.RewardPointGrantRequestDto;
+import com.storycraft.reward.dto.RewardPointGrantResponseDto;
+import com.storycraft.reward.service.RewardPointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ public class DailyMissionService {
     private final DailyMissionStatusRepository dailyMissionStatusRepository;
     private final RewardPointRepository rewardPointRepository;
     private final ChildProfileRepository childProfileRepository;
+    private final RewardPointService rewardPointService;
 
     // 데일리 미션 정의
     private static final List<MissionDefinition> MISSION_DEFINITIONS = List.of(
@@ -116,5 +121,39 @@ public class DailyMissionService {
     public boolean isAllDailyMissionsCompleted(Long childId) {
         List<DailyMissionStatusDto> missionStatuses = getDailyMissionStatus(childId);
         return missionStatuses.stream().allMatch(DailyMissionStatusDto::isCompleted);
+    }
+
+    /**
+     * 데일리 미션 완료 및 보상 지급 처리
+     */
+    @Transactional
+    public DailyMissionCheckResponseDto checkAndClaimDailyMission(String userEmail, Long childId) {
+        // 1. 오늘 데일리 미션 3가지 모두 완료 여부 확인
+        List<DailyMissionStatusDto> missionStatuses = getDailyMissionStatus(childId);
+        boolean allCompleted = missionStatuses.stream().allMatch(DailyMissionStatusDto::isCompleted);
+        if (!allCompleted) {
+            return new DailyMissionCheckResponseDto(0, false);
+        }
+
+        // 2. 오늘 이미 보상받았는지 확인 (오늘 날짜에 POINT_DAILY_MISSION 지급 기록이 있는지)
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 자녀입니다."));
+        LocalDate today = LocalDate.now();
+        LocalDateTime todayStart = today.atStartOfDay();
+        LocalDateTime todayEnd = today.plusDays(1).atStartOfDay().minusNanos(1);
+        int alreadyClaimedCount = rewardPointRepository.countByChildAndRewardTypeAndCreatedAtBetween(child, "POINT_DAILY_MISSION", todayStart, todayEnd);
+        if (alreadyClaimedCount > 0) {
+            return new DailyMissionCheckResponseDto(0, true);
+        }
+
+        // 3. 포인트 지급 (자동 레벨업/배지 포함)
+        RewardPointGrantRequestDto pointRequest = new RewardPointGrantRequestDto();
+        pointRequest.setChildId(childId);
+        pointRequest.setRewardType("POINT_DAILY_MISSION");
+        pointRequest.setContext("DAILY_MISSION");
+        pointRequest.setTargetId(null);
+        rewardPointService.grantPoint(userEmail, pointRequest);
+
+        return new DailyMissionCheckResponseDto(100, false);
     }
 } 
