@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Random;
+import com.storycraft.user.repository.UserRepository;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,6 +30,7 @@ public class AuthController {
     private final RedisService redisService;
     private final ResetTokenService resetTokenService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Operation(summary = "회원가입 API", description = "새로운 부모 사용자 회원가입")
     @PostMapping("/signup")
@@ -36,7 +38,7 @@ public class AuthController {
         boolean result = authService.signup(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new ApiResponse(201, "회원가입이 완료되었습니다.", result)
+                new ApiResponseDto<>(201, "회원가입이 완료되었습니다.", result)
         );
     }
 
@@ -62,7 +64,7 @@ public class AuthController {
         String code = generate6DigitCode();
         emailService.sendResetCode(dto.getEmail(), code);
         redisService.saveCode(dto.getEmail(), code);
-        return ResponseEntity.ok("인증 코드 발송 완료");
+        return ResponseEntity.ok(new ApiResponseDto<>(200, "인증 코드 발송 완료", true));
     }
 
     private String generate6DigitCode() {
@@ -78,12 +80,13 @@ public class AuthController {
     public ResponseEntity<?> verifyResetCode(@Valid @RequestBody VerifyResetCodeDto dto) {
         String storedCode = redisService.getCode(dto.getEmail());
         if (storedCode == null || !storedCode.equals(dto.getCode())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 코드가 맞지 않거나 만료되었습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponseDto<>(401, "인증 코드가 맞지 않거나 만료되었습니다.", null));
         }
         redisService.deleteCode(dto.getEmail());
 
         String resetToken = resetTokenService.createResetToken(dto.getEmail());
-        return ResponseEntity.ok(Map.of("resetToken", resetToken));
+        return ResponseEntity.ok(new ApiResponseDto<>(200, "인증 코드 검증 성공", Map.of("resetToken", resetToken)));
     }
 
     // 3. 비밀번호 재설정
@@ -92,34 +95,21 @@ public class AuthController {
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDto dto) {
         String email = resetTokenService.verifyResetToken(dto.getResetToken());
         if (email == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("리셋 토큰이 유효하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponseDto<>(401, "리셋 토큰이 유효하지 않습니다.", null));
         }
 
         boolean updated = userService.updatePassword(email, dto.getNewPassword());
         if (!updated) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보를 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponseDto<>(404, "사용자 정보를 찾을 수 없습니다.", null));
         }
 
-        return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+        return ResponseEntity.ok(new ApiResponseDto<>(200, "비밀번호가 성공적으로 변경되었습니다.", true));
     }
 
 
 
 
-    // 응답용 DTO
-    private static class ApiResponse {
-        private int status;
-        private String message;
-        private boolean data;
-
-        public ApiResponse(int status, String message, boolean data) {
-            this.status = status;
-            this.message = message;
-            this.data = data;
-        }
-
-        public int getStatus() { return status; }
-        public String getMessage() { return message; }
-        public boolean getData() { return data; }
-    }
+    // 응답용 DTO - 제거 (ApiResponseDto 사용)
 }

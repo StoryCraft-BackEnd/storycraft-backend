@@ -26,7 +26,7 @@ public class AuthService {
     public boolean signup(SignupRequest request) {
         // 이메일 중복 확인
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         User user = User.builder()
