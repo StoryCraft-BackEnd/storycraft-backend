@@ -27,16 +27,19 @@ public enum ErrorCode {
     // 인증코드 관련
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "DB에 저장된 토큰이 아닙니다."),
+    EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 발송에 실패했습니다."),
 
-
-    //닉네임 관련
+    // 닉네임 관련
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
 
-    // 자녀 프로필 관련 에러 추가
+    // 자녀 프로필 관련
     CHILD_PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "자녀 프로필을 찾을 수 없습니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
-    INVALID_LEARNING_LEVEL(HttpStatus.BAD_REQUEST, "유효하지 않은 학습 수준입니다.");
+    INVALID_LEARNING_LEVEL(HttpStatus.BAD_REQUEST, "유효하지 않은 학습 수준입니다."),
 
+    // 비밀번호 재설정 관련
+    INVALID_RESET_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리셋 토큰입니다."),
+    INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "유효하지 않은 인증 코드입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
