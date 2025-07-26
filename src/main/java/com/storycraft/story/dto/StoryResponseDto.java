@@ -22,6 +22,9 @@ public class StoryResponseDto {
     @Schema(description = "동화 내용", example = "Once upon time...")
     private String content;
 
+    @Schema(description = "동화 내용 해석", example = "옛날 옛적에...")
+    private String contentKr;
+
     @Schema(description = "동화 썸네일 URL", example = "https://cdn/story1.jpg")
     private String thumbnailUrl;
 
