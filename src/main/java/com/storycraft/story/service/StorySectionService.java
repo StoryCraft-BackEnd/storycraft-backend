@@ -19,8 +19,11 @@ public class StorySectionService {
     private final StorySectionRepository storySectionRepository;
     private final StoryRepository storyRepository;
 
-    public void saveSectionsFromContent(Story story, String content) {
-        List<String> paragraphs = splitParagraph(content);
+    public void saveSectionsFromContent(Story story, String content, String contentKr) {
+        List<String> enParagraphs = splitParagraph(content);
+        List<String> krParagraphs = splitParagraph(contentKr);
+
+        int count = Math.min(enParagraphs.size(), krParagraphs.size());
 
         List<StorySection> sections = new ArrayList<>();
         for (int i = 0; i < paragraphs.size(); i++) {
