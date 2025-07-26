@@ -32,6 +32,9 @@ public class Story extends BaseTimeEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "contentKr", nullable = false, columnDefinition = "TEXT")
+    private String contentKr;
+
     @ElementCollection              // 동화 별 키워드 테이블 자동 생성 -> 키워드 출력용
     @CollectionTable(name = "story_keywords", joinColumns = @JoinColumn(name = "story_id"))
     @Column(name = "keyword")
