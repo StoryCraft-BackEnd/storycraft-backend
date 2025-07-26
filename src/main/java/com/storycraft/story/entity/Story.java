@@ -50,6 +50,7 @@ public class Story extends BaseTimeEntity {
     public void updateContent(String title, String content, String contentKr,List<String> keywords) {
         this.title = title;
         this.content = content;
+        this.contentKr = contentKr;
         this.keywords = keywords;
     }
 
