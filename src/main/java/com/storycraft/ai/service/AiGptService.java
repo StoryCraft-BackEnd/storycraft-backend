@@ -61,6 +61,8 @@ public class AiGptService {
                   "content": "There once was a squirrel who dreamed of flying.\\n\\n He tried jumping from tree to tree.\\n\\n One day, he found a kite and flew into the sky....",
                   "contentKr": "날고 싶어했던 다람쥐가 있었어요.\\n\\n 그는 나무에서 나무로 뛰어보았어요.\\n\\n 어느 날, 연을 발견하고 하늘로 날아갔어요...."
                 }
+                
+                **설명이나 여는 말 없이** 위 JSON 형식으로만 응답해줘.
                 """.formatted(keywordStr);
 
         Map<String, Object> user = Map.of("role", "user", "content", prompt);
