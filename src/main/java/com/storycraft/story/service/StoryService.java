@@ -82,7 +82,7 @@ public class StoryService {
         storySectionRepository.deleteAllByStory(story);
 
         //새로 생성된 단락 저장
-        storySectionService.saveSectionsFromContent(story, updatedStory.getContent());
+        storySectionService.saveSectionsFromContent(story, updatedStory.getContent(), updatedStory.getContentKr());
 
         return storyRepository.save(story).toDto();
     }
