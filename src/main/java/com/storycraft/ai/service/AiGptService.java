@@ -57,8 +57,9 @@ public class AiGptService {
                 
                 JSON 형식 (예시):
                 {
-                  "title": "동화 제목",
-                  "content": "영어로 된 단락1 내용.\\n\\n 영어로 된 단락2 내용.\\n\\n 영어로 된 단락3 내용."
+                  "title": "The Brave Squirrel",
+                  "content": "There once was a squirrel who dreamed of flying.\\n\\n He tried jumping from tree to tree.\\n\\n One day, he found a kite and flew into the sky....",
+                  "contentKr": "날고 싶어했던 다람쥐가 있었어요.\\n\\n 그는 나무에서 나무로 뛰어보았어요.\\n\\n 어느 날, 연을 발견하고 하늘로 날아갔어요...."
                 }
                 """.formatted(keywordStr);
 
