@@ -30,6 +30,7 @@ public class StorySectionDto {
                 .sectionId(section.getSectionId())
                 .orderIndex(section.getOrderIndex())
                 .paragraphText(section.getParagraphText())
+                .paragraphTextKr(section.getParagraphTextKr())
                 .storyId(section.getStory().getId())
                 .build();
     }
