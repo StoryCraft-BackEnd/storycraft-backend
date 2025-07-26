@@ -26,7 +26,7 @@ public class StorySectionService {
         int count = Math.min(enParagraphs.size(), krParagraphs.size());
 
         List<StorySection> sections = new ArrayList<>();
-        for (int i = 0; i < paragraphs.size(); i++) {
+        for (int i = 0; i < count; i++) {
             StorySection section = StorySection.builder()
                     .story(story)
                     .orderIndex(i + 1)
