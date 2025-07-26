@@ -82,6 +82,7 @@ public class AiGptService {
             Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
             String title = parsed.getOrDefault("title", "동화 제목 없음").trim();
             String content = parsed.getOrDefault("content", "").trim();
+            String contentKr = parsed.getOrDefault("contentKr", "").trim();
 
             if (title.length() > 255) {
                 title = title.substring(0, 255);
