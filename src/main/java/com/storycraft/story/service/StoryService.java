@@ -38,6 +38,7 @@ public class StoryService {
                 .childId(child)
                 .title(result.getTitle())
                 .content(result.getContent())
+                .contentKr(result.getContentKr())
                 .keywords(dto.getKeywords())
                 .build();
 
