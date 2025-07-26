@@ -44,7 +44,7 @@ public class StoryService {
 
         storyRepository.save(story);
 
-        storySectionService.saveSectionsFromContent(story, result.getContent());
+        storySectionService.saveSectionsFromContent(story, result.getContent(), result.getContentKr());
 
         return story.toDto();
     }
