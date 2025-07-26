@@ -87,7 +87,7 @@ public class AiGptService {
                 title = title.substring(0, 255);
             }
 
-            return new StoryContentDto(title, content);
+            return new StoryContentDto(title, content, contentKr);
 
         } catch (Exception e) {
             throw new RuntimeException("GPT 응답 파싱 실패: " + e.getMessage());
