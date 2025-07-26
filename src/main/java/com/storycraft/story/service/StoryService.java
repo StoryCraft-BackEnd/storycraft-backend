@@ -72,7 +72,11 @@ public class StoryService {
         StoryContentDto updatedStory = aiGptService.generateStoryContent(dto.getKeywords());
 
         //동화 업데이트
-        story.updateContent(updatedStory.getTitle(), updatedStory.getContent(), dto.getKeywords());
+        story.updateContent(
+                updatedStory.getTitle(),
+                updatedStory.getContent(),
+                updatedStory.getContentKr(),
+                dto.getKeywords());
 
         //기존 단락 삭제
         storySectionRepository.deleteAllByStory(story);
