@@ -30,7 +30,8 @@ public class StorySectionService {
             StorySection section = StorySection.builder()
                     .story(story)
                     .orderIndex(i + 1)
-                    .paragraphText(paragraphs.get(i))
+                    .paragraphText(enParagraphs.get(i))
+                    .paragraphTextKr(krParagraphs.get(i))
                     .build();
             sections.add(section);
         }
