@@ -24,6 +24,9 @@ public class StorySection {
     @Column(name = "paragraph_text", nullable = false, columnDefinition = "TEXT")
     private String paragraphText;
 
+    @Column(name = "paragraph_text_kr", nullable = false, columnDefinition = "TEXT")
+    private String paragraphTextKr;
+
     @Column(name = "order_index", nullable = false)
     private int orderIndex;
 
