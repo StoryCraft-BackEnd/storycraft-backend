@@ -60,6 +60,7 @@ public class Story extends BaseTimeEntity {
                 .storyId(this.getId())
                 .title(this.getTitle())
                 .content(this.getContent())
+                .contentKr(this.getContentKr())
                 .keywords(this.getKeywords())
                 .thumbnailUrl(this.getThumbnailUrl())
                 .createdAt(this.getCreatedAt().toString())
