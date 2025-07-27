@@ -37,8 +37,18 @@ public class SpeechService {
 
         Story story = section.getStory();
 
-        // TODO: 추후 AWS Polly 연동 예정
-        String pollyUrl = "https://dummy-url.com/audio.mp3";
+        String text;
+        String language;
+
+        if ("Seoyeon".equalsIgnoreCase(dto.getVoiceId()) || "Joon".equalsIgnoreCase(dto.getVoiceId())) {
+            text = section.getParagraphTextKr();
+            language = "ko";
+        } else {
+            text = section.getParagraphText();
+            language = "en";
+        }
+
+        String ttsUrl = pollyService.synthesizeTtsToS3(text, dto.getVoiceId(), dto.getSpeechRate(), "tts");
 
         Tts saved = ttsRepository.save(Tts.builder()
                 .story(story)
