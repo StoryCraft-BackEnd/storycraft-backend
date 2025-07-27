@@ -27,6 +27,8 @@ public class SpeechService {
     private final StoryRepository storyRepository;
     private final AiWhisperService aiWhisperService;
     private final AiGptService aiGptService;
+    private final PollyService pollyService;
+    private final StorySectionRepository storySectionRepository;
 
     /**
      * TTS 생성 메소드
