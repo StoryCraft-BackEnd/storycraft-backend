@@ -3,6 +3,7 @@ package com.storycraft.speech.entity;
 import com.storycraft.global.entity.BaseTimeEntity;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StorySection;
 import jakarta.persistence.*;
 import lombok.*;
 
