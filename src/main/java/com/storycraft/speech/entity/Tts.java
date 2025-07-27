@@ -23,6 +23,19 @@ public class Tts extends BaseTimeEntity {
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "section_id")
+    private StorySection section;
+
+    @Column(name = "voice_id")
+    private String voiceId;
+
+    @Column(name = "speech_rate")
+    private float speechRate;
+
+    @Column(name = "language", nullable = false)
+    private String language;
+
     @Column(name = "tts_url", columnDefinition = "TEXT", nullable = false)
     private String ttsUrl;
 
