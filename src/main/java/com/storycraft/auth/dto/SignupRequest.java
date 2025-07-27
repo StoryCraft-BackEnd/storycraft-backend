@@ -29,5 +29,6 @@ public class SignupRequest {
     @NotBlank(message = "닉네임은 필수입니다.")
     private String nickname;
 
+    @Schema(description = "사용자 역할 (기본값은 'parent')", example = "parent", defaultValue = "parent")
     private String role = "parent"; // 기본값 parent로 세팅
 }
