@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-@Builder
+@NoArgsConstructor
 @Schema(description = "TTS 음성 생성 요청 DTO")
 public class TtsCreateRequestDto {
 
