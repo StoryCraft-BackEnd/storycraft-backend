@@ -12,6 +12,7 @@ import com.storycraft.speech.repository.TtsRepository;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.repository.StoryRepository;
+import com.storycraft.story.repository.StorySectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
