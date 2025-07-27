@@ -19,6 +19,18 @@ public class TtsCreateResponseDto {
     @Schema(description = "TTS대상 동화 ID", example = "1")
     private Long storyId;
 
+    @Schema(description = "TTS대상 단락 ID", example = "1")
+    private Long sectionId;
+
+    @Schema(description = "성우 ID", example = "Seoyeon")
+    private String voiceId;
+
+    @Schema(description = "TTS 속도", example = "0.8")
+    private float speechRate;
+
+    @Schema(description = "언어(eng/kor)", example = "ko")
+    private String language;
+
     @Schema(description = "생성된 TTS(mp3) 파일 URL", example = "https://storycraft.s3.amazonaws.com/tts/story1.mp3")
     private String ttsUrl;
 
