@@ -30,7 +30,7 @@ public class SpeechController {
     private final SpeechService speechService;
 
 
-    @Operation(summary = "TTS 생성", description = "읽을 동화 ID를 기반으로 텍스트를 음성으로 생성합니다.")
+    @Operation(summary = "TTS 생성", description = "동화 단락ID, 성우, 속도 정보를 기반으로 Polly TTS 음성을 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
