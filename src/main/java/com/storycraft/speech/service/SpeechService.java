@@ -11,6 +11,7 @@ import com.storycraft.speech.entity.Tts;
 import com.storycraft.speech.repository.TtsRepository;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StorySection;
 import com.storycraft.story.repository.StoryRepository;
 import com.storycraft.story.repository.StorySectionRepository;
 import lombok.RequiredArgsConstructor;
