@@ -20,6 +20,7 @@ public class SignupRequest {
     @Size(min = 8, message = "비밀번호는 8자 이상이어야 합니다.")
     private String password;
 
+    @Schema(description = "사용자 이름", example = "testName", required = true)
     @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
