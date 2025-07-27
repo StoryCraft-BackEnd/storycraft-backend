@@ -52,7 +52,11 @@ public class SpeechService {
 
         Tts saved = ttsRepository.save(Tts.builder()
                 .story(story)
-                .ttsUrl(pollyUrl)
+                .section(section)
+                .voiceId(dto.getVoiceId())
+                .speechRate(dto.getSpeechRate())
+                .language(language)
+                .ttsUrl(ttsUrl)
                 .build());
 
         return saved.toDto();
