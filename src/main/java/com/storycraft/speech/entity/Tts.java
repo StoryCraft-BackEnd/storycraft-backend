@@ -44,6 +44,10 @@ public class Tts extends BaseTimeEntity {
         return TtsCreateResponseDto.builder()
                 .ttsId(this.getTtsId())
                 .storyId(story.getId())
+                .sectionId(section != null ? (long) section.getSectionId() : null)
+                .voiceId(this.voiceId)
+                .speechRate(this.speechRate)
+                .language(this.language)
                 .ttsUrl(this.ttsUrl)
                 .createdAt(this.getCreatedAt())
                 .build();
