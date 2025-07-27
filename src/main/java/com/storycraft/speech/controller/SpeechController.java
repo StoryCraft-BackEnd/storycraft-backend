@@ -46,11 +46,20 @@ public class SpeechController {
     public ResponseEntity<?> createTts(
             @RequestBody TtsCreateRequestDto dto       // TODO: 옵션 추가(음성 속도, 성우 설정)
     ) {
-        TtsCreateResponseDto responseDto = speechService.createTts(dto.getStoryId());
-
-        return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "TTS가 성공적으로 생성되었습니다.", responseDto)
-        );
+        try {
+            TtsCreateResponseDto responseDto = speechService.createTts(dto);
+            return ResponseEntity.status(201).body(
+                    new ApiResponseDto<>(201, "TTS가 성공적으로 생성되었습니다.", responseDto)
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(
+                    new ApiResponseDto<>(400, "잘못된 요청: " + e.getMessage(), null)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    new ApiResponseDto<>(500, "서버 오류: " + e.getMessage(), null)
+            );
+        }
     }
 
     @Operation(summary = "STT 변환", description = "사용자의 음성 파일을 텍스트로 변환하고 키워드를 추출합니다.")
