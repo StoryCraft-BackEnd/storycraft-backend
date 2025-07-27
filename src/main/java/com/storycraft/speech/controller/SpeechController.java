@@ -44,7 +44,7 @@ public class SpeechController {
     })
     @PostMapping("/tts")
     public ResponseEntity<?> createTts(
-            @RequestBody TtsCreateRequestDto dto       // TODO: 옵션 추가(음성 속도, 성우 설정)
+            @RequestBody TtsCreateRequestDto dto
     ) {
         try {
             TtsCreateResponseDto responseDto = speechService.createTts(dto);
