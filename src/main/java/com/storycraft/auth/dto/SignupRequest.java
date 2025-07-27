@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SignupRequest {
 
+    @Schema(description = "사용자 이메일", example = "test@example.com", required = true)
     @Email(message = "유효한 이메일 주소를 입력하세요.")
     @NotBlank(message = "이메일은 필수입니다.")
     private String email;
