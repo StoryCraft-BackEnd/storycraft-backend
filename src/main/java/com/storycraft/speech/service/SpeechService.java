@@ -31,9 +31,11 @@ public class SpeechService {
     /**
      * TTS 생성 메소드
      */
-    public TtsCreateResponseDto createTts(Long storyID) {
-        Story story = storyRepository.findById(storyID)
-                .orElseThrow(() -> new IllegalArgumentException("해당 동화가 없습니다.  ID : " + storyID));
+    public TtsCreateResponseDto createTts(TtsCreateRequestDto dto) {
+        StorySection section = storySectionRepository.findById(dto.getSectionId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 단락이 존재하지 않습니다."));
+
+        Story story = section.getStory();
 
         // TODO: 추후 AWS Polly 연동 예정
         String pollyUrl = "https://dummy-url.com/audio.mp3";
