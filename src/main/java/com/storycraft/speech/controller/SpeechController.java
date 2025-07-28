@@ -30,7 +30,7 @@ public class SpeechController {
     private final SpeechService speechService;
 
 
-    @Operation(summary = "TTS 생성", description = "읽을 동화 ID를 기반으로 텍스트를 음성으로 생성합니다.")
+    @Operation(summary = "TTS 생성", description = "동화 단락ID, 성우, 속도 정보를 기반으로 Polly TTS 음성을 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
@@ -44,13 +44,22 @@ public class SpeechController {
     })
     @PostMapping("/tts")
     public ResponseEntity<?> createTts(
-            @RequestBody TtsCreateRequestDto dto       // TODO: 옵션 추가(음성 속도, 성우 설정)
+            @RequestBody TtsCreateRequestDto dto
     ) {
-        TtsCreateResponseDto responseDto = speechService.createTts(dto.getStoryId());
-
-        return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "TTS가 성공적으로 생성되었습니다.", responseDto)
-        );
+        try {
+            TtsCreateResponseDto responseDto = speechService.createTts(dto);
+            return ResponseEntity.status(201).body(
+                    new ApiResponseDto<>(201, "TTS가 성공적으로 생성되었습니다.", responseDto)
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(
+                    new ApiResponseDto<>(400, "잘못된 요청: " + e.getMessage(), null)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    new ApiResponseDto<>(500, "서버 오류: " + e.getMessage(), null)
+            );
+        }
     }
 
     @Operation(summary = "STT 변환", description = "사용자의 음성 파일을 텍스트로 변환하고 키워드를 추출합니다.")

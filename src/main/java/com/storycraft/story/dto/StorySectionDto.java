@@ -19,6 +19,9 @@ public class StorySectionDto {
     @Schema(description = "단락 텍스트 내용", example = "Once upon a time, a little fox lived in the forest.")
     private String paragraphText;
 
+    @Schema(description = "단락 텍스트 해석", example = "옛날 옛날에...")
+    private String paragraphTextKr;
+
     @Schema(description = "해당 단락이 속한 동화 ID", example = "1")
     private Long storyId;
 
@@ -27,6 +30,7 @@ public class StorySectionDto {
                 .sectionId(section.getSectionId())
                 .orderIndex(section.getOrderIndex())
                 .paragraphText(section.getParagraphText())
+                .paragraphTextKr(section.getParagraphTextKr())
                 .storyId(section.getStory().getId())
                 .build();
     }

@@ -3,6 +3,7 @@ package com.storycraft.speech.entity;
 import com.storycraft.global.entity.BaseTimeEntity;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StorySection;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,19 @@ public class Tts extends BaseTimeEntity {
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "section_id")
+    private StorySection section;
+
+    @Column(name = "voice_id")
+    private String voiceId;
+
+    @Column(name = "speech_rate")
+    private float speechRate;
+
+    @Column(name = "language", nullable = false)
+    private String language;
+
     @Column(name = "tts_url", columnDefinition = "TEXT", nullable = false)
     private String ttsUrl;
 
@@ -31,6 +45,10 @@ public class Tts extends BaseTimeEntity {
         return TtsCreateResponseDto.builder()
                 .ttsId(this.getTtsId())
                 .storyId(story.getId())
+                .sectionId(section != null ? (long) section.getSectionId() : null)
+                .voiceId(this.voiceId)
+                .speechRate(this.speechRate)
+                .language(this.language)
                 .ttsUrl(this.ttsUrl)
                 .createdAt(this.getCreatedAt())
                 .build();

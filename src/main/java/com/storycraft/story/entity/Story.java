@@ -32,6 +32,9 @@ public class Story extends BaseTimeEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "contentKr", nullable = false, columnDefinition = "TEXT")
+    private String contentKr;
+
     @ElementCollection              // 동화 별 키워드 테이블 자동 생성 -> 키워드 출력용
     @CollectionTable(name = "story_keywords", joinColumns = @JoinColumn(name = "story_id"))
     @Column(name = "keyword")
@@ -47,9 +50,10 @@ public class Story extends BaseTimeEntity {
                 : null;
     }
 
-    public void updateContent(String title, String content, List<String> keywords) {
+    public void updateContent(String title, String content, String contentKr,List<String> keywords) {
         this.title = title;
         this.content = content;
+        this.contentKr = contentKr;
         this.keywords = keywords;
     }
 
@@ -59,6 +63,7 @@ public class Story extends BaseTimeEntity {
                 .storyId(this.getId())
                 .title(this.getTitle())
                 .content(this.getContent())
+                .contentKr(this.getContentKr())
                 .keywords(this.getKeywords())
                 .thumbnailUrl(this.getThumbnailUrl())
                 .createdAt(this.getCreatedAt().toString())

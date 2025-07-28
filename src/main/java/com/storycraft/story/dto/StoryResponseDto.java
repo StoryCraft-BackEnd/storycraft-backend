@@ -19,8 +19,11 @@ public class StoryResponseDto {
     @Schema(description = "동화 제목", example = "꼬마 용사와 동물 친구들의 모험")
     private String title;
 
-    @Schema(description = "동화 내용", example = "옛날 옛적에...")
+    @Schema(description = "동화 내용", example = "Once upon time...")
     private String content;
+
+    @Schema(description = "동화 내용 해석", example = "옛날 옛적에...")
+    private String contentKr;
 
     @Schema(description = "동화 썸네일 URL", example = "https://cdn/story1.jpg")
     private String thumbnailUrl;
@@ -39,6 +42,7 @@ public class StoryResponseDto {
                 .storyId(story.getId())
                 .title(story.getTitle())
                 .content(story.getContent())
+                .contentKr(story.getContentKr())
                 .keywords(story.getKeywords())
                 .createdAt(story.getCreatedAt().toString())
                 .build();

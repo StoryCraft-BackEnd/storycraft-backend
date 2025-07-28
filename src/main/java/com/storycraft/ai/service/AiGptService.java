@@ -48,13 +48,21 @@ public class AiGptService {
 
         String prompt = """
                 다음 JSON 형식으로 유아 영어 교육용 동화를 만들어줘.
-                키워드: %s
-                총 3~5개의 단락으로 구성하고, 한 단락안에는 5문장 정도로 이야기가 마무리 지어지도록 생성하고, 단락마다 줄바꿈(\\n\\n)으로 구분해줘.
-                다음 형식의 JSON만 응답해줘. 설명이나 기타 문장 없이, 반드시 아래 형식 그대로 응답해:
+                조건:
+                - 키워드: %s
+                - 총 15개의 단락으로 구성해줘.
+                - 각 단락에는 반드시 **1문장만** 포함시켜줘.
+                - 각 단락은 줄바꿈 기호 **\\n\\n** 으로 구분해줘.
+                - 영어 본문 외에 **한글 해석도 함께 포함**해줘.
+                
+                JSON 형식 (예시):
                 {
-                  "title": "동화 제목",
-                  "content": "영어로 된 단락1 내용.\\n\\n 영어로 된 단락2 내용.\\n\\n 영어로 된 단락3 내용."
+                  "title": "The Brave Squirrel",
+                  "content": "There once was a squirrel who dreamed of flying.\\n\\n He tried jumping from tree to tree.\\n\\n One day, he found a kite and flew into the sky....",
+                  "contentKr": "날고 싶어했던 다람쥐가 있었어요.\\n\\n 그는 나무에서 나무로 뛰어보았어요.\\n\\n 어느 날, 연을 발견하고 하늘로 날아갔어요...."
                 }
+                
+                **설명이나 여는 말 없이** 위 JSON 형식으로만 응답해줘.
                 """.formatted(keywordStr);
 
         Map<String, Object> user = Map.of("role", "user", "content", prompt);
@@ -82,12 +90,13 @@ public class AiGptService {
             Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
             String title = parsed.getOrDefault("title", "동화 제목 없음").trim();
             String content = parsed.getOrDefault("content", "").trim();
+            String contentKr = parsed.getOrDefault("contentKr", "").trim();
 
             if (title.length() > 255) {
                 title = title.substring(0, 255);
             }
 
-            return new StoryContentDto(title, content);
+            return new StoryContentDto(title, content, contentKr);
 
         } catch (Exception e) {
             throw new RuntimeException("GPT 응답 파싱 실패: " + e.getMessage());

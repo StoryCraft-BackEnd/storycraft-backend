@@ -5,12 +5,15 @@ import com.storycraft.ai.service.AiGptService;
 import com.storycraft.ai.service.AiWhisperService;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.speech.dto.SttResponseDto;
+import com.storycraft.speech.dto.TtsCreateRequestDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
 import com.storycraft.speech.entity.Tts;
 import com.storycraft.speech.repository.TtsRepository;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StorySection;
 import com.storycraft.story.repository.StoryRepository;
+import com.storycraft.story.repository.StorySectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,20 +30,38 @@ public class SpeechService {
     private final StoryRepository storyRepository;
     private final AiWhisperService aiWhisperService;
     private final AiGptService aiGptService;
+    private final PollyService pollyService;
+    private final StorySectionRepository storySectionRepository;
 
     /**
      * TTS 생성 메소드
      */
-    public TtsCreateResponseDto createTts(Long storyID) {
-        Story story = storyRepository.findById(storyID)
-                .orElseThrow(() -> new IllegalArgumentException("해당 동화가 없습니다.  ID : " + storyID));
+    public TtsCreateResponseDto createTts(TtsCreateRequestDto dto) {
+        StorySection section = storySectionRepository.findById(dto.getSectionId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 단락이 존재하지 않습니다."));
 
-        // TODO: 추후 AWS Polly 연동 예정
-        String pollyUrl = "https://dummy-url.com/audio.mp3";
+        Story story = section.getStory();
+
+        String text;
+        String language;
+
+        if ("Seoyeon".equalsIgnoreCase(dto.getVoiceId()) || "Joon".equalsIgnoreCase(dto.getVoiceId())) {
+            text = section.getParagraphTextKr();
+            language = "ko";
+        } else {
+            text = section.getParagraphText();
+            language = "en";
+        }
+
+        String ttsUrl = pollyService.synthesizeTtsToS3(text, dto.getVoiceId(), dto.getSpeechRate(), "tts");
 
         Tts saved = ttsRepository.save(Tts.builder()
                 .story(story)
-                .ttsUrl(pollyUrl)
+                .section(section)
+                .voiceId(dto.getVoiceId())
+                .speechRate(dto.getSpeechRate())
+                .language(language)
+                .ttsUrl(ttsUrl)
                 .build());
 
         return saved.toDto();
