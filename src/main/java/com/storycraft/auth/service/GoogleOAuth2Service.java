@@ -1,5 +1,10 @@
 package com.storycraft.auth.service;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.storycraft.auth.dto.LoginResponseDto;
 import com.storycraft.auth.jwt.JwtTokenProvider;
 import com.storycraft.auth.repository.AuthTokenRepository;
@@ -9,13 +14,18 @@ import com.storycraft.global.exception.ErrorCode;
 import com.storycraft.user.entity.User;
 import com.storycraft.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GoogleOAuth2Service {
@@ -24,6 +34,9 @@ public class GoogleOAuth2Service {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthTokenRepository authTokenRepository;
+
+    @Value("${google.oauth2.android.client-id}")
+    private String androidClientId;
 
     /**
      * 안드로이드 앱에서 전송하는 Google ID 토큰을 처리하는 메서드
@@ -155,22 +168,41 @@ public class GoogleOAuth2Service {
      * 안드로이드 앱에서 Google Sign-In SDK를 통해 전송된 토큰을 처리
      */
     private Map<String, Object> parseIdToken(String idToken) {
-        // TODO: 실제 Google ID 토큰 검증 로직 구현 필요
-        // 현재는 임시 구현으로 테스트용 사용자 정보 반환
-        
-        // 실제 구현에서는 다음 단계가 필요:
-        // 1. Google의 공개키 다운로드 및 캐싱
-        // 2. ID 토큰 서명 검증
-        // 3. 토큰 만료 시간 확인
-        // 4. 발급자(issuer) 확인
-        // 5. 클라이언트 ID 확인 (안드로이드 패키지명 기반)
-        
-        // 임시로 테스트용 사용자 정보 반환
-        return Map.of(
-            "email", "test@example.com",
-            "name", "테스트 사용자",
-            "picture", "https://example.com/profile.jpg"
-        );
+        try {
+            // Google ID 토큰 검증기 생성
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(), 
+                    new JacksonFactory())
+                    .setAudience(Collections.singletonList(androidClientId))
+                    .build();
+
+            // ID 토큰 검증
+            GoogleIdToken googleIdToken = verifier.verify(idToken);
+            
+            if (googleIdToken != null) {
+                Payload payload = googleIdToken.getPayload();
+                
+                // 사용자 정보 추출
+                String email = payload.getEmail();
+                String name = (String) payload.get("name");
+                String picture = (String) payload.get("picture");
+                
+                log.info("Google ID 토큰 검증 성공: {}", email);
+                
+                return Map.of(
+                    "email", email,
+                    "name", name != null ? name : "사용자",
+                    "picture", picture != null ? picture : ""
+                );
+            } else {
+                log.error("Google ID 토큰 검증 실패: 유효하지 않은 토큰");
+                throw new CustomException(ErrorCode.INVALID_TOKEN);
+            }
+            
+        } catch (Exception e) {
+            log.error("Google ID 토큰 검증 중 오류 발생: {}", e.getMessage());
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
     }
 
     // 구글 임시 사용자 응답 DTO
