@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth/oauth2")
 @RequiredArgsConstructor
-@Tag(name = "Google OAuth2", description = "Expo와 Native Android용 구글 OAuth2 인증 API")
+@Tag(name = "Google OAuth2", description = "안드로이드용 구글 OAuth2 인증 API")
 public class GoogleOAuth2Controller {
 
     private final GoogleOAuth2Service googleOAuth2Service;
 
-    @Operation(summary = "구글 로그인", description = "Expo 또는 Native Android에서 전송하는 ID 토큰을 처리하여 JWT 토큰 반환")
+    @Operation(summary = "안드로이드 구글 로그인", description = "안드로이드 앱에서 Google Sign-In SDK를 통해 전송하는 ID 토큰을 처리하여 JWT 토큰 반환")
     @PostMapping("/google/android")
     public ResponseEntity<ApiResponseDto<LoginResponseDto>> googleLogin(@RequestBody GoogleIdTokenRequest request) {
         try {
@@ -29,7 +29,31 @@ public class GoogleOAuth2Controller {
         }
     }
 
-    // Google ID 토큰 요청 DTO (Expo와 Native Android 모두 사용)
+    @Operation(summary = "구글 로그인 임시 사용자 확인", description = "구글 로그인 후 기존 사용자인지 확인하고 추가 정보 입력 필요 여부 반환")
+    @PostMapping("/google/android/temp")
+    public ResponseEntity<ApiResponseDto<GoogleOAuth2Service.GoogleTempUserResponse>> checkGoogleTempUser(@RequestBody GoogleIdTokenRequest request) {
+        try {
+            GoogleOAuth2Service.GoogleTempUserResponse response = googleOAuth2Service.createTempGoogleUser(request.getIdToken());
+            return ResponseEntity.ok(new ApiResponseDto<>(200, "임시 사용자 확인 완료", response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponseDto<>(400, "ID 토큰 검증에 실패했습니다: " + e.getMessage(), null));
+        }
+    }
+
+    @Operation(summary = "구글 로그인 추가 정보 입력", description = "구글 로그인 사용자의 닉네임을 입력하여 회원가입 완료 (역할은 parent로 고정)")
+    @PostMapping("/google/android/complete")
+    public ResponseEntity<ApiResponseDto<LoginResponseDto>> completeGoogleSignup(@RequestBody GoogleSignupRequest request) {
+        try {
+            LoginResponseDto response = googleOAuth2Service.completeGoogleSignup(request.getEmail(), request.getNickname());
+            return ResponseEntity.ok(new ApiResponseDto<>(200, "구글 회원가입 완료", response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponseDto<>(400, "회원가입에 실패했습니다: " + e.getMessage(), null));
+        }
+    }
+
+    // 안드로이드용 Google ID 토큰 요청 DTO
     public static class GoogleIdTokenRequest {
         private String idToken;
 
@@ -39,6 +63,28 @@ public class GoogleOAuth2Controller {
 
         public void setIdToken(String idToken) {
             this.idToken = idToken;
+        }
+    }
+
+    // 구글 회원가입 완료 요청 DTO
+    public static class GoogleSignupRequest {
+        private String email;
+        private String nickname;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getNickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
         }
     }
 }
