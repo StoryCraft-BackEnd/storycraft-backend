@@ -39,44 +39,6 @@ public class GoogleOAuth2Service {
     private String androidClientId;
 
     /**
-     * 안드로이드 앱에서 전송하는 Google ID 토큰을 처리하는 메서드
-     * Google Sign-In SDK를 통해 얻은 ID 토큰을 검증하고 사용자 정보를 처리
-     */
-    @Transactional
-    public LoginResponseDto processGoogleIdToken(String idToken) {
-        // Google ID 토큰 검증 및 사용자 정보 추출
-        Map<String, Object> userInfo = parseIdToken(idToken);
-        
-        String email = (String) userInfo.get("email");
-        String name = (String) userInfo.get("name");
-        String picture = (String) userInfo.get("picture");
-
-        // 기존 사용자 확인
-        User user = userRepository.findByEmail(email)
-                .orElseGet(() -> createNewGoogleUser(email, name, picture));
-
-        // JWT 토큰 생성
-        String accessToken = jwtTokenProvider.createAccessToken(user);
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
-
-        // 리프레시 토큰 저장 또는 갱신
-        authTokenRepository.findByUser(user).ifPresentOrElse(
-                token -> {
-                    token.setRefreshToken(refreshToken);
-                    authTokenRepository.save(token);
-                },
-                () -> authTokenRepository.save(
-                        AuthToken.builder()
-                                .refreshToken(refreshToken)
-                                .user(user)
-                                .build()
-                )
-        );
-
-        return new LoginResponseDto(accessToken, refreshToken);
-    }
-
-    /**
      * 구글 로그인 후 추가 정보 입력을 위한 임시 사용자 생성
      */
     @Transactional
@@ -87,14 +49,32 @@ public class GoogleOAuth2Service {
         String name = (String) userInfo.get("name");
         String picture = (String) userInfo.get("picture");
 
-        // 기존 사용자가 있으면 바로 로그인
-        User existingUser = userRepository.findByEmail(email).orElse(null);
+        // 구글 로그인 사용자만 확인 (이메일 회원과 분리)
+        User existingUser = userRepository.findByEmailAndLoginType(email, "google").orElse(null);
         if (existingUser != null) {
-            return new GoogleTempUserResponse(true, "기존 사용자", existingUser.getNickname(), null);
+            // 기존 사용자인 경우 바로 로그인 처리
+            String accessToken = jwtTokenProvider.createAccessToken(existingUser);
+            String refreshToken = jwtTokenProvider.createRefreshToken(existingUser.getEmail());
+
+            // 리프레시 토큰 저장 또는 갱신
+            authTokenRepository.findByUser(existingUser).ifPresentOrElse(
+                    token -> {
+                        token.setRefreshToken(refreshToken);
+                        authTokenRepository.save(token);
+                    },
+                    () -> authTokenRepository.save(
+                            AuthToken.builder()
+                                    .refreshToken(refreshToken)
+                                    .user(existingUser)
+                                    .build()
+                    )
+            );
+
+            return new GoogleTempUserResponse(true, "기존 구글 사용자", existingUser.getNickname(), null, accessToken, refreshToken);
         }
 
         // 임시 사용자 정보 반환 (닉네임 입력 필요)
-        return new GoogleTempUserResponse(false, name, null, email);
+        return new GoogleTempUserResponse(false, name, null, email, null, null);
     }
 
     /**
@@ -113,7 +93,7 @@ public class GoogleOAuth2Service {
             throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
-        // 새 사용자 생성 (role은 "parent"로 고정)
+        // 새 구글 사용자 생성 (role은 "parent"로 고정)
         User user = createNewGoogleUser(email, name, picture, nickname, "parent");
 
         // JWT 토큰 생성
@@ -145,6 +125,7 @@ public class GoogleOAuth2Service {
                 .name(name)
                 .nickname(nickname)
                 .role(role != null ? role : "parent")
+                .loginType("google") // 구글 로그인 타입 설정
                 .build();
 
         return userRepository.save(user);
@@ -211,12 +192,16 @@ public class GoogleOAuth2Service {
         private final String name;
         private final String nickname;
         private final String email;
+        private final String accessToken;
+        private final String refreshToken;
 
-        public GoogleTempUserResponse(boolean isExistingUser, String name, String nickname, String email) {
+        public GoogleTempUserResponse(boolean isExistingUser, String name, String nickname, String email, String accessToken, String refreshToken) {
             this.isExistingUser = isExistingUser;
             this.name = name;
             this.nickname = nickname;
             this.email = email;
+            this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
         }
 
         // Getters
@@ -224,5 +209,7 @@ public class GoogleOAuth2Service {
         public String getName() { return name; }
         public String getNickname() { return nickname; }
         public String getEmail() { return email; }
+        public String getAccessToken() { return accessToken; }
+        public String getRefreshToken() { return refreshToken; }
     }
 }

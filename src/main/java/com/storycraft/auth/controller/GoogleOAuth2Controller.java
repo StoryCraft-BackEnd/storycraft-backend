@@ -17,18 +17,6 @@ public class GoogleOAuth2Controller {
 
     private final GoogleOAuth2Service googleOAuth2Service;
 
-    @Operation(summary = "안드로이드 구글 로그인", description = "안드로이드 앱에서 Google Sign-In SDK를 통해 전송하는 ID 토큰을 처리하여 JWT 토큰 반환")
-    @PostMapping("/google/android")
-    public ResponseEntity<ApiResponseDto<LoginResponseDto>> googleLogin(@RequestBody GoogleIdTokenRequest request) {
-        try {
-            LoginResponseDto response = googleOAuth2Service.processGoogleIdToken(request.getIdToken());
-            return ResponseEntity.ok(new ApiResponseDto<>(200, "구글 로그인 성공", response));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponseDto<>(400, "ID 토큰 검증에 실패했습니다: " + e.getMessage(), null));
-        }
-    }
-
     @Operation(summary = "구글 로그인 임시 사용자 확인", description = "구글 로그인 후 기존 사용자인지 확인하고 추가 정보 입력 필요 여부 반환")
     @PostMapping("/google/android/temp")
     public ResponseEntity<ApiResponseDto<GoogleOAuth2Service.GoogleTempUserResponse>> checkGoogleTempUser(@RequestBody GoogleIdTokenRequest request) {

@@ -19,6 +19,7 @@ public enum ErrorCode {
 
     // 로그인
     INVALID_LOGIN(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다."),
+    GOOGLE_LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED, "구글 계정으로 로그인해주세요."),
 
     // JWT 관련
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
