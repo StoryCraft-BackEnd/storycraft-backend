@@ -33,7 +33,7 @@ public class GoogleOAuth2Controller {
     @PostMapping("/google/android/complete")
     public ResponseEntity<ApiResponseDto<LoginResponseDto>> completeGoogleSignup(@RequestBody GoogleSignupRequest request) {
         try {
-            LoginResponseDto response = googleOAuth2Service.completeGoogleSignup(request.getEmail(), request.getNickname());
+            LoginResponseDto response = googleOAuth2Service.completeGoogleSignup(request.getEmail(), request.getNickname(), request.getIdToken());
             return ResponseEntity.ok(new ApiResponseDto<>(200, "구글 회원가입 완료", response));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -58,6 +58,7 @@ public class GoogleOAuth2Controller {
     public static class GoogleSignupRequest {
         private String email;
         private String nickname;
+        private String idToken;
 
         public String getEmail() {
             return email;
@@ -73,6 +74,14 @@ public class GoogleOAuth2Controller {
 
         public void setNickname(String nickname) {
             this.nickname = nickname;
+        }
+
+        public String getIdToken() {
+            return idToken;
+        }
+
+        public void setIdToken(String idToken) {
+            this.idToken = idToken;
         }
     }
 }

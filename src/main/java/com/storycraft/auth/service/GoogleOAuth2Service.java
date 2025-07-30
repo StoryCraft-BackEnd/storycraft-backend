@@ -81,9 +81,9 @@ public class GoogleOAuth2Service {
      * 구글 로그인 사용자의 추가 정보 입력 처리
      */
     @Transactional
-    public LoginResponseDto completeGoogleSignup(String email, String nickname) {
-        // 이메일로 임시 사용자 정보 확인
-        Map<String, Object> userInfo = parseIdToken("temp"); // 실제로는 이메일로 사용자 찾기
+    public LoginResponseDto completeGoogleSignup(String email, String nickname, String idToken) {
+        // ID 토큰으로 사용자 정보 확인
+        Map<String, Object> userInfo = parseIdToken(idToken);
         
         String name = (String) userInfo.get("name");
         String picture = (String) userInfo.get("picture");
