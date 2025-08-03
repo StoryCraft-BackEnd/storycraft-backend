@@ -37,6 +37,9 @@ public class GoogleOAuth2Service {
 
     @Value("${google.oauth2.android.client-id}")
     private String androidClientId;
+    
+    @Value("${google.oauth2.web.client-id}")
+    private String webClientId;
 
     /**
      * 구글 로그인 후 추가 정보 입력을 위한 임시 사용자 생성
@@ -150,11 +153,11 @@ public class GoogleOAuth2Service {
      */
     private Map<String, Object> parseIdToken(String idToken) {
         try {
-            // Google ID 토큰 검증기 생성
+            // Google ID 토큰 검증기 생성 (안드로이드 + 웹 클라이언트 ID 모두 허용)
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(), 
                     new JacksonFactory())
-                    .setAudience(Collections.singletonList(androidClientId))
+                    .setAudience(Arrays.asList(androidClientId, webClientId))
                     .build();
 
             // ID 토큰 검증

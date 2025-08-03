@@ -44,7 +44,7 @@ public class SecurityConfig {
                                 "/auth/request-reset-code",
                                 "/auth/verify-reset-code",
                                 "/auth/reset-password",
-                                "/auth/oauth2/google/android",  // 안드로이드용만 허용
+                                "/auth/oauth2/google/android/**",
                                 "/email/verification/exists",
                                 "/auth/token/refresh",
                                 "/actuator/health",
