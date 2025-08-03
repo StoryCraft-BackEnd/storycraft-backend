@@ -42,7 +42,10 @@ public enum ErrorCode {
     INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "유효하지 않은 인증 코드입니다."),
 
     // 공지사항 관련
-    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "공지사항을 찾을 수 없습니다.");
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "공지사항을 찾을 수 없습니다."),
+
+    // 이벤트 관련
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "이벤트를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

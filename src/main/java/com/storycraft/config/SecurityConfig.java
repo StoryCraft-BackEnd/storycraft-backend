@@ -54,7 +54,8 @@ public class SecurityConfig {
                                 "/speech/**",
                                 "/illustration",
                                 "/integration",             //여기까지
-                                "/api/notices/**"          
+                                "/api/notices/**",         
+                                "/api/events/**"           
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
