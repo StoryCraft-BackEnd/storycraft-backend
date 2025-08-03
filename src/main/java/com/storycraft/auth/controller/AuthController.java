@@ -9,6 +9,10 @@ import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.redis.service.RedisService;
 import com.storycraft.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,7 +62,17 @@ public class AuthController {
     }
 
     // 1. 이메일 인증코드 발송
-    @Operation(summary = "이메일 인증코드 발송", description = "사용자가 이메일을 입력하면 해당 이메일로 6자리 인증코드를 전송")
+    @Operation(
+        summary = "이메일 인증코드 발송", 
+        description = "비밀번호 재설정을 위해 이메일로 6자리 인증코드를 발송합니다. 인증코드는 5분간 유효합니다."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "인증코드 발송 성공", 
+            content = @Content(schema = @Schema(implementation = ApiResponseDto.class))),
+        @ApiResponse(responseCode = "400", description = "잘못된 이메일 형식"),
+        @ApiResponse(responseCode = "404", description = "존재하지 않는 이메일"),
+        @ApiResponse(responseCode = "500", description = "이메일 발송 실패")
+    })
     @PostMapping("/request-reset-code")
     public ResponseEntity<?> requestResetCode(@Valid @RequestBody RequestResetCodeDto dto) {
         String code = generate6DigitCode();
@@ -75,22 +89,61 @@ public class AuthController {
 
 
     // 2. 이메일 인증코드 검증 + 리셋 토큰 발급
-    @Operation(summary = "이메일 인증코드 검증 + 리셋 토큰 발급", description = "이메일과 인증코드를 검증하고, 성공시 리셋토큰 발급")
+    @Operation(
+        summary = "이메일 인증코드 검증 + 리셋 토큰 발급", 
+        description = "이메일과 인증코드를 검증하고, 성공시 비밀번호 재설정에 사용할 리셋 토큰을 발급합니다. 리셋 토큰은 10분간 유효합니다."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "인증코드 검증 성공", 
+            content = @Content(schema = @Schema(example = """
+                {
+                  "status": 200,
+                  "message": "인증 코드 검증 성공",
+                  "data": {
+                    "resetToken": "eyJhbGciOiJIUzI1NiJ9..."
+                  }
+                }
+                """))),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청 형식"),
+        @ApiResponse(responseCode = "401", description = "인증코드 불일치 또는 만료")
+    })
     @PostMapping("/verify-reset-code")
     public ResponseEntity<?> verifyResetCode(@Valid @RequestBody VerifyResetCodeDto dto) {
         String storedCode = redisService.getCode(dto.getEmail());
-        if (storedCode == null || !storedCode.equals(dto.getCode())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponseDto<>(401, "인증 코드가 맞지 않거나 만료되었습니다.", null));
+        
+        if (storedCode == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponseDto<>(404, "인증 코드를 찾을 수 없습니다.", null));
         }
+        
+        if (!storedCode.equals(dto.getCode())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponseDto<>(401, "인증 코드가 일치하지 않습니다.", null));
+        }
+        
         redisService.deleteCode(dto.getEmail());
-
         String resetToken = resetTokenService.createResetToken(dto.getEmail());
         return ResponseEntity.ok(new ApiResponseDto<>(200, "인증 코드 검증 성공", Map.of("resetToken", resetToken)));
     }
 
     // 3. 비밀번호 재설정
-    @Operation(summary = "비밀번호 재설정", description = "리셋토큰을 사용해서 새로운 비밀번호 설정")
+    @Operation(
+        summary = "비밀번호 재설정", 
+        description = "리셋 토큰을 사용하여 새로운 비밀번호로 변경합니다. 비밀번호는 8자 이상이어야 합니다."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공", 
+            content = @Content(schema = @Schema(example = """
+                {
+                  "status": 200,
+                  "message": "비밀번호가 성공적으로 변경되었습니다.",
+                  "data": true
+                }
+                """))),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청 형식"),
+        @ApiResponse(responseCode = "401", description = "유효하지 않은 리셋 토큰"),
+        @ApiResponse(responseCode = "404", description = "사용자 정보를 찾을 수 없음")
+    })
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDto dto) {
         String email = resetTokenService.verifyResetToken(dto.getResetToken());

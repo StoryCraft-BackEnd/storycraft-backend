@@ -17,7 +17,7 @@ public class EmailService {
 
     public void sendResetCode(String toEmail, String code) {
         if (!userRepository.existsByEmail(toEmail)) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
         }
 
         try {
