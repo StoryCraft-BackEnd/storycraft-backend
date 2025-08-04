@@ -26,7 +26,7 @@ public class DictionaryService {
     public DictionaryWords getOrFetchWord(String word) {
         return dictionaryWordsRepository.findByWord(word)
                 .orElseGet(() -> {
-                    DictionaryWords fetched = wordsApiClient.fetchWord(word);
+                    DictionaryWords fetched = aiDictionaryService.fetchWordWithGpt(word);
                     return dictionaryWordsRepository.save(fetched);
                 });
     }
