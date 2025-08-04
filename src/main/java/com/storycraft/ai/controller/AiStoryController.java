@@ -45,6 +45,9 @@ public class AiStoryController {
     public ApiResponseDto<StoryResponseDto> generateStory(
             @RequestBody AiStoryRequestDto request
             ) {
+        ChildProfile child = childProfileRepository.findById(request.getChildId())
+                .orElseThrow(() -> new IllegalArgumentException("자녀 정보를 찾을 수 없습니다."));
+
         StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(request.getKeyword()));
 
         Story story = Story.builder()
