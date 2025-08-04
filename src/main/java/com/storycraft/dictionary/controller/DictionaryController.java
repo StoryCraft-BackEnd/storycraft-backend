@@ -60,8 +60,9 @@ public class DictionaryController {
     })
     @PostMapping("/words/save")
     public ResponseEntity<?> saveWord(
-            @Parameter(description = "자녀 프로필 ID") @RequestParam ChildProfile childId,
-            @Parameter(description = "하이라이트된 단어") @RequestParam String word
+            @Parameter(description = "유저 ID") @RequestParam(name = "userID") Long userId,
+            @Parameter(description = "자녀 프로필 ID") @RequestParam(name = "childID") Long childId,
+            @Parameter(description = "하이라이트된 단어") @RequestParam(name = "word") String word
     ) {
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201, "단어 저장에 성공했습니다.", dictionaryService.savedWord(childId, word))
