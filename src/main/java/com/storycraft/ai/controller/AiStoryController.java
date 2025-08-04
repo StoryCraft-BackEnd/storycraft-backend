@@ -28,6 +28,7 @@ import java.util.Collections;
 public class AiStoryController {
     private final AiGptService aiGptService;
     private final StoryRepository storyRepository;
+    private final ChildProfileRepository childProfileRepository;
 
     @Operation(summary = "GPT 동화 생성", description = "키워드를 기반으로 GPT가 유아용 동화를 생성합니다.")
     @ApiResponses(value = {
