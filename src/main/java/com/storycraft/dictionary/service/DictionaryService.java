@@ -31,13 +31,14 @@ public class DictionaryService {
                 });
     }
 
-    /**
-     * 단어 조회 응답용 DTO 반환
-     */
-    public WordResponseDto getWord(String word) {
-        DictionaryWords dictionaryWords = getOrFetchWord(word);
-        return dictionaryWords.toDto();
-    }
+    //자녀의 사용자 사전에 단어 저장
+    public SaveWordResponseDto savedWord(Long userId,Long childId, String word) {
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("자녀 정보를 찾을 수 없습니다."));
+
+        if (!child.getUser().getId().equals(userId)) {
+            throw new SecurityException("해당 자녀에 대한 접근 권한이 없습니다.");
+        }
 
     /**
      * 자녀의 사용자 사전에 단어 저장
