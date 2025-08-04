@@ -27,7 +27,7 @@ public class IllustrationController {
 
     private final IllustrationService illustrationService;
 
-    @Operation(summary = "삽화(썸네일) 생성",description = "DALL·E 기반 삽화(썸네일) 이미지를 생성합니다.")
+/*    @Operation(summary = "삽화(썸네일) 생성",description = "DALL·E 기반 삽화(썸네일) 이미지를 생성합니다.")
     @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "201",
@@ -46,7 +46,7 @@ public class IllustrationController {
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201, "삽화(썸네일) 생성에 성공했습니다.", illustrationService.createIllustration(dto))
         );
-    }
+    }*/
 
     @Operation(summary = "동화 단락별 삽화 생성", description = "storyId를 기반으로 해당 동화의 각 단락 내용으로부터 삽화를 자동 생성합니다.")
     @ApiResponses(value = {

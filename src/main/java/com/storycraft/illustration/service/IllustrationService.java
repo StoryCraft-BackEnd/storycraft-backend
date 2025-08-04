@@ -26,7 +26,7 @@ public class IllustrationService {
     private final AiDalleService aiDalleService;
     private final StorySectionRepository storySectionRepository;
 
-    // 삽화(썸네일) 생성
+/*    // 삽화(썸네일) 생성
     public IllustrationResponseDto createIllustration(IllustrationRequestDto dto) {
         Story story = storyRepository.findById(dto.getStoryId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 storyId입니다."));
@@ -50,7 +50,7 @@ public class IllustrationService {
 
         Illustration saved = illustrationRepository.save(illustration);
         return saved.toDto();
-    }
+    }*/
 
     //단락별 삽화 생성
     public SectionIllustrationResponseDto createSectionIllustrations(Long storyId) {

@@ -1,7 +1,6 @@
 package com.storycraft.dictionary.entity;
 
 import com.storycraft.dictionary.dto.WordResponseDto;
-import com.storycraft.dictionary.external.WordsApiClient;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +34,7 @@ public class DictionaryWords {
     @Column(name = "saved_at",nullable = false)
     private LocalDateTime savedAt;
 
+    @PrePersist
     protected void onCreate() {
         this.savedAt = LocalDateTime.now();
     }

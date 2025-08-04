@@ -22,7 +22,7 @@ public class SavedWords {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "child_id", nullable = false)
-    private Long childId;
+    private ChildProfile childId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_id", nullable = false)
@@ -31,6 +31,7 @@ public class SavedWords {
     @Column(name = "saved_at",nullable = false)
     private LocalDateTime savedAt;
 
+    @PrePersist
     protected void onCreate() {
         this.savedAt = LocalDateTime.now();
     }
@@ -39,7 +40,7 @@ public class SavedWords {
     public SaveWordResponseDto toDto() {
         return SaveWordResponseDto.builder()
                 .savedId(this.getSavedId())
-                .childId(this.getChildId())
+                .childId(this.getChildId().getId())
                 .word(this.word.getWord())
                 .meaning(this.word.getMeaning())
                 .exampleEng(this.word.getExampleEng())

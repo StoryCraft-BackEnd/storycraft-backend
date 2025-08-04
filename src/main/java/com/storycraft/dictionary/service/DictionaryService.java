@@ -4,12 +4,15 @@ import com.storycraft.dictionary.dto.SaveWordResponseDto;
 import com.storycraft.dictionary.dto.WordResponseDto;
 import com.storycraft.dictionary.entity.DictionaryWords;
 import com.storycraft.dictionary.entity.SavedWords;
-import com.storycraft.dictionary.external.WordsApiClient;
 import com.storycraft.dictionary.repository.DictionaryWordsRepository;
 import com.storycraft.dictionary.repository.SavedWordsRepository;
 import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
