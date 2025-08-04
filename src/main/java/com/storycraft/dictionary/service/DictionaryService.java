@@ -48,7 +48,6 @@ public class DictionaryService {
                     .map(SavedWords::toDto)
                     .orElseThrow(() -> new IllegalStateException("이미 저장된 단어가 유실되었습니다."));
         }
-
         SavedWords saved = SavedWords.builder()
                 .childId(child)
                 .word(dictionaryWord)
