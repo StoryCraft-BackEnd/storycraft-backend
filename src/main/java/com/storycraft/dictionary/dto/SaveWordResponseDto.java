@@ -17,7 +17,7 @@ public class SaveWordResponseDto {
     private Long savedId;
 
     @Schema(description = "자녀 ID", example = "123")
-    private ChildProfile childId;
+    private Long childId;
 
     @Schema(description = "단어", example = "adventure")
     private String word;
