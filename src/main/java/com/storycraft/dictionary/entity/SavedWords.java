@@ -22,7 +22,7 @@ public class SavedWords {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "child_id", nullable = false)
-    private ChildProfile childId;
+    private Long childId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_id", nullable = false)
