@@ -44,7 +44,7 @@ public class DictionaryService {
 
         boolean alreadySaved = savedWordsRepository.existsByChildIdAndWord(child, dictionaryWord);
         if (alreadySaved) {
-            return savedWordsRepository.findByChildIdAndWord(childId, dictionaryWords)
+            return savedWordsRepository.findByChildIdAndWord(child, dictionaryWord)
                     .map(SavedWords::toDto)
                     .orElseThrow(() -> new IllegalStateException("이미 저장된 단어 정보를 찾을 수 없습니다."));
         }
