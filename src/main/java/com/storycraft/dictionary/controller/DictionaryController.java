@@ -65,7 +65,7 @@ public class DictionaryController {
             @Parameter(description = "하이라이트된 단어") @RequestParam(name = "word") String word
     ) {
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "단어 저장에 성공했습니다.", dictionaryService.savedWord(childId, word))
+                new ApiResponseDto<>(201, "단어 저장에 성공했습니다.", dictionaryService.savedWord(userId, childId, word))
         );
     }
 
