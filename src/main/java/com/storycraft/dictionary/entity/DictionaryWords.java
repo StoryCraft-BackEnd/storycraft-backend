@@ -26,8 +26,11 @@ public class DictionaryWords {
     @Column(name = "meaning", nullable = false, columnDefinition = "TEXT")
     private String meaning;
 
-    @Column(name = "example", columnDefinition = "TEXT")
-    private String example;
+    @Column(name = "example_eng", columnDefinition = "TEXT")
+    private String exampleEng;
+
+    @Column(name = "example_kor", columnDefinition = "TEXT")
+    private String exampleKor;
 
     @Column(name = "saved_at",nullable = false)
     private LocalDateTime savedAt;
