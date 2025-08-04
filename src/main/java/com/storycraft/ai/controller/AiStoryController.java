@@ -4,6 +4,8 @@ import com.storycraft.ai.dto.AiStoryRequestDto;
 import com.storycraft.ai.dto.StoryContentDto;
 import com.storycraft.ai.service.AiGptService;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.repository.StoryRepository;
