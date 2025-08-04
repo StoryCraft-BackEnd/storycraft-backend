@@ -35,6 +35,9 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, length = 50)
     private String role;
 
+    @Column(nullable = false, length = 20)
+    private String loginType = "email"; // "email" 또는 "google"
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChildProfile> children = new ArrayList<>();
 
