@@ -50,8 +50,8 @@ public class DictionaryService {
         }
 
         SavedWords saved = SavedWords.builder()
-                .childId(childId)
-                .word(dictionaryWords)
+                .childId(child)
+                .word(dictionaryWord)
                 .build();
 
         return savedWordsRepository.save(saved).toDto();
