@@ -53,7 +53,7 @@ public class AiStoryController {
         Story story = Story.builder()
                 .title(result.getTitle())
                 .content(result.getContent())
-                .childId(request.getChildId())
+                .childId(child)
                 .build();
 
         Story saved = storyRepository.save(story);
