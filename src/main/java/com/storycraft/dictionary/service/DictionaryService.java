@@ -59,4 +59,34 @@ public class DictionaryService {
 
         return savedWordsRepository.save(saved).toDto();
     }
+
+    //단어 조회 응답용 DTO 반환
+    public WordResponseDto getWord(String word) {
+        DictionaryWords dictionaryWords = getOrFetchWord(word);
+        return dictionaryWords.toDto();
+    }
+
+    public List<SaveWordResponseDto> getSavedWords(Long userId, Long childId) {
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("자녀 정보를 찾을 수 없습니다."));
+        if (!child.getUser().getId().equals(userId)) {
+            throw new SecurityException("해당 자녀에 대한 접근 권한이 없습니다.");
+        }
+        return savedWordsRepository.findByChildId(child).stream()
+                .map(SavedWords::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public void deleteSavedWord(Long userId, Long savedId) {
+        SavedWords saved = savedWordsRepository.findById(savedId)
+                .orElseThrow(() -> new IllegalArgumentException("저장된 단어를 찾을 수 없습니다."));
+
+        if (!saved.getChildId().getUser().getId().equals(userId)) {
+            throw new SecurityException("해당 단어에 대한 삭제 권한이 없습니다.");
+        }
+
+        savedWordsRepository.delete(saved);
+    }
+
+
 }
