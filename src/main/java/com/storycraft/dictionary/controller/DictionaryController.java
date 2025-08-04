@@ -38,7 +38,7 @@ public class DictionaryController {
     })
     @GetMapping("/words")
     public ResponseEntity<?> getWord(
-            @Parameter(description = "하이라이트된 단어")@RequestParam String word
+            @Parameter(description = "하이라이트된 단어") @RequestParam(name = "word") String word
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단어 조회에 성공했습니다", dictionaryService.getWord(word))
