@@ -35,6 +35,7 @@ public class AuthService {
                 .name(request.getName())
                 .nickname(request.getNickname())
                 .role(request.getRole() != null ? request.getRole() : "parent")
+                .loginType("email") // 이메일 회원가입
                 .build();
 
         userRepository.save(user);
@@ -46,6 +47,11 @@ public class AuthService {
     public LoginResponseDto login(LoginRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_LOGIN));
+
+        // 구글 전용 사용자는 이메일 로그인 불가
+        if ("google".equals(user.getLoginType())) {
+            throw new CustomException(ErrorCode.GOOGLE_LOGIN_REQUIRED);
+        }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_LOGIN);
