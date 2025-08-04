@@ -42,7 +42,8 @@ public class DictionaryWords {
                 .wordId(this.getWordId())
                 .word(this.getWord())
                 .meaning(this.getMeaning())
-                .example(this.getExample())
+                .exampleEng(this.getExampleEng())
+                .exampleKor(this.getExampleKor())
                 .savedAt(this.getSavedAt())
                 .build();
     }
