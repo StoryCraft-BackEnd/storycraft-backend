@@ -42,7 +42,8 @@ public class SavedWords {
                 .childId(this.getChildId())
                 .word(this.word.getWord())
                 .meaning(this.word.getMeaning())
-                .example(this.word.getExample())
+                .exampleEng(this.word.getExampleEng())
+                .exampleKor(this.word.getExampleKor())
                 .savedAt(this.getSavedAt())
                 .build();
     }
