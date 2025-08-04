@@ -25,8 +25,11 @@ public class SaveWordResponseDto {
     @Schema(description = "뜻", example = "모험")
     private String meaning;
 
-    @Schema(description = "예문", example = "He went on an adventure through the forest.")
-    private String example;
+    @Schema(description = "예문_영어", example = "He went on an adventure through the forest.")
+    private String exampleEng;
+
+    @Schema(description = "예문_한글", example = "그는 숲을 가로질러 모험을 떠났어요.")
+    private String exampleKor;
 
     @Schema(description = "저장 시각", example = "2025-05-18T16:49:31")
     private LocalDateTime savedAt;
