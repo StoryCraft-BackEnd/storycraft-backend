@@ -42,7 +42,7 @@ public class DictionaryService {
 
         DictionaryWords dictionaryWord = getOrFetchWord(word);
 
-        boolean alreadySaved = savedWordsRepository.existsByChildIdAndWord(childId, dictionaryWords);
+        boolean alreadySaved = savedWordsRepository.existsByChildIdAndWord(child, dictionaryWord);
         if (alreadySaved) {
             return savedWordsRepository.findByChildIdAndWord(childId, dictionaryWords)
                     .map(SavedWords::toDto)
