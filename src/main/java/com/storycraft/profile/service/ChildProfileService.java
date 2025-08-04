@@ -67,7 +67,7 @@ public class ChildProfileService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHILD_PROFILE_NOT_FOUND));
 
         if (!child.getUser().getEmail().equals(email)) {
-            throw new CustomException(ErrorCode.ACCESS_DENIED);
+            throw new CustomException(ErrorCode.CHILD_PROFILE_ACCESS_DENIED);
         }
 
         return new ChildProfileResponseDto(
@@ -85,7 +85,7 @@ public class ChildProfileService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHILD_PROFILE_NOT_FOUND));
 
         if (!child.getUser().getEmail().equals(email)) {
-            throw new CustomException(ErrorCode.ACCESS_DENIED);
+            throw new CustomException(ErrorCode.CHILD_PROFILE_ACCESS_DENIED);
         }
 
         ChildProfile.LearningLevel level;
@@ -110,7 +110,7 @@ public class ChildProfileService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHILD_PROFILE_NOT_FOUND));
 
         if (!child.getUser().getEmail().equals(email)) {
-            throw new CustomException(ErrorCode.ACCESS_DENIED);
+            throw new CustomException(ErrorCode.CHILD_PROFILE_ACCESS_DENIED);
         }
 
         childProfileRepository.delete(child);

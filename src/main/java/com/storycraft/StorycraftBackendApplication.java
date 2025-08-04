@@ -5,11 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EntityScan(basePackages = "com.storycraft")
 @EnableJpaRepositories(basePackages = "com.storycraft")
 @ComponentScan(basePackages = "com.storycraft")
+@EnableJpaAuditing
 public class StorycraftBackendApplication {
 
 	public static void main(String[] args) {
