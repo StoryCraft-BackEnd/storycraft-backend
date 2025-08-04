@@ -52,7 +52,6 @@ public class DictionaryService {
                 .childId(child)
                 .word(dictionaryWord)
                 .build();
-
         return savedWordsRepository.save(saved).toDto();
     }
 
