@@ -1,7 +1,6 @@
 package com.storycraft.dictionary.entity;
 
 import com.storycraft.dictionary.dto.WordResponseDto;
-import com.storycraft.dictionary.external.WordsApiClient;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,12 +25,16 @@ public class DictionaryWords {
     @Column(name = "meaning", nullable = false, columnDefinition = "TEXT")
     private String meaning;
 
-    @Column(name = "example", columnDefinition = "TEXT")
-    private String example;
+    @Column(name = "example_eng", columnDefinition = "TEXT")
+    private String exampleEng;
+
+    @Column(name = "example_kor", columnDefinition = "TEXT")
+    private String exampleKor;
 
     @Column(name = "saved_at",nullable = false)
     private LocalDateTime savedAt;
 
+    @PrePersist
     protected void onCreate() {
         this.savedAt = LocalDateTime.now();
     }
@@ -42,7 +45,8 @@ public class DictionaryWords {
                 .wordId(this.getWordId())
                 .word(this.getWord())
                 .meaning(this.getMeaning())
-                .example(this.getExample())
+                .exampleEng(this.getExampleEng())
+                .exampleKor(this.getExampleKor())
                 .savedAt(this.getSavedAt())
                 .build();
     }

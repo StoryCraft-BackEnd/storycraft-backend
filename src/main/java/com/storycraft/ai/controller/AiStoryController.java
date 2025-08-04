@@ -4,6 +4,8 @@ import com.storycraft.ai.dto.AiStoryRequestDto;
 import com.storycraft.ai.dto.StoryContentDto;
 import com.storycraft.ai.service.AiGptService;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.repository.StoryRepository;
@@ -28,6 +30,7 @@ import java.util.Collections;
 public class AiStoryController {
     private final AiGptService aiGptService;
     private final StoryRepository storyRepository;
+    private final ChildProfileRepository childProfileRepository;
 
     @Operation(summary = "GPT 동화 생성", description = "키워드를 기반으로 GPT가 유아용 동화를 생성합니다.")
     @ApiResponses(value = {
@@ -45,12 +48,15 @@ public class AiStoryController {
     public ApiResponseDto<StoryResponseDto> generateStory(
             @RequestBody AiStoryRequestDto request
             ) {
+        ChildProfile child = childProfileRepository.findById(request.getChildId())
+                .orElseThrow(() -> new IllegalArgumentException("자녀 정보를 찾을 수 없습니다."));
+
         StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(request.getKeyword()));
 
         Story story = Story.builder()
                 .title(result.getTitle())
                 .content(result.getContent())
-                .childId(request.getChildId())
+                .childId(child)
                 .build();
 
         Story saved = storyRepository.save(story);
