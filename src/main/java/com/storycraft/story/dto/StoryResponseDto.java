@@ -1,6 +1,7 @@
 package com.storycraft.story.dto;
 
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StoryProgress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
