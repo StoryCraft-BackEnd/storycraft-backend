@@ -25,7 +25,9 @@ public class AiDictionaryService {
                 반드시 위 형식 그대로 출력해줘. 설명 문장 없이.
                 """, word);
 
-        String gptAnswer = aiGptService.sendPrompt(prompt);
+        String system = "너는 유아를 위한 단어 뜻과 예문을 잘 만들어주는 AI야.";
+
+        String gptAnswer = aiGptService.sendPrompt(prompt, system, 0.7);
 
         String meaning = extractValue(gptAnswer, "뜻:");
         String exampleEng = extractValue(gptAnswer, "예문(영어):");
