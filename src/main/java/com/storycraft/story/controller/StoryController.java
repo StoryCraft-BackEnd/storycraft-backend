@@ -96,6 +96,13 @@ public class StoryController {
             @Parameter(description = "자녀 프로필 ID", example = "1")
             @RequestParam(name = "childId") Long childId
     ) {
+        StoryResponseDto storyDto = storyService.getStory(id);
+        Optional<StoryProgress> progressOpt = storyProgressService.findByStoryIdAndChildId(id, childId);
+
+        if (progressOpt.isPresent()) {
+            storyDto.setProgress(StoryProgressResponseDto.fromEntity(progressOpt.get()));
+        }
+
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyService.getStory(id))
         );
