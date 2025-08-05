@@ -51,7 +51,9 @@ public class AiStoryController {
         ChildProfile child = childProfileRepository.findById(request.getChildId())
                 .orElseThrow(() -> new IllegalArgumentException("자녀 정보를 찾을 수 없습니다."));
 
-        StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(request.getKeyword()));
+        String level = String.valueOf(child.getLearningLevel());
+
+        StoryContentDto result = aiGptService.generateStoryContent(Collections.singletonList(request.getKeyword()), level);
 
         Story story = Story.builder()
                 .title(result.getTitle())
