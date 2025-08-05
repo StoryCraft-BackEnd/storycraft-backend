@@ -52,4 +52,8 @@ public class StoryResponseDto {
                 .progress(progress != null ? StoryProgressResponseDto.fromEntity(progress) : null)
                 .build();
     }
+
+    public static StoryResponseDto fromEntity(Story story) {
+        return fromEntity(story, null);
+    }
 }
