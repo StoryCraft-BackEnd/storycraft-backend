@@ -159,17 +159,6 @@ public class AiGptService {
 
 
     public List<AiQuizResponseDto> generateQuizFromContentAndKeywords(String content, List<String> keywords) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
-
-        Map<String, Object> system = Map.of(
-                "role", "system",
-                "content", "너는 유아를 위한 교육적인 퀴즈를 잘 만드는 AI야."
-        );
-
         String keywordStr = String.join(", ", keywords);
         //TODO: 추후 총 10개의 퀴즈 생성으로 수정
         String prompt = """
