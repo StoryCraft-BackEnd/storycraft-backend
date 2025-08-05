@@ -88,9 +88,8 @@ public class SpeechService {
         }
     }
 
-    /**
-     * STT 기반 동화 생성 메소드
-     */
+/*
+    //STT 기반 동화 생성 메소드
     public StoryResponseDto generateStoryFromStt(MultipartFile file, ChildProfile childId) {
         try {
             File tempFile = File.createTempFile("audio", ".mp3");
@@ -127,6 +126,7 @@ public class SpeechService {
             throw new RuntimeException("STT 기반 동화 생성 실패: " + e.getMessage());
         }
     }
+*/
 
     public String getTtsUrlByStoryId(Long storyId) {
         Tts tts = ttsRepository.findByStory_Id(storyId)

@@ -40,7 +40,6 @@ public class AiGptService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-
         Map<String, Object> system = Map.of(
                 "role", "system",
                 "content", systemContent
