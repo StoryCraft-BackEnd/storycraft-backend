@@ -31,6 +31,9 @@ public class StoryResponseDto {
     @Schema(description = "동화 생성에 사용된 키워드 목록", example = "[\"고양이\", \"숲\", \"우정\"]")
     private List<String> keywords;
 
+    @Schema(description = "학습 상태 정보")
+    private StoryProgressResponseDto progress;
+
     @Schema(description = "생성일시", example = "2025-01-01T15:00:00")
     private String createdAt;
 
