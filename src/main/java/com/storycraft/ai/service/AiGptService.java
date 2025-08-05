@@ -127,6 +127,46 @@ public class AiGptService {
         }
     }
 
+
+    public StoryContentDto regenerateStory(List<String> keywords, String originalTitle, String level) {
+        String keywordStr = String.join(", ", keywords);
+
+        String prompt = """
+                아래 조건에 맞춰 기존 동화를 개선한 새로운 버전의 영어 동화를 JSON 형식으로 작성해줘.
+                
+                - 기존 동화 제목: "%s"
+                - 키워드: %s
+                - 난이도: %s
+                - 총 15개의 단락으로 구성 (각 단락은 1문장)
+                - 각 단락은 \\n\\n 으로 구분
+                - 영어 본문과 한국어 해석 포함
+                - 기존 동화 제목을 참고해서 받은 키워드를 기반으로 더욱 흥미롭게 개선
+                
+                JSON 형식 (예시):
+                {
+                  "title": "A Braver Squirrel",
+                  "content": "There once was a squirrel who dreamed of flying.\\n\\n....",
+                  "contentKr": "날고 싶어했던 다람쥐가 있었어요.\\n\\n...."
+                }
+                """.formatted(originalTitle, keywordStr, level);
+
+        String system = "너는 기존 동화를 창의적으로 재작성하는 동화 작가야.";
+        String rawJson = sendPrompt(prompt, system, 0.75);
+
+        try {
+            Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
+            return new StoryContentDto(
+                    parsed.getOrDefault("title", "제목 없음").trim(),
+                    parsed.getOrDefault("content", "").trim(),
+                    parsed.getOrDefault("contentKr", "").trim()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("GPT 동화 재생성 파싱 실패: " + e.getMessage());
+        }
+    }
+
+
+
     public List<AiQuizResponseDto> generateQuizFromContentAndKeywords(String content, List<String> keywords) {
         RestTemplate restTemplate = new RestTemplate();
 
