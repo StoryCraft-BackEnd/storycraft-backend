@@ -33,6 +33,10 @@ public class StoryService {
         ChildProfile child = childProfileRepository.findById(dto.getChildId())
                 .orElseThrow(() -> new RuntimeException("해당 ID의 아이 프로필을 찾을 수 없습니다"));
 
+        String level = String.valueOf(child.getLearningLevel());
+
+        StoryContentDto result = aiGptService.generateStoryContent(dto.getKeywords(), level);
+
         Story story = Story.builder()
                 .childId(child)
                 .title(result.getTitle())
