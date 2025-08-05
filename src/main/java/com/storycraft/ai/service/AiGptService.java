@@ -92,11 +92,6 @@ public class AiGptService {
         String system = "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.";
         String rawJson = sendPrompt(prompt, system, 0.8);
 
-
-        List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
-        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
-        String rawJson = (String) message.get("content");
-
         try {
             Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
             return new StoryContentDto(
