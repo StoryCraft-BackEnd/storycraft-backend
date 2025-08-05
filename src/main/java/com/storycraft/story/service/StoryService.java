@@ -69,7 +69,7 @@ public class StoryService {
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
 
         //새로운 제목/내용 생성
-        StoryContentDto updatedStory = aiGptService.generateStoryContent(dto.getKeywords());
+        StoryContentDto updatedStory = aiGptService.regenerateStory(dto.getKeywords(), story.getTitle(), level);
 
         //동화 업데이트
         story.updateContent(
