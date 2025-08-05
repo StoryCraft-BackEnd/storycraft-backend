@@ -103,7 +103,7 @@ public class DictionaryController {
     @DeleteMapping("/words/{savedId}")
     public ResponseEntity<?> deleteSavedWord(
             @Parameter(description = "로그인한 사용자 ID") @RequestParam(name = "userID") Long userId,
-            @Parameter(description = "삭제할 단어 ID") @PathVariable(name = "savedId") Long savedId
+            @Parameter(description = "삭제할 단어 ID",example = "1") @PathVariable(name = "savedId") Long savedId
     ) {
         dictionaryService.deleteSavedWord(userId, savedId);
         return ResponseEntity.ok(
