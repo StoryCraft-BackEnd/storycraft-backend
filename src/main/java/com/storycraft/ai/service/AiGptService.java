@@ -32,7 +32,8 @@ public class AiGptService {
         this.gptUrl = dotenv.get("OPENAI_GPT_URL");
     }
 
-    public StoryContentDto generateStoryContent(List<String> keyword) {
+    //공통 GPT 호출
+    public String sendPrompt(String prompt, String systemContent, double temperature) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
