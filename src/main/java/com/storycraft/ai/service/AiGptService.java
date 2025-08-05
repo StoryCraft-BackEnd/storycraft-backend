@@ -87,7 +87,7 @@ public class AiGptService {
                 }
                 
                 **설명이나 여는 말 없이** 위 JSON 형식으로만 응답해줘.
-                """.formatted(keywordStr);
+                """.formatted(keywordStr, level);
 
         String system = "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.";
         String rawJson = sendPrompt(prompt, system, 0.8);
