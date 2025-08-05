@@ -189,14 +189,7 @@ public class AiGptService {
         String rawJson = sendPrompt(prompt, system, 0.7);
 
         try {
-            // GPT가 ```json ... ``` 으로 감쌀 경우 제거
-            rawJson = rawJson
-                    .replaceAll("(?i)^```json", "")
-                    .replaceAll("^```", "")
-                    .replaceAll("```$", "")
-                    .trim();
-            return objectMapper.readValue(rawJson, new TypeReference<>() {
-            });
+            return objectMapper.readValue(rawJson, new TypeReference<>() {});
 
         } catch (Exception e) {
             throw new RuntimeException("GPT 퀴즈 응답 파싱 실패: " + e.getMessage());
