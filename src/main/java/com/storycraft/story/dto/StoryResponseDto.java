@@ -40,7 +40,7 @@ public class StoryResponseDto {
     @Schema(description = "수정 일시", example = "2025-01-01T16:00:00", nullable = true)
     private String updatedAt;
 
-    public static StoryResponseDto fromEntity(Story story) {
+    public static StoryResponseDto fromEntity(Story story, StoryProgress progress) {
         return StoryResponseDto.builder()
                 .storyId(story.getId())
                 .title(story.getTitle())
