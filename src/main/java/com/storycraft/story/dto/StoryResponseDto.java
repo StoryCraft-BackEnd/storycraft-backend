@@ -48,6 +48,8 @@ public class StoryResponseDto {
                 .contentKr(story.getContentKr())
                 .keywords(story.getKeywords())
                 .createdAt(story.getCreatedAt().toString())
+                .updatedAt(story.getUpdatedAt() != null ? story.getUpdatedAt().toString() : null)
+                .progress(progress != null ? StoryProgressResponseDto.fromEntity(progress) : null)
                 .build();
     }
 }
