@@ -59,6 +59,15 @@ public class AiGptService {
         List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
         Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
 
+        return ((String) message.get("content"))
+                .replaceAll("(?i)^```json", "")
+                .replaceAll("^```", "")
+                .replaceAll("```$", "")
+                .trim();
+    }
+
+    //동화 신규 생성
+    public StoryContentDto generateStoryContent(List<String> keyword, String level) {
         String keywordStr = String.join(", ", keyword);
 
         String prompt = """
