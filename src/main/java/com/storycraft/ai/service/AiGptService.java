@@ -92,8 +92,6 @@ public class AiGptService {
         String system = "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.";
         String rawJson = sendPrompt(prompt, system, 0.8);
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
 
         List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
         Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
