@@ -89,12 +89,8 @@ public class AiGptService {
                 **설명이나 여는 말 없이** 위 JSON 형식으로만 응답해줘.
                 """.formatted(keywordStr);
 
-        Map<String, Object> user = Map.of("role", "user", "content", prompt);
-        Map<String, Object> body = Map.of(
-                "model", gptModel,
-                "messages", List.of(system, user),
-                "temperature", 0.8
-        );
+        String system = "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.";
+        String rawJson = sendPrompt(prompt, system, 0.8);
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
