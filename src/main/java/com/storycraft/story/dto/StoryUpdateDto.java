@@ -13,4 +13,7 @@ public class StoryUpdateDto {
 
     @Schema(description = "수정할 키워드 목록", example = "[\"고양이\", \"숲\", \"우정\"]")
     private List<String> keywords;
+
+    @Schema(description = "자녀 ID", example = "1")
+    private Long childId;
 }
