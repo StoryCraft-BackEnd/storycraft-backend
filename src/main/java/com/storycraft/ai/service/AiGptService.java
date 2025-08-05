@@ -98,13 +98,6 @@ public class AiGptService {
         String rawJson = (String) message.get("content");
 
         try {
-            // GPT가 ```json ... ``` 으로 감쌀 경우 제거
-            rawJson = rawJson
-                    .replaceAll("(?i)^```json", "")
-                    .replaceAll("^```", "")
-                    .replaceAll("```$", "")
-                    .trim();
-
             Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
             return new StoryContentDto(
                     parsed.getOrDefault("title", "제목 없음").trim(),
