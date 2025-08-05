@@ -104,7 +104,7 @@ public class StoryController {
         }
 
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyService.getStory(id))
+                new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyDto)
         );
     }
 
