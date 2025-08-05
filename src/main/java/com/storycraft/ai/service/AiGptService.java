@@ -32,28 +32,54 @@ public class AiGptService {
         this.gptUrl = dotenv.get("OPENAI_GPT_URL");
     }
 
-    public StoryContentDto generateStoryContent(List<String> keyword) {
+    //공통 GPT 호출
+    public String sendPrompt(String prompt, String systemContent, double temperature) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-
         Map<String, Object> system = Map.of(
-                "role","system",
-                "content", "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.");
+                "role", "system",
+                "content", systemContent
+        );
 
+        Map<String, Object> user = Map.of("role", "user", "content", prompt);
+        Map<String, Object> body = Map.of(
+                "model", gptModel,
+                "messages", List.of(system, user),
+                "temperature", temperature
+        );
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
+
+        List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
+        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
+
+        return ((String) message.get("content"))
+                .replaceAll("(?i)^```json", "")
+                .replaceAll("^```", "")
+                .replaceAll("```$", "")
+                .trim();
+    }
+
+    //동화 신규 생성
+    public StoryContentDto generateStoryContent(List<String> keyword, String level) {
         String keywordStr = String.join(", ", keyword);
 
         String prompt = """
                 다음 JSON 형식으로 유아 영어 교육용 동화를 만들어줘.
                 조건:
                 - 키워드: %s
+                - 난이도: %s
                 - 총 15개의 단락으로 구성해줘.
                 - 각 단락에는 반드시 **1문장만** 포함시켜줘.
                 - 각 단락은 줄바꿈 기호 **\\n\\n** 으로 구분해줘.
                 - 영어 본문 외에 **한글 해석도 함께 포함**해줘.
+                - 주어진 난이도에 맞는 어휘와 문법을 사용해서 유아 교육용 영어 동화로 만들어줘.
+                - 반드시 이야기 마무리는 감상이나 배운 점으로 마무리되게 해줘.
                 
                 JSON 형식 (예시):
                 {
@@ -63,58 +89,64 @@ public class AiGptService {
                 }
                 
                 **설명이나 여는 말 없이** 위 JSON 형식으로만 응답해줘.
-                """.formatted(keywordStr);
+                """.formatted(keywordStr, level);
 
-        Map<String, Object> user = Map.of("role", "user", "content", prompt);
-        Map<String, Object> body = Map.of(
-                "model", gptModel,
-                "messages", List.of(system, user),
-                "temperature", 0.8
-        );
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
-
-        List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
-        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
-        String rawJson = (String) message.get("content");
+        String system = "너는 유아를 위한 따뜻하고 창의적인 동화를 쓰는 작가야.";
+        String rawJson = sendPrompt(prompt, system, 0.8);
 
         try {
-            // GPT가 ```json ... ``` 으로 감쌀 경우 제거
-            rawJson = rawJson
-                    .replaceAll("(?i)^```json", "")
-                    .replaceAll("^```", "")
-                    .replaceAll("```$", "")
-                    .trim();
-
             Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
-            String title = parsed.getOrDefault("title", "동화 제목 없음").trim();
-            String content = parsed.getOrDefault("content", "").trim();
-            String contentKr = parsed.getOrDefault("contentKr", "").trim();
-
-            if (title.length() > 255) {
-                title = title.substring(0, 255);
-            }
-
-            return new StoryContentDto(title, content, contentKr);
-
+            return new StoryContentDto(
+                    parsed.getOrDefault("title", "제목 없음").trim(),
+                    parsed.getOrDefault("content", "").trim(),
+                    parsed.getOrDefault("contentKr", "").trim()
+            );
         } catch (Exception e) {
             throw new RuntimeException("GPT 응답 파싱 실패: " + e.getMessage());
         }
     }
 
+
+    public StoryContentDto regenerateStory(List<String> keywords, String originalTitle, String level) {
+        String keywordStr = String.join(", ", keywords);
+
+        String prompt = """
+                아래 조건에 맞춰 기존 동화를 개선한 새로운 버전의 영어 동화를 JSON 형식으로 작성해줘.
+                
+                - 기존 동화 제목: "%s"
+                - 키워드: %s
+                - 난이도: %s
+                - 총 15개의 단락으로 구성 (각 단락은 1문장)
+                - 각 단락은 \\n\\n 으로 구분
+                - 영어 본문과 한국어 해석 포함
+                - 기존 동화 제목을 참고해서 받은 키워드를 기반으로 더욱 흥미롭게 개선
+                
+                JSON 형식 (예시):
+                {
+                  "title": "A Braver Squirrel",
+                  "content": "There once was a squirrel who dreamed of flying.\\n\\n....",
+                  "contentKr": "날고 싶어했던 다람쥐가 있었어요.\\n\\n...."
+                }
+                """.formatted(originalTitle, keywordStr, level);
+
+        String system = "너는 기존 동화를 창의적으로 재작성하는 동화 작가야.";
+        String rawJson = sendPrompt(prompt, system, 0.75);
+
+        try {
+            Map<String, String> parsed = objectMapper.readValue(rawJson, Map.class);
+            return new StoryContentDto(
+                    parsed.getOrDefault("title", "제목 없음").trim(),
+                    parsed.getOrDefault("content", "").trim(),
+                    parsed.getOrDefault("contentKr", "").trim()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("GPT 동화 재생성 파싱 실패: " + e.getMessage());
+        }
+    }
+
+
+
     public List<AiQuizResponseDto> generateQuizFromContentAndKeywords(String content, List<String> keywords) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
-
-        Map<String, Object> system = Map.of(
-                "role", "system",
-                "content", "너는 유아를 위한 교육적인 퀴즈를 잘 만드는 AI야."
-        );
-
         String keywordStr = String.join(", ", keywords);
         //TODO: 추후 총 10개의 퀴즈 생성으로 수정
         String prompt = """
@@ -141,70 +173,14 @@ public class AiGptService {
                 ]
                 """.formatted(content, keywordStr);
 
-        Map<String, Object> user = Map.of("role", "user", "content", prompt);
-        Map<String, Object> body = Map.of(
-                "model", gptModel,
-                "messages", List.of(system, user),
-                "temperature", 0.7
-        );
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
-
-        List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
-        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
-        String rawJson = (String) message.get("content");
+        String system = "너는 유아를 위한 교육적인 퀴즈를 잘 만드는 AI야.";
+        String rawJson = sendPrompt(prompt, system, 0.7);
 
         try {
-            // GPT가 ```json ... ``` 으로 감쌀 경우 제거
-            rawJson = rawJson
-                    .replaceAll("(?i)^```json", "")
-                    .replaceAll("^```", "")
-                    .replaceAll("```$", "")
-                    .trim();
-            return objectMapper.readValue(rawJson, new TypeReference<>() {
-            });
+            return objectMapper.readValue(rawJson, new TypeReference<>() {});
 
         } catch (Exception e) {
             throw new RuntimeException("GPT 퀴즈 응답 파싱 실패: " + e.getMessage());
-        }
-    }
-
-    public String sendPrompt(String prompt) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
-
-        Map<String, Object> system = Map.of(
-                "role", "system",
-                "content", "너는 유아용 설명과 예문을 잘 만들어주는 지능형 AI야."
-        );
-
-        Map<String, Object> user = Map.of("role", "user", "content", prompt);
-        Map<String, Object> body = Map.of(
-                "model", gptModel,
-                "messages", List.of(system, user),
-                "temperature", 0.7
-        );
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(gptUrl, request, Map.class);
-
-        try {
-            List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
-            Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
-            String content = (String) message.get("content");
-
-            return content
-                    .replaceAll("(?i)^```json", "")
-                    .replaceAll("^```", "")
-                    .replaceAll("```$", "")
-                    .trim();
-
-        } catch (Exception e) {
-            throw new RuntimeException("GPT 응답 파싱 실패: " + e.getMessage());
         }
     }
 }

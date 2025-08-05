@@ -29,10 +29,13 @@ public class StoryService {
 
     // 동화 생성
     public StoryResponseDto createStory(StoryRequestDto dto) {
-        StoryContentDto result = aiGptService.generateStoryContent(dto.getKeywords());
 
         ChildProfile child = childProfileRepository.findById(dto.getChildId())
                 .orElseThrow(() -> new RuntimeException("해당 ID의 아이 프로필을 찾을 수 없습니다"));
+
+        String level = String.valueOf(child.getLearningLevel());
+
+        StoryContentDto result = aiGptService.generateStoryContent(dto.getKeywords(), level);
 
         Story story = Story.builder()
                 .childId(child)
@@ -68,8 +71,13 @@ public class StoryService {
         Story story = storyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
 
+        ChildProfile child = childProfileRepository.findById(dto.getChildId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀 프로필을 찾을 수 없습니다."));
+
+        String level = String.valueOf(child.getLearningLevel());
+
         //새로운 제목/내용 생성
-        StoryContentDto updatedStory = aiGptService.generateStoryContent(dto.getKeywords());
+        StoryContentDto updatedStory = aiGptService.regenerateStory(dto.getKeywords(), story.getTitle(), level);
 
         //동화 업데이트
         story.updateContent(

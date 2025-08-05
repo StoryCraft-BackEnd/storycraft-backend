@@ -3,10 +3,9 @@ package com.storycraft.story.controller;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.profile.repository.ChildProfileRepository;
-import com.storycraft.story.dto.StoryRequestDto;
-import com.storycraft.story.dto.StoryResponseDto;
-import com.storycraft.story.dto.StorySectionDto;
-import com.storycraft.story.dto.StoryUpdateDto;
+import com.storycraft.story.dto.*;
+import com.storycraft.story.entity.StoryProgress;
+import com.storycraft.story.service.StoryProgressService;
 import com.storycraft.story.service.StorySectionService;
 import com.storycraft.story.service.StoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/stories")
@@ -33,6 +34,7 @@ public class StoryController {
     private final StoryService storyService;
     private final StorySectionService storySectionService;
     private final ChildProfileRepository childProfileRepository;
+    private final StoryProgressService storyProgressService;
 
     @Operation(summary = "동화 생성", description = "prompt로 AI 기반 동화를 생성합니다.")
     @ApiResponses(value = {
@@ -92,10 +94,19 @@ public class StoryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getStory(
             @Parameter(description = "조회할 동화 ID", example = "1")
-            @PathVariable(name = "id") Long id
+            @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1")
+            @RequestParam(name = "childId") Long childId
     ) {
+        StoryResponseDto storyDto = storyService.getStory(id);
+        Optional<StoryProgress> progressOpt = storyProgressService.findByStoryIdAndChildId(id, childId);
+
+        if (progressOpt.isPresent()) {
+            storyDto.setProgress(StoryProgressResponseDto.fromEntity(progressOpt.get()));
+        }
+
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyService.getStory(id))
+                new ApiResponseDto<>(200, "동화 조회에 성공했습니다.", storyDto)
         );
     }
 

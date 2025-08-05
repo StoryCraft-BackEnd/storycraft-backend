@@ -1,6 +1,7 @@
 package com.storycraft.story.dto;
 
 import com.storycraft.story.entity.Story;
+import com.storycraft.story.entity.StoryProgress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,13 +32,16 @@ public class StoryResponseDto {
     @Schema(description = "동화 생성에 사용된 키워드 목록", example = "[\"고양이\", \"숲\", \"우정\"]")
     private List<String> keywords;
 
+    @Schema(description = "학습 상태 정보")
+    private StoryProgressResponseDto progress;
+
     @Schema(description = "생성일시", example = "2025-01-01T15:00:00")
     private String createdAt;
 
     @Schema(description = "수정 일시", example = "2025-01-01T16:00:00", nullable = true)
     private String updatedAt;
 
-    public static StoryResponseDto fromEntity(Story story) {
+    public static StoryResponseDto fromEntity(Story story, StoryProgress progress) {
         return StoryResponseDto.builder()
                 .storyId(story.getId())
                 .title(story.getTitle())
@@ -45,6 +49,12 @@ public class StoryResponseDto {
                 .contentKr(story.getContentKr())
                 .keywords(story.getKeywords())
                 .createdAt(story.getCreatedAt().toString())
+                .updatedAt(story.getUpdatedAt() != null ? story.getUpdatedAt().toString() : null)
+                .progress(progress != null ? StoryProgressResponseDto.fromEntity(progress) : null)
                 .build();
+    }
+
+    public static StoryResponseDto fromEntity(Story story) {
+        return fromEntity(story, null);
     }
 }
