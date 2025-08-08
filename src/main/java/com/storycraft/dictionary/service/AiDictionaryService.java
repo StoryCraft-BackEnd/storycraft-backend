@@ -41,6 +41,12 @@ public class AiDictionaryService {
                 .build();
     }
 
+    public List<DictionaryWords> fetchWordsWithGpt(Set<String> words) {
+        return words.stream()
+                .map(this::fetchWordWithGpt)
+                .toList();
+    }
+
     private String extractValue(String text, String key) {
         return Arrays.stream(text.split("\n"))
                 .filter(line -> line.startsWith(key))
