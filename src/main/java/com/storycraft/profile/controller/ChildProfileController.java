@@ -1,6 +1,6 @@
 package com.storycraft.profile.controller;
 
-import com.storycraft.auth.jwt.SecurityUtil;
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.dto.ChildProfileCreateRequestDto;
 import com.storycraft.profile.dto.ChildProfileIdResponseDto;
@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +27,10 @@ public class ChildProfileController {
     @Operation(summary = "자녀 프로필 생성")
     @PostMapping
     public ResponseEntity<ApiResponseDto<ChildProfileIdResponseDto>> createChildProfile(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody ChildProfileCreateRequestDto request
     ) {
-        String email = SecurityUtil.getCurrentUserEmail(); // 현재 로그인한 사용자 이메일
+        String email = userDetails.getUser().getEmail();
         ChildProfileIdResponseDto response = childProfileService.createChildProfile(email, request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -37,8 +39,10 @@ public class ChildProfileController {
 
     @Operation(summary = "자녀 프로필 목록 조회")
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<ChildProfileResponseDto>>> getChildProfiles() {
-        String email = SecurityUtil.getCurrentUserEmail();
+    public ResponseEntity<ApiResponseDto<List<ChildProfileResponseDto>>> getChildProfiles(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        String email = userDetails.getUser().getEmail();
         List<ChildProfileResponseDto> response = childProfileService.getChildProfiles(email);
 
         if (response.isEmpty()) {
@@ -53,9 +57,10 @@ public class ChildProfileController {
     @Operation(summary = "자녀 프로필 개별 조회")
     @GetMapping("/{childId}")
     public ResponseEntity<ApiResponseDto<ChildProfileResponseDto>> getChildProfile(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long childId
     ) {
-        String email = SecurityUtil.getCurrentUserEmail();
+        String email = userDetails.getUser().getEmail();
         ChildProfileResponseDto response = childProfileService.getChildProfile(email, childId);
 
         return ResponseEntity.ok(
@@ -65,10 +70,11 @@ public class ChildProfileController {
     @Operation(summary = "자녀 프로필 수정")
     @PutMapping("/{childId}")
     public ResponseEntity<ApiResponseDto<ChildProfileIdResponseDto>> updateChildProfile(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long childId,
             @RequestBody ChildProfileUpdateRequestDto request
     ) {
-        String email = SecurityUtil.getCurrentUserEmail();
+        String email = userDetails.getUser().getEmail();
         ChildProfileIdResponseDto response = childProfileService.updateChildProfile(email, childId, request);
 
         return ResponseEntity.ok(
@@ -78,9 +84,10 @@ public class ChildProfileController {
     @Operation(summary = "자녀 프로필 삭제")
     @DeleteMapping("/{childId}")
     public ResponseEntity<ApiResponseDto<ChildProfileIdResponseDto>> deleteChildProfile(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long childId
     ) {
-        String email = SecurityUtil.getCurrentUserEmail();
+        String email = userDetails.getUser().getEmail();
         ChildProfileIdResponseDto response = childProfileService.deleteChildProfile(email, childId);
 
         return ResponseEntity.ok(
