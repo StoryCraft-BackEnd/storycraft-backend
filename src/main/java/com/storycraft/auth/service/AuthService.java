@@ -7,6 +7,7 @@ import com.storycraft.auth.repository.AuthTokenRepository;
 import com.storycraft.global.exception.CustomException;
 import com.storycraft.global.exception.ErrorCode;
 import com.storycraft.user.entity.User;
+import com.storycraft.user.entity.UserRole;
 import com.storycraft.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +35,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .nickname(request.getNickname())
-                .role(request.getRole() != null ? request.getRole() : "parent")
+                .role(UserRole.fromValue(request.getRole()))
                 .loginType("email") // 이메일 회원가입
                 .build();
 

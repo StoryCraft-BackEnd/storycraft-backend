@@ -32,10 +32,13 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, unique = true, length = 50)
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private String role;
+    @Builder.Default
+    private UserRole role = UserRole.PARENT;
 
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private String loginType = "email"; // "email" 또는 "google"
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

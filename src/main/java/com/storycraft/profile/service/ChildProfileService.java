@@ -79,6 +79,24 @@ public class ChildProfileService {
         );
     }
 
+    /**
+     * 유저 ID와 자녀 ID로 자녀 프로필을 검증하고 반환
+     * @param userId 유저 ID
+     * @param childId 자녀 ID
+     * @return 검증된 자녀 프로필
+     */
+    @Transactional(readOnly = true)
+    public ChildProfile findByIdAndUserId(Long childId, Long userId) {
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHILD_PROFILE_NOT_FOUND));
+
+        if (!child.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.CHILD_PROFILE_ACCESS_DENIED);
+        }
+
+        return child;
+    }
+
     @Transactional
     public ChildProfileIdResponseDto updateChildProfile(String email, Long childId, ChildProfileUpdateRequestDto request) {
         ChildProfile child = childProfileRepository.findById(childId)
