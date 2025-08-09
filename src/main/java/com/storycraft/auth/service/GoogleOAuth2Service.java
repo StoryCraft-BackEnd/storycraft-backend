@@ -12,6 +12,7 @@ import com.storycraft.auth.entity.AuthToken;
 import com.storycraft.global.exception.CustomException;
 import com.storycraft.global.exception.ErrorCode;
 import com.storycraft.user.entity.User;
+import com.storycraft.user.entity.UserRole;
 import com.storycraft.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -97,7 +97,7 @@ public class GoogleOAuth2Service {
         }
 
         // 새 구글 사용자 생성 (role은 "parent"로 고정)
-        User user = createNewGoogleUser(email, name, picture, nickname, "parent");
+        User user = createNewGoogleUser(email, name, picture, nickname, UserRole.PARENT);
 
         // JWT 토큰 생성
         String accessToken = jwtTokenProvider.createAccessToken(user);
@@ -118,16 +118,16 @@ public class GoogleOAuth2Service {
         // 기본 닉네임 생성 (임시)
         String nickname = generateUniqueNickname(name);
         
-        return createNewGoogleUser(email, name, picture, nickname, "parent");
+        return createNewGoogleUser(email, name, picture, nickname, UserRole.PARENT);
     }
 
-    private User createNewGoogleUser(String email, String name, String picture, String nickname, String role) {
+    private User createNewGoogleUser(String email, String name, String picture, String nickname, UserRole role) {
         User user = User.builder()
                 .email(email)
                 .password(passwordEncoder.encode(UUID.randomUUID().toString())) // 랜덤 비밀번호 (구글 로그인용)
                 .name(name)
                 .nickname(nickname)
-                .role(role != null ? role : "parent")
+                .role(role != null ? role : UserRole.PARENT)
                 .loginType("google") // 구글 로그인 타입 설정
                 .build();
 
