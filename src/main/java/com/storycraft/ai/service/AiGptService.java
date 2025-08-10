@@ -115,6 +115,7 @@ public class AiGptService {
         String prompt = """
                 아래 조건에 맞춰 기존 동화를 개선한 새로운 버전의 영어 동화를 JSON 형식으로 작성해줘.
                 
+                조건:
                 - 기존 동화 제목: "%s"
                 - 키워드: %s
                 - 난이도: %s
@@ -152,15 +153,21 @@ public class AiGptService {
         String keywordStr = String.join(", ", keywords);
         //TODO: 추후 총 10개의 퀴즈 생성으로 수정
         String prompt = """
-                아래 동화 내용과 하이라이트된 단어를 중심으로 1개의 객관식 퀴즈를 만들어줘.
+                아래 '동화 내용'을 복습할 수 있도록, 하이라이트된 '중요 단어'를 **정답으로 하는** 객관식 퀴즈를 **정확히 10문제** 만들어줘.
                 반드시 JSON 형식으로만 응답해줘. 설명 문장 없이.
                 
-                동화 내용:
-                %s
+                조건:
+                - 보기 중 **정확히 한 개**는 아래 '중요 단어' 목록에 포함된 **원형 그대로의 단어**여야 한다.
+                - 그 **중요 단어 보기**가 **정답**이 되도록 설정한다.
+                - 나머지 3개 보기는 동화 맥락에 맞는 오답(혼동 유발 가능하지만 틀린 내용).
+                - 보기 텍스트에는 따옴표, 별표(**) 같은 마크업 없이 **단어 자체**만 넣는다.
+                - 각 문항에서 같은 단어를 중복 사용하지 않는다.
                 
-                하이라이트 키워드: %s
+                동화 내용: %s
                 
-                예시:
+                중요 단어: %s
+                
+                JSON 형식 (예시):
                 [
                     {
                         "question": "Which animal went on the Adventure?",
@@ -175,7 +182,7 @@ public class AiGptService {
                 ]
                 """.formatted(content, keywordStr);
 
-        String system = "너는 유아를 위한 교육적인 퀴즈를 잘 만드는 AI야.";
+        String system = "너는 유아를 위한 교츅적 복습 퀴즈를 정확한 JSON으로 생성하는 AI야.";
         String rawJson = sendPrompt(prompt, system, 0.7);
 
         try {

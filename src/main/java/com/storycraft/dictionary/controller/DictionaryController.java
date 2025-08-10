@@ -75,11 +75,11 @@ public class DictionaryController {
 
 
 
-    @Operation(summary = "단어 저장", description = "영어 단어를 사용자 사전에 저장합니다.")
+    @Operation(summary = "단어 조회 및 저장", description = "영어 단어를 조회하고 사용자 사전에 저장합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
-                    description = "단어 저장에 성공했습니다.",
+                    description = "단어 조회 및 저장에 성공했습니다.",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = SaveWordResponseDto.class)
@@ -94,7 +94,7 @@ public class DictionaryController {
             @Parameter(description = "하이라이트된 단어") @RequestParam(name = "word") String word
     ) {
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "단어 저장에 성공했습니다.", dictionaryService.savedWord(userId, childId, word))
+                new ApiResponseDto<>(201, "단어 조회 및 저장에 성공했습니다.", dictionaryService.savedWord(userId, childId, word))
         );
     }
 

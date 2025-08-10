@@ -9,7 +9,8 @@ import java.util.List;
 
 @Repository
 public interface QuizSubmitRepository extends JpaRepository<QuizSubmit, Long> {
-    List<QuizSubmit> findByChildId(ChildProfile childId);
+    List<QuizSubmit> findByChild_Id(Long childId);
 
+    // Quiz PK 값(Long)으로 검색
     List<QuizSubmit> findByQuizCreate_QuizId(Long quizId);
 }

@@ -12,8 +12,11 @@ import java.util.Map;
 @Schema(description = "퀴즈 응답 DTO")
 public class QuizCreateResponseDto {
 
-    @Schema(description = "퀴즈 ID", example = "101")
+    @Schema(description = "퀴즈 ID", example = "1")
     private Long quizId;
+
+    @Schema(description = "동화 ID", example = "1")
+    private Long storyId;
 
     @Schema(description = "문제 문장", example = "Which animal went on the Adventure?")
     private String question;
