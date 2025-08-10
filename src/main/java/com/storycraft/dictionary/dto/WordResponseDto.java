@@ -29,4 +29,16 @@ public class WordResponseDto {
 
     @Schema(description = "저장 시각", example = "2025-05-12T22:15:30")
     private LocalDateTime savedAt;
+
+
+    public static WordResponseDto fromEntity(DictionaryWords entity) {
+        return WordResponseDto.builder()
+                .wordId(entity.getWordId())
+                .word(entity.getWord())
+                .meaning(entity.getMeaning())
+                .exampleEng(entity.getExampleEng())
+                .exampleKor(entity.getExampleKor())
+                .savedAt(entity.getSavedAt()) // createdAt 필드가 있어야 함
+                .build();
+    }
 }
