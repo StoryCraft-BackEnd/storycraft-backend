@@ -1,6 +1,7 @@
 package com.storycraft.quiz.entity;
 
 import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.quiz.dto.QuizResultDto;
 import com.storycraft.quiz.dto.QuizSubmitResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,7 +27,7 @@ public class QuizSubmit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "child_id", nullable = false)
-    private ChildProfile childId;
+    private ChildProfile child;
 
     @Column(name = "selected_answer", nullable = false)
     private String selectedAnswer;
@@ -45,14 +46,14 @@ public class QuizSubmit {
     }
 
 
-    // 사용자에게 반환할 API 응답을 위한 메소드 toDto
-    public QuizSubmitResponseDto toDto() {
-        return QuizSubmitResponseDto.builder()
+    /** 문항별 결과 DTO로 변환 */
+    public QuizResultDto toResultDto() {
+        return QuizResultDto.builder()
                 .quizId(this.quizCreate.getQuizId())
-                .childId(this.childId)
+                .question(this.quizCreate.getQuestion())
+                .selectedAnswer(this.selectedAnswer)
+                .correctAnswer(String.valueOf(this.quizCreate.getCorrectAnswer())) // char/String 모두 대응
                 .isCorrect(this.isCorrect)
-                .correctAnswer(String.valueOf(this.quizCreate.getCorrectAnswer()))
-                .submittedAt(this.submittedAt.toString())
                 .build();
     }
 

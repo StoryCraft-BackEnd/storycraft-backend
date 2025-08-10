@@ -136,7 +136,7 @@ public class DictionaryService {
     }
 
     //단어 추출 메소드
-    private Set<String> extractWords(String content) {
+    public Set<String> extractWords(String content) {
         Set<String> wordSet = new HashSet<>();
         Matcher matcher = Pattern.compile("\\*\\*(.*?)\\*\\*").matcher(content);
         while (matcher.find()) {
@@ -144,6 +144,14 @@ public class DictionaryService {
             if (word.length() > 1) wordSet.add(word);
         }
         return wordSet;
+    }
+
+    //단어 추출 메소드 오버로딩
+    public Set<String> extractWordsByStoryId(Long storyId) {
+        String content = storyRepository.findById(storyId)
+                .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."))
+                .getContent();
+        return extractWords(content);
     }
 
 }

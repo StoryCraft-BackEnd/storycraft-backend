@@ -54,7 +54,7 @@ public class StatisticsService {
         Long learnedWords = (long) savedWordsRepository.findByChildId(child).size();
 
         // 4. 푼 퀴즈 수 조회
-        Long solvedQuizzes = (long) quizSubmitRepository.findByChildId(child).size();
+        Long solvedQuizzes = (long) quizSubmitRepository.findByChild_Id(child.getId()).size();
 
         // 5. 총 학습 시간 조회 (분 단위)
         Long totalLearningTimeMinutes = storyProgressRepository.findAllByChild(child)

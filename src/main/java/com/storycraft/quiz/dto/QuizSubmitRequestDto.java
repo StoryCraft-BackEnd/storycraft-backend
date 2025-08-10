@@ -12,6 +12,9 @@ public class QuizSubmitRequestDto {
     @Schema(description = "퀴즈를 푼 자녀 ID", example = "123")
     private ChildProfile childId;
 
+    @Schema(description = "퀴즈 ID", example = "1")
+    private Long quizId;
+
     @Schema(description = "사용자가 선택한 보기", example = "C")
     private String selectedAnswer;
 }
