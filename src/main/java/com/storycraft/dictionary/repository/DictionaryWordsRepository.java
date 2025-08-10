@@ -9,4 +9,8 @@ import java.util.Optional;
 @Repository
 public interface DictionaryWordsRepository extends JpaRepository<DictionaryWords, Long> {
     Optional<DictionaryWords> findByWord(String word);
+
+    boolean existsByWord(String word);
+
+    List<DictionaryWords> findAllByWordIn(Set<String> words);
 }
