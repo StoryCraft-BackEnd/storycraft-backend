@@ -20,6 +20,25 @@ public class QuizService {
 
     private final QuizCreateRepository quizCreateRepository;
     private final QuizSubmitRepository quizSubmitRepository;
+    private final StoryRepository storyRepository;
+    private final ChildProfileRepository childProfileRepository;
+    private final AiGptService aiGptService;
+    private final DictionaryService dictionaryService;
+
+    //퀴즈 생성
+    public List<QuizCreateResponseDto> createQuizList(Long storyId, List<String> keywords) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
+
+        if (keywords == null || keywords.isEmpty()) {
+            keywords = new ArrayList<>(dictionaryService.extractWords(story.getContent())); // Set -> List
+        }
+        if (keywords.isEmpty()) {
+            throw new IllegalArgumentException("중요 단어가 없습니다. 동화의 ** 표시 또는 단어 추출 로직을 확인해주세요.");
+        }
+
+        List<AiQuizResponseDto> aiQuizzes =
+                aiGptService.generateQuizFromContentAndKeywords(story.getContent(), keywords);
 
     /**
      *  퀴즈 생성 (GPT 기반 -> 추후 연동 예정)
