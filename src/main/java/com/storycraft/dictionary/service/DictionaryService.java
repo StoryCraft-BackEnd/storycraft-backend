@@ -8,6 +8,8 @@ import com.storycraft.dictionary.repository.DictionaryWordsRepository;
 import com.storycraft.dictionary.repository.SavedWordsRepository;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.profile.repository.ChildProfileRepository;
+import com.storycraft.story.entity.Story;
+import com.storycraft.story.repository.StoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
