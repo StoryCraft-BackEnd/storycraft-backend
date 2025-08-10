@@ -45,6 +45,33 @@ public class DictionaryController {
         );
     }
 
+    @Operation(summary = "동화 ID로 단어 추출 및 자녀에게 단어 저장", description = "동화 본문에서 **로 감싼 단어들을 추출하고, 단어 정보를 GPT로 조회하여 DB에 저장 후 자녀에게 연동합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "단어 저장 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = SaveWordResponseDto.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PostMapping("/words/save-by-story")
+    public ResponseEntity<?> extractAndSaveWordsByStoryId(
+            @Parameter(description = "동화 ID", example = "1")
+            @RequestParam(name = "storyId") Long storyId,
+
+            @Parameter(description = "자녀 프로필 ID", example = "3")
+            @RequestParam(name = "childId") Long childId
+    ) {
+        List<SaveWordResponseDto> savedWords = dictionaryService.extractWordsAndSave(storyId, childId);
+        return ResponseEntity.ok(
+                new ApiResponseDto<>(200, "단어 저장에 성공했습니다", savedWords)
+        );
+    }
+
+
 
     @Operation(summary = "단어 저장", description = "영어 단어를 사용자 사전에 저장합니다.")
     @ApiResponses(value = {
