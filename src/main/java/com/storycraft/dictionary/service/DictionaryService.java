@@ -128,5 +128,15 @@ public class DictionaryService {
         savedWordsRepository.delete(saved);
     }
 
+    //단어 추출 메소드
+    private Set<String> extractWords(String content) {
+        Set<String> wordSet = new HashSet<>();
+        Matcher matcher = Pattern.compile("\\*\\*(.*?)\\*\\*").matcher(content);
+        while (matcher.find()) {
+            String word = matcher.group(1).toLowerCase();
+            if (word.length() > 1) wordSet.add(word);
+        }
+        return wordSet;
+    }
 
 }
