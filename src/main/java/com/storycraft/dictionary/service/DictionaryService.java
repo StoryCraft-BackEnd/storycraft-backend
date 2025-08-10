@@ -22,6 +22,7 @@ public class DictionaryService {
     private final SavedWordsRepository savedWordsRepository;
     private final ChildProfileRepository childProfileRepository;
     private final AiDictionaryService aiDictionaryService;
+    private final StoryRepository storyRepository;
 
 
     //단어 뜻/예문 조회 (DB에 없을 경우 GPT로 단어 정보 생성 후 저장)
