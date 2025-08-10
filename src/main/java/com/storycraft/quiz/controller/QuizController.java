@@ -76,7 +76,7 @@ public class QuizController {
                             examples = {
                                     @ExampleObject(
                                             name = "퀴즈 10문항 제출 예시",
-                                            description = "퀴즈 10문항 제출 예시(동화 ID 맞춰줘야함)",
+                                            description = "퀴즈 10문항 제출 예시(퀴즈 ID 맞춰줘야함)",
                                             value = """
                             [
                               { "quizId": 1,  "selectedAnswer": "A" },
