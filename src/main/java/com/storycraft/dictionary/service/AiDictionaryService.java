@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +41,12 @@ public class AiDictionaryService {
                 .exampleEng(exampleEng)
                 .exampleKor(exampleKor)
                 .build();
+    }
+
+    public List<DictionaryWords> fetchWordsWithGpt(Set<String> words) {
+        return words.stream()
+                .map(this::fetchWordWithGpt)
+                .toList();
     }
 
     private String extractValue(String text, String key) {

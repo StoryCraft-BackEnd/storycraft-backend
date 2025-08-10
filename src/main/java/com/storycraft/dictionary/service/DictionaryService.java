@@ -8,10 +8,16 @@ import com.storycraft.dictionary.repository.DictionaryWordsRepository;
 import com.storycraft.dictionary.repository.SavedWordsRepository;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.profile.repository.ChildProfileRepository;
+import com.storycraft.story.entity.Story;
+import com.storycraft.story.repository.StoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +28,7 @@ public class DictionaryService {
     private final SavedWordsRepository savedWordsRepository;
     private final ChildProfileRepository childProfileRepository;
     private final AiDictionaryService aiDictionaryService;
+    private final StoryRepository storyRepository;
 
 
     //단어 뜻/예문 조회 (DB에 없을 경우 GPT로 단어 정보 생성 후 저장)
@@ -57,6 +64,49 @@ public class DictionaryService {
         return savedWordsRepository.save(saved).toDto();
     }
 
+    //단어 추출 및 저장 메소드
+    public List<SaveWordResponseDto> extractWordsAndSave(Long storyId, Long childId) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 동화를 찾을 수 없습니다."));
+
+        String content = story.getContent();
+
+        Set<String> extractedWords = extractWords(content);
+
+        Set<String> newWords = extractedWords.stream()
+                .filter(word -> !dictionaryWordsRepository.existsByWord(word))
+                .collect(Collectors.toSet());
+
+        List<DictionaryWords> newWordEntities = aiDictionaryService.fetchWordsWithGpt(newWords);
+
+        dictionaryWordsRepository.saveAll(newWordEntities);
+
+        List<DictionaryWords> allWords = dictionaryWordsRepository.findAllByWordIn(extractedWords);
+
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀 프로필을 찾을 수 없습니다."));
+
+        Set<String> alreadySavedWords = savedWordsRepository.findByChildId(child)
+                .stream()
+                .map(sw -> sw.getWord().getWord())
+                .collect(Collectors.toSet());
+
+        List<SavedWords> savedWordEntities = allWords.stream()
+                .filter(word -> !alreadySavedWords.contains(word.getWord()))
+                .map(word -> SavedWords.builder()
+                        .childId(child)
+                        .word(word)
+                        .build())
+                .toList();
+
+        savedWordsRepository.saveAll(savedWordEntities);
+
+        return savedWordEntities.stream()
+                .map(SavedWords::toDto)
+                .toList();
+    }
+
+
     //단어 조회 응답용 DTO 반환
     public WordResponseDto getWord(String word) {
         DictionaryWords dictionaryWords = getOrFetchWord(word);
@@ -85,5 +135,15 @@ public class DictionaryService {
         savedWordsRepository.delete(saved);
     }
 
+    //단어 추출 메소드
+    private Set<String> extractWords(String content) {
+        Set<String> wordSet = new HashSet<>();
+        Matcher matcher = Pattern.compile("\\*\\*(.*?)\\*\\*").matcher(content);
+        while (matcher.find()) {
+            String word = matcher.group(1).toLowerCase();
+            if (word.length() > 1) wordSet.add(word);
+        }
+        return wordSet;
+    }
 
 }
