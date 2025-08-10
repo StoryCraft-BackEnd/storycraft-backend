@@ -1,5 +1,6 @@
 package com.storycraft.dictionary.dto;
 
+import com.storycraft.dictionary.entity.DictionaryWords;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
