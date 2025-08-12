@@ -90,8 +90,8 @@ public class IllustrationService {
     }
 
     // 삽화 목록 조회
-    public List<IllustrationResponseDto> getIllustraitonList() {
-        return illustrationRepository.findAll().stream()
+    public List<IllustrationResponseDto> getIllustraitonList(ChildProfile child) {
+        return illustrationRepository.findAllByStory_ChildId(child).stream()
                 .map(Illustration::toDto)
                 .toList();
     }
