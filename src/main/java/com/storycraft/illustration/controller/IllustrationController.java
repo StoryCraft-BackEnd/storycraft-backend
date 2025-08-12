@@ -70,7 +70,13 @@ public class IllustrationController {
     })
     @PostMapping("/sections")
     public ResponseEntity<ApiResponseDto<SectionIllustrationResponseDto>> createIllustrationsByStory(
-            @RequestBody @Valid SectionIllustrationRequestDto requestDto) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(name = "childId") Long childId,
+            @RequestBody @Valid SectionIllustrationRequestDto requestDto
+    ) {
+        Long userId= userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201,"단락별 삽화 생성에 성공했습니다.",illustrationService.createSectionIllustrations(requestDto.getStoryId()))
         );
