@@ -6,6 +6,7 @@ import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.dto.SectionIllustrationRequestDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.service.IllustrationService;
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
