@@ -158,8 +158,9 @@ public class StoryController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStory(
-            @Parameter(name = "id", description = "수정할 동화 ID", example = "1")
-            @PathVariable(name = "id") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "수정할 동화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId,
             @RequestBody StoryUpdateDto dto
     ) {
         Long userId = userDetails.getUser().getId();
