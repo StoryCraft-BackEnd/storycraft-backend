@@ -82,8 +82,8 @@ public class IllustrationService {
     }
 
     // 삽화 상세 조회
-    public IllustrationResponseDto getIllustration(Long id) {
-        Illustration illustration = illustrationRepository.findById(id)
+    public IllustrationResponseDto getIllustration(Long id, ChildProfile child) {
+        Illustration illustration = illustrationRepository.findByIdAndStory_ChildId(id, child)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 삽화가 존재하지 않습니다."));
 
         return illustration.toDto();
