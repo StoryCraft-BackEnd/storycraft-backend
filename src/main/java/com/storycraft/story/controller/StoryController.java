@@ -1,8 +1,8 @@
 package com.storycraft.story.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.entity.ChildProfile;
-import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.*;
 import com.storycraft.story.entity.StoryProgress;
 import com.storycraft.story.service.StoryProgressService;
@@ -20,7 +20,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import com.storycraft.global.security.OwnershipGuard;
 
 import java.util.Optional;
 
@@ -33,8 +35,8 @@ public class StoryController {
 
     private final StoryService storyService;
     private final StorySectionService storySectionService;
-    private final ChildProfileRepository childProfileRepository;
     private final StoryProgressService storyProgressService;
+    private final OwnershipGuard ownershipGuard;
 
     @Operation(summary = "동화 생성", description = "prompt로 AI 기반 동화를 생성합니다.")
     @ApiResponses(value = {
@@ -50,10 +52,14 @@ public class StoryController {
     })
     @PostMapping
     public ResponseEntity<?> createStory(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId,
             @RequestBody @Valid StoryRequestDto dto
     ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "동화 생성에 성공했습니다.", storyService.createStory(dto))
+                new ApiResponseDto<>(201, "동화 생성에 성공했습니다.", storyService.createStory(child, dto))
         );
     }
 
@@ -71,9 +77,12 @@ public class StoryController {
     })
     @GetMapping("/{id}/sections")
     public ResponseEntity<?> getStorySections(
-            @Parameter(description = "동화 ID", example = "1")
-            @PathVariable(name = "id") Long id
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "동화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단락 조회에 성공했습니다.", storySectionService.getSectionsByStoryId(id))
         );
@@ -93,12 +102,14 @@ public class StoryController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getStory(
-            @Parameter(description = "조회할 동화 ID", example = "1")
-            @PathVariable(name = "id") Long id,
-            @Parameter(description = "자녀 프로필 ID", example = "1")
-            @RequestParam(name = "childId") Long childId
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "조회할 동화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
-        StoryResponseDto storyDto = storyService.getStory(id);
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
+        StoryResponseDto storyDto = storyService.getStory(id, child);
         Optional<StoryProgress> progressOpt = storyProgressService.findByStoryIdAndChildId(id, childId);
 
         if (progressOpt.isPresent()) {
@@ -123,11 +134,11 @@ public class StoryController {
     })
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
-            @Parameter(description = "자녀 ID", example = "1")
-            @RequestParam(name = "id") Long childId
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "id") Long childId
     ) {
-        ChildProfile child = childProfileRepository.findById(childId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 자녀가 존재하지 않습니다"));
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(child))
@@ -148,12 +159,16 @@ public class StoryController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStory(
-            @Parameter(name = "id", description = "수정할 동화 ID", example = "1")
-            @PathVariable(name = "id") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "수정할 동화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId,
             @RequestBody StoryUpdateDto dto
     ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "동화 수정에 성공했습니다.", storyService.updateStory(id, dto))
+                new ApiResponseDto<>(200, "동화 수정에 성공했습니다.", storyService.updateStory(id, child, dto))
         );
     }
 
@@ -171,10 +186,14 @@ public class StoryController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStory(
-            @Parameter(description = "삭제할 동화 ID", example = "1")
-            @PathVariable(name = "id") Long id
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "삭제할 동화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
-        storyService.deleteStory(id);
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
+        storyService.deleteStory(id, child);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화가 성공적으로 삭제되었습니다.", null)
         );

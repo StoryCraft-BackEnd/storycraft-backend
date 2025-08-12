@@ -1,11 +1,13 @@
 package com.storycraft.illustration.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
-import com.storycraft.illustration.dto.IllustrationRequestDto;
+import com.storycraft.global.security.OwnershipGuard;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.dto.SectionIllustrationRequestDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.service.IllustrationService;
+import com.storycraft.profile.entity.ChildProfile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class IllustrationController {
 
     private final IllustrationService illustrationService;
+    private final OwnershipGuard ownershipGuard;
 
 /*    @Operation(summary = "삽화(썸네일) 생성",description = "DALL·E 기반 삽화(썸네일) 이미지를 생성합니다.")
     @ApiResponses(value = {
@@ -69,9 +73,15 @@ public class IllustrationController {
     })
     @PostMapping("/sections")
     public ResponseEntity<ApiResponseDto<SectionIllustrationResponseDto>> createIllustrationsByStory(
-            @RequestBody @Valid SectionIllustrationRequestDto requestDto) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(name = "childId") Long childId,
+            @RequestBody @Valid SectionIllustrationRequestDto requestDto
+    ) {
+        Long userId= userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201,"단락별 삽화 생성에 성공했습니다.",illustrationService.createSectionIllustrations(requestDto.getStoryId()))
+                new ApiResponseDto<>(201,"단락별 삽화 생성에 성공했습니다.",illustrationService.createSectionIllustrations(requestDto.getStoryId(), child))
         );
     }
 
@@ -90,12 +100,14 @@ public class IllustrationController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getIllustration(
-            @Parameter(description = "조회할 삽화 ID", example = "1")
-            @PathVariable(name = "id") Long id
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "조회할 삽화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
-
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "삽화 조회에 성공했습니다.", illustrationService.getIllustration(id))
+                new ApiResponseDto<>(200, "삽화 조회에 성공했습니다.", illustrationService.getIllustration(id, child))
         );
     }
 
@@ -112,9 +124,15 @@ public class IllustrationController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping
-    public ResponseEntity<?> getList() {
+    public ResponseEntity<?> getList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
+    ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "삽화 목록 조회에 성공했습니다.", illustrationService.getIllustraitonList())
+                new ApiResponseDto<>(200, "삽화 목록 조회에 성공했습니다.", illustrationService.getIllustraitonList(child))
         );
     }
 
@@ -132,10 +150,14 @@ public class IllustrationController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteIllustration(
-            @Parameter(description = "삭제할 삽화 ID", example = "1")
-            @PathVariable(name = "id") Long id
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "삭제할 삽화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
-        illustrationService.deleteIllustration(id);
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
+        illustrationService.deleteIllustration(id, child);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "삽화가 성공적으로 삭제 되었습니다.", null)
         );

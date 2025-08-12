@@ -5,9 +5,12 @@ import com.storycraft.story.entity.Story;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StoryRepository extends JpaRepository<Story, Long> {
     List<Story> findAllByChildId(ChildProfile childId);
 
     List<Story> findTop10ByChildIdNot(ChildProfile childId);
+
+    Optional<Story> findByIdAndChildId(Long id, ChildProfile childProfile);
 }

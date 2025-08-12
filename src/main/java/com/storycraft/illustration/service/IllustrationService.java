@@ -2,11 +2,11 @@ package com.storycraft.illustration.service;
 
 
 import com.storycraft.ai.service.AiDalleService;
-import com.storycraft.illustration.dto.IllustrationRequestDto;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.entity.Illustration;
 import com.storycraft.illustration.repository.IllustrationRepository;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.entity.StorySection;
 import com.storycraft.story.repository.StoryRepository;
@@ -53,7 +53,7 @@ public class IllustrationService {
     }*/
 
     //단락별 삽화 생성
-    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId) {
+    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 동화입니다."));
 
@@ -81,26 +81,25 @@ public class IllustrationService {
     }
 
     // 삽화 상세 조회
-    public IllustrationResponseDto getIllustration(Long id) {
-        Illustration illustration = illustrationRepository.findById(id)
+    public IllustrationResponseDto getIllustration(Long id, ChildProfile child) {
+        Illustration illustration = illustrationRepository.findByIdAndStory_ChildId(id, child)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 삽화가 존재하지 않습니다."));
 
         return illustration.toDto();
     }
 
     // 삽화 목록 조회
-    public List<IllustrationResponseDto> getIllustraitonList() {
-        return illustrationRepository.findAll().stream()
+    public List<IllustrationResponseDto> getIllustraitonList(ChildProfile child) {
+        return illustrationRepository.findAllByStory_ChildId(child).stream()
                 .map(Illustration::toDto)
                 .toList();
     }
 
     // 삽화 삭제
-    public void deleteIllustration(Long id) {
-        if (!illustrationRepository.existsById(id)) {
-            throw new IllegalArgumentException("삭제하려는 삽화가 존재하지 않습니다.");
-        }
-        illustrationRepository.deleteById(id);
+    public void deleteIllustration(Long id, ChildProfile child) {
+        Illustration illu = illustrationRepository.findByIdAndStory_ChildId(id, child)
+                .orElseThrow(() -> new IllegalArgumentException("삭제하려는 삽화가 존재하지 않거나 권한이 없습니다."));
+        illustrationRepository.delete(illu);
     }
 
     public String getUrlByStoryId(Long storyId) {

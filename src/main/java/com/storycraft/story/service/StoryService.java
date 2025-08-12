@@ -24,15 +24,10 @@ public class StoryService {
     private final StoryRepository storyRepository;
     private final AiGptService aiGptService;
     private final StorySectionService storySectionService;
-    private final ChildProfileRepository childProfileRepository;
     private final StorySectionRepository storySectionRepository;
 
-    // 동화 생성
-    public StoryResponseDto createStory(StoryRequestDto dto) {
-
-        ChildProfile child = childProfileRepository.findById(dto.getChildId())
-                .orElseThrow(() -> new RuntimeException("해당 ID의 아이 프로필을 찾을 수 없습니다"));
-
+    // 동화 생성(child를 Controller에서 검증 후 주입)
+    public StoryResponseDto createStory(ChildProfile child, StoryRequestDto dto) {
         String level = String.valueOf(child.getLearningLevel());
 
         StoryContentDto result = aiGptService.generateStoryContent(dto.getKeywords(), level);
@@ -52,9 +47,9 @@ public class StoryService {
         return story.toDto();
     }
 
-    // 동화 상세 조회
-    public StoryResponseDto getStory(Long id) {
-        Story story = storyRepository.findById(id)
+    // 동화 상세 조회 (content 소유 제한)
+    public StoryResponseDto getStory(Long id, ChildProfile child) {
+        Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
         return story.toDto();
     }
@@ -66,13 +61,10 @@ public class StoryService {
                 .collect(Collectors.toList());
     }
 
-    // 동화 수정
-    public StoryResponseDto updateStory(Long id, StoryUpdateDto dto) {
-        Story story = storyRepository.findById(id)
+    // 동화 수정 (content 소유 제한)
+    public StoryResponseDto updateStory(Long id, ChildProfile child, StoryUpdateDto dto) {
+        Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
-
-        ChildProfile child = childProfileRepository.findById(dto.getChildId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀 프로필을 찾을 수 없습니다."));
 
         String level = String.valueOf(child.getLearningLevel());
 
@@ -95,10 +87,10 @@ public class StoryService {
         return storyRepository.save(story).toDto();
     }
 
-    // 동화 삭제
+    // 동화 삭제 (content 소유 제한)
     @Transactional
-    public void deleteStory(Long id) {
-        Story story = storyRepository.findById(id)
+    public void deleteStory(Long id, ChildProfile child) {
+        Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("해당 동화를 찾을 수 없습니다."));
 
         storySectionRepository.deleteAllByStory(story);
