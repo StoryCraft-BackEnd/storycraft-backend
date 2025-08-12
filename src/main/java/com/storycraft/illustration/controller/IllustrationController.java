@@ -121,7 +121,13 @@ public class IllustrationController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping
-    public ResponseEntity<?> getList() {
+    public ResponseEntity<?> getList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
+    ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "삽화 목록 조회에 성공했습니다.", illustrationService.getIllustraitonList())
         );
