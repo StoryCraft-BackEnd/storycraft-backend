@@ -48,9 +48,9 @@ public class StoryService {
         return story.toDto();
     }
 
-    // 동화 상세 조회
-    public StoryResponseDto getStory(Long id) {
-        Story story = storyRepository.findById(id)
+    // 동화 상세 조회 (content 소유 제한)
+    public StoryResponseDto getStory(Long id, ChildProfile child) {
+        Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
         return story.toDto();
     }
