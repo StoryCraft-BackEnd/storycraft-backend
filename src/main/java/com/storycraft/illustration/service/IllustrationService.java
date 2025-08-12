@@ -97,11 +97,10 @@ public class IllustrationService {
     }
 
     // 삽화 삭제
-    public void deleteIllustration(Long id) {
-        if (!illustrationRepository.existsById(id)) {
-            throw new IllegalArgumentException("삭제하려는 삽화가 존재하지 않습니다.");
-        }
-        illustrationRepository.deleteById(id);
+    public void deleteIllustration(Long id, ChildProfile child) {
+        Illustration illu = illustrationRepository.findByIdAndStory_ChildId(id, child)
+                .orElseThrow(() -> new IllegalArgumentException("삭제하려는 삽화가 존재하지 않거나 권한이 없습니다."));
+        illustrationRepository.delete(illu);
     }
 
     public String getUrlByStoryId(Long storyId) {
