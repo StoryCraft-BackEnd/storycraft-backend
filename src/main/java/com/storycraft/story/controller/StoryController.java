@@ -3,7 +3,6 @@ package com.storycraft.story.controller;
 import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.entity.ChildProfile;
-import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.story.dto.*;
 import com.storycraft.story.entity.StoryProgress;
 import com.storycraft.story.service.StoryProgressService;
