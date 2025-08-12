@@ -24,7 +24,6 @@ public class StoryService {
     private final StoryRepository storyRepository;
     private final AiGptService aiGptService;
     private final StorySectionService storySectionService;
-    private final ChildProfileRepository childProfileRepository;
     private final StorySectionRepository storySectionRepository;
 
     // 동화 생성(child를 Controller에서 검증 후 주입)
