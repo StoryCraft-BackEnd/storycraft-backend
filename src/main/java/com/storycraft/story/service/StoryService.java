@@ -67,9 +67,6 @@ public class StoryService {
         Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
 
-        ChildProfile child = childProfileRepository.findById(dto.getChildId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀 프로필을 찾을 수 없습니다."));
-
         String level = String.valueOf(child.getLearningLevel());
 
         //새로운 제목/내용 생성
