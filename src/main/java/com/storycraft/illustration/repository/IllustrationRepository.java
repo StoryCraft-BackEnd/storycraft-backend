@@ -1,6 +1,7 @@
 package com.storycraft.illustration.repository;
 
 import com.storycraft.illustration.entity.Illustration;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.story.entity.Story;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
