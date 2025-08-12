@@ -62,9 +62,9 @@ public class StoryService {
                 .collect(Collectors.toList());
     }
 
-    // 동화 수정
-    public StoryResponseDto updateStory(Long id, StoryUpdateDto dto) {
-        Story story = storyRepository.findById(id)
+    // 동화 수정 (content 소유 제한)
+    public StoryResponseDto updateStory(Long id, ChildProfile child, StoryUpdateDto dto) {
+        Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("동화를 찾을 수 없습니다."));
 
         ChildProfile child = childProfileRepository.findById(dto.getChildId())
