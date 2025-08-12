@@ -162,6 +162,9 @@ public class StoryController {
             @PathVariable(name = "id") Long id,
             @RequestBody StoryUpdateDto dto
     ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 수정에 성공했습니다.", storyService.updateStory(id, dto))
         );
