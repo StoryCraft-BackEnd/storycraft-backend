@@ -167,7 +167,7 @@ public class StoryController {
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "동화 수정에 성공했습니다.", storyService.updateStory(id, dto))
+                new ApiResponseDto<>(200, "동화 수정에 성공했습니다.", storyService.updateStory(id, child, dto))
         );
     }
 
