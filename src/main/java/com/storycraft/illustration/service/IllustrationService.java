@@ -53,7 +53,7 @@ public class IllustrationService {
     }*/
 
     //단락별 삽화 생성
-    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId) {
+    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 동화입니다."));
 
