@@ -133,8 +133,8 @@ public class StoryController {
     })
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
-            @Parameter(description = "자녀 ID", example = "1")
-            @RequestParam(name = "id") Long childId
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "id") Long childId
     ) {
         ChildProfile child = childProfileRepository.findById(childId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 자녀가 존재하지 않습니다"));
