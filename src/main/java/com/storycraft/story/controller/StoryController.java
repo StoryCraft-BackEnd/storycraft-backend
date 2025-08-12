@@ -136,8 +136,8 @@ public class StoryController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "id") Long childId
     ) {
-        ChildProfile child = childProfileRepository.findById(childId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 자녀가 존재하지 않습니다"));
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화 목록 조회에 성공했습니다.", storyService.getStoryList(child))
