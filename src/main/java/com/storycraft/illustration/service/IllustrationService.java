@@ -2,7 +2,6 @@ package com.storycraft.illustration.service;
 
 
 import com.storycraft.ai.service.AiDalleService;
-import com.storycraft.illustration.dto.IllustrationRequestDto;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.entity.Illustration;
