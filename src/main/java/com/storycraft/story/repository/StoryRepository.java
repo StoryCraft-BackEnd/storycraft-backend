@@ -10,4 +10,6 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     List<Story> findAllByChildId(ChildProfile childId);
 
     List<Story> findTop10ByChildIdNot(ChildProfile childId);
+
+    Optional<Story> findByIdAndChildId(Long id, ChildProfile childProfile);
 }
