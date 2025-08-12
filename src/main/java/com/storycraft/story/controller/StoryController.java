@@ -51,6 +51,8 @@ public class StoryController {
     })
     @PostMapping
     public ResponseEntity<?> createStory(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId,
             @RequestBody @Valid StoryRequestDto dto
     ) {
         return ResponseEntity.status(201).body(
