@@ -1,5 +1,6 @@
 package com.storycraft.illustration.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.global.security.OwnershipGuard;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
