@@ -141,8 +141,9 @@ public class IllustrationController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteIllustration(
-            @Parameter(description = "삭제할 삽화 ID", example = "1")
-            @PathVariable(name = "id") Long id
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "삭제할 삽화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         illustrationService.deleteIllustration(id);
         return ResponseEntity.ok(
