@@ -58,7 +58,7 @@ public class StoryController {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "동화 생성에 성공했습니다.", storyService.createStory(dto))
+                new ApiResponseDto<>(201, "동화 생성에 성공했습니다.", storyService.createStory(child, dto))
         );
     }
 
