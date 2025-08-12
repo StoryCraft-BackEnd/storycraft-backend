@@ -184,7 +184,10 @@ public class StoryController {
             @Parameter(description = "삭제할 동화 ID", example = "1")
             @PathVariable(name = "id") Long id
     ) {
-        storyService.deleteStory(id);
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
+        storyService.deleteStory(id, child);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화가 성공적으로 삭제되었습니다.", null)
         );
