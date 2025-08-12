@@ -55,6 +55,8 @@ public class StoryController {
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId,
             @RequestBody @Valid StoryRequestDto dto
     ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201, "동화 생성에 성공했습니다.", storyService.createStory(dto))
         );
