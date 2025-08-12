@@ -1,5 +1,6 @@
 package com.storycraft.story.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.profile.repository.ChildProfileRepository;
