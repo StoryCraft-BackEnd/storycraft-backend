@@ -129,7 +129,7 @@ public class IllustrationController {
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "삽화 목록 조회에 성공했습니다.", illustrationService.getIllustraitonList())
+                new ApiResponseDto<>(200, "삽화 목록 조회에 성공했습니다.", illustrationService.getIllustraitonList(child))
         );
     }
 
