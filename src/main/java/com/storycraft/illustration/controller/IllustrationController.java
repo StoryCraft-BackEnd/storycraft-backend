@@ -145,7 +145,10 @@ public class IllustrationController {
             @Parameter(description = "삭제할 삽화 ID", example = "1") @PathVariable(name = "id") Long id,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
-        illustrationService.deleteIllustration(id);
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
+        illustrationService.deleteIllustration(id, child);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "삽화가 성공적으로 삭제 되었습니다.", null)
         );
