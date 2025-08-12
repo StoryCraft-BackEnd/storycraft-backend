@@ -91,7 +91,7 @@ public class StoryService {
         return storyRepository.save(story).toDto();
     }
 
-    // 동화 삭제
+    // 동화 삭제 (content 소유 제한)
     @Transactional
     public void deleteStory(Long id, ChildProfile child) {
         Story story = storyRepository.findByIdAndChildId(id, child)
