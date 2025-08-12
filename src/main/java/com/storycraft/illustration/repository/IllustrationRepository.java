@@ -13,8 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface IllustrationRepository extends JpaRepository<Illustration, Long> {
-    List<Illustration> findAllByStory(Story story);
-
     List<Illustration> findAllByStory_Id(Long storyId);
 
     List<Illustration> findAllByStory_ChildId(ChildProfile child);
