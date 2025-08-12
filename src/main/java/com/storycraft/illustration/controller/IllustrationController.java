@@ -103,7 +103,7 @@ public class IllustrationController {
     ) {
 
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "삽화 조회에 성공했습니다.", illustrationService.getIllustration(id))
+                new ApiResponseDto<>(200, "삽화 조회에 성공했습니다.", illustrationService.getIllustration(id, child))
         );
     }
 
