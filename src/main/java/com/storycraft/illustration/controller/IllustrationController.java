@@ -1,7 +1,7 @@
 package com.storycraft.illustration.controller;
 
 import com.storycraft.global.response.ApiResponseDto;
-import com.storycraft.illustration.dto.IllustrationRequestDto;
+import com.storycraft.global.security.OwnershipGuard;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.dto.SectionIllustrationRequestDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
