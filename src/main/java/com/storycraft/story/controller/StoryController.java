@@ -35,7 +35,6 @@ public class StoryController {
 
     private final StoryService storyService;
     private final StorySectionService storySectionService;
-    private final ChildProfileRepository childProfileRepository;
     private final StoryProgressService storyProgressService;
     private final OwnershipGuard ownershipGuard;
 
