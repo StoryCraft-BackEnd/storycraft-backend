@@ -93,8 +93,8 @@ public class StoryService {
 
     // 동화 삭제
     @Transactional
-    public void deleteStory(Long id) {
-        Story story = storyRepository.findById(id)
+    public void deleteStory(Long id, ChildProfile child) {
+        Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("해당 동화를 찾을 수 없습니다."));
 
         storySectionRepository.deleteAllByStory(story);
