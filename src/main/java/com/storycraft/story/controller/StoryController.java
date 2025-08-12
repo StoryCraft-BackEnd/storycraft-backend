@@ -76,8 +76,9 @@ public class StoryController {
     })
     @GetMapping("/{id}/sections")
     public ResponseEntity<?> getStorySections(
-            @Parameter(description = "동화 ID", example = "1")
-            @PathVariable(name = "id") Long id
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "동화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단락 조회에 성공했습니다.", storySectionService.getSectionsByStoryId(id))
