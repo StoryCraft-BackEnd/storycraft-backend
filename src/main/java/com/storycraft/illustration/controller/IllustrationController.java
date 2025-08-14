@@ -84,8 +84,8 @@ public class IllustrationController {
                     description = "존재하지 않는 storyId입니다."
             )
     })
-    @PostMapping("/sections")
-    public ResponseEntity<ApiResponseDto<SectionIllustrationResponseDto>> createIllustrationsByStory(
+    @PostMapping("/sections/all")
+    public ResponseEntity<ApiResponseDto<SectionIllustrationResponseDto>> createAllIllustrationsByStory(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(name = "childId") Long childId,
             @RequestBody @Valid SectionIllustrationRequestDto requestDto
