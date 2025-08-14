@@ -69,12 +69,8 @@ public class IllustrationService {
                 .illustrations(responses)
                 .build();
 
-        Illustration saved = illustrationRepository.save(illustration);
-        return saved.toDto();
-    }*/
-
-    //단락별 삽화 생성
-    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId, ChildProfile child) {
+    //한번에 단락별 삽화 생성
+    public SectionIllustrationResponseDto createAllSectionIllustrations(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 동화입니다."));
 
