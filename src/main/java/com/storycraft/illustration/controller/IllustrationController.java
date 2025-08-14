@@ -61,7 +61,7 @@ public class IllustrationController {
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201,"단락별 삽화 생성에 성공했습니다.",illustrationService.createSectionIllustrations(requestDto.getStoryId(), child))
+                new ApiResponseDto<>(201,"단락별 삽화 생성에 성공했습니다.",illustrationService.createSectionIllustrations(storyId, child))
         );
     }
 
