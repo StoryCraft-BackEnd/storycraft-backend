@@ -24,6 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IllustrationService {
 
+    private static final int GROUP_SIZE = 3;
+
     private final IllustrationRepository illustrationRepository;
     private final StoryRepository storyRepository;
     private final AiDalleService aiDalleService;
