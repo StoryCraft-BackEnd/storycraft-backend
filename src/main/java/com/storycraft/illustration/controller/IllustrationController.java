@@ -54,8 +54,8 @@ public class IllustrationController {
     @PostMapping("/sections")
     public ResponseEntity<ApiResponseDto<SectionIllustrationResponseDto>> createIllustrationsByStory(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam(name = "childId") Long childId,
-            @RequestBody @Valid SectionIllustrationRequestDto requestDto
+            @RequestParam(name = "storyId") Long storyId,
+            @RequestParam(name = "childId") Long childId
     ) {
         Long userId= userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
