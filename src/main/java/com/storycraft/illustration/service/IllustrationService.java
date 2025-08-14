@@ -42,7 +42,15 @@ public class IllustrationService {
                 break;
             }
 
-        String imageUrl = aiDalleService.generateImage(prompt);
+            for (StorySection section : sectionPage.getContent()) {
+                int order = section.getOrderIndex();
+
+                if (illustrationRepository.existsByStoryAndOrderIndex(story, order)) {
+                    continue;
+                }
+
+                String prompt = section.getParagraphText() + "의 동화 내용을 어린이 동화 스타일로 그려줘."; //TODO: 이미지 생성 Prompt 고도화 및 스타일 고정 필요
+                String imageUrl = aiDalleService.generateImage(prompt);
 
         int nextOrderIndex = illustrationRepository.findMaxOrderIndexByStory(story).orElse(-1) + 1;
 
