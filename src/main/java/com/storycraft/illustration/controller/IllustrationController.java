@@ -65,7 +65,7 @@ public class IllustrationController {
         );
     }*/
 
-    @Operation(summary = "동화 단락별 삽화 생성", description = "storyId를 기반으로 해당 동화의 각 단락 내용으로부터 삽화를 자동 생성합니다.")
+    @Operation(summary = "동화 모든 단락별 삽화 생성", description = "storyId를 기반으로 해당 동화의 모든 단락 내용으로부터 삽화를 자동 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
