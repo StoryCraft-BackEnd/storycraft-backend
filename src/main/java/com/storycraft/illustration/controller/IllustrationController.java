@@ -34,15 +34,22 @@ public class IllustrationController {
 
     @Operation(summary = "동화 단락별 삽화 생성(3개씩)", description = "storyId를 기반으로 해당 동화의 각 단락 내용으로부터 삽화를 3개씩 자동 생성합니다.")
     @ApiResponses(value = {
-        @ApiResponse(
-                responseCode = "201",
-                description = "삽화(썸네일) 생성에 성공했습니다.",
-                content = @Content(
-                        mediaType = "application/json",
-                        schema = @Schema(implementation = IllustrationResponseDto.class)
-                )
-        ),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "단락별 삽화 생성에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = SectionIllustrationResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 형식이 잘못되었습니다."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 storyId입니다."
+            )
     })
     @PostMapping
     public ResponseEntity<?> createIllustration(
