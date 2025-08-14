@@ -52,12 +52,21 @@ public class IllustrationService {
                 String prompt = section.getParagraphText() + "의 동화 내용을 어린이 동화 스타일로 그려줘."; //TODO: 이미지 생성 Prompt 고도화 및 스타일 고정 필요
                 String imageUrl = aiDalleService.generateImage(prompt);
 
-        int nextOrderIndex = illustrationRepository.findMaxOrderIndexByStory(story).orElse(-1) + 1;
-
-        Illustration illustration = Illustration.builder()
-                .story(story)
-                .imageUrl(imageUrl)
-                .description("(" + String.join(", ", keywords) + ")")
+                Illustration illustration = illustrationRepository.save(
+                        Illustration.builder()
+                                .story(story)
+                                .orderIndex(order)
+                                .imageUrl(imageUrl)
+                                .description(section.getParagraphText()) // TODO: GPT 요약 적용
+                                .build()
+                );
+                responses.add(IllustrationResponseDto.from(illustration, section));
+            }
+            page++;
+        }
+        return SectionIllustrationResponseDto.builder()
+                .storyId(storyId)
+                .illustrations(responses)
                 .build();
 
         Illustration saved = illustrationRepository.save(illustration);
