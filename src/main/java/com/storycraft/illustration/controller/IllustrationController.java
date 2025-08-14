@@ -51,9 +51,11 @@ public class IllustrationController {
                     description = "존재하지 않는 storyId입니다."
             )
     })
-    @PostMapping
-    public ResponseEntity<?> createIllustration(
-       @RequestBody @Valid IllustrationRequestDto dto
+    @PostMapping("/sections")
+    public ResponseEntity<ApiResponseDto<SectionIllustrationResponseDto>> createIllustrationsByStory(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(name = "childId") Long childId,
+            @RequestBody @Valid SectionIllustrationRequestDto requestDto
     ) {
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201, "삽화(썸네일) 생성에 성공했습니다.", illustrationService.createIllustration(dto))
