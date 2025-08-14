@@ -68,6 +68,7 @@ public class IllustrationService {
                 .storyId(storyId)
                 .illustrations(responses)
                 .build();
+    }
 
     //한번에 단락별 삽화 생성
     public SectionIllustrationResponseDto createAllSectionIllustrations(Long storyId, ChildProfile child) {
