@@ -26,10 +26,12 @@ public class IllustrationService {
     private final AiDalleService aiDalleService;
     private final StorySectionRepository storySectionRepository;
 
-/*    // 삽화(썸네일) 생성
-    public IllustrationResponseDto createIllustration(IllustrationRequestDto dto) {
-        Story story = storyRepository.findById(dto.getStoryId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 storyId입니다."));
+    //단락 3개씩 나눠서 삽화 생성
+    public SectionIllustrationResponseDto createSectionIllustrations(Long storyId, ChildProfile child) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 동화입니다."));
+
+        List<IllustrationResponseDto> responses = new ArrayList<>();
 
         List<String> keywords = story.getKeywords();
 
