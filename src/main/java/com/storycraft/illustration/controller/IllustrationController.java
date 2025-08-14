@@ -57,6 +57,9 @@ public class IllustrationController {
             @RequestParam(name = "childId") Long childId,
             @RequestBody @Valid SectionIllustrationRequestDto requestDto
     ) {
+        Long userId= userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201, "삽화(썸네일) 생성에 성공했습니다.", illustrationService.createIllustration(dto))
         );
