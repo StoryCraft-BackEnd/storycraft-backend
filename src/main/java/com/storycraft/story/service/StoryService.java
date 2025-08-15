@@ -2,8 +2,15 @@ package com.storycraft.story.service;
 
 import com.storycraft.ai.dto.StoryContentDto;
 import com.storycraft.ai.service.AiGptService;
+import com.storycraft.global.util.S3Deleter;
+import com.storycraft.illustration.entity.Illustration;
+import com.storycraft.illustration.repository.IllustrationRepository;
 import com.storycraft.profile.entity.ChildProfile;
-import com.storycraft.profile.repository.ChildProfileRepository;
+import com.storycraft.quiz.entity.QuizCreate;
+import com.storycraft.quiz.repository.QuizCreateRepository;
+import com.storycraft.quiz.repository.QuizSubmitRepository;
+import com.storycraft.speech.entity.Tts;
+import com.storycraft.speech.repository.TtsRepository;
 import com.storycraft.story.dto.StoryRequestDto;
 import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.dto.StoryUpdateDto;
@@ -21,10 +28,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StoryService {
 
+    private final S3Deleter s3Deleter;
     private final StoryRepository storyRepository;
     private final AiGptService aiGptService;
     private final StorySectionService storySectionService;
     private final StorySectionRepository storySectionRepository;
+    private final IllustrationRepository illustrationRepository;
+    private final TtsRepository ttsRepository;
+    private final QuizSubmitRepository quizSubmitRepository;
+    private final QuizCreateRepository quizCreateRepository;
 
     // 동화 생성(child를 Controller에서 검증 후 주입)
     public StoryResponseDto createStory(ChildProfile child, StoryRequestDto dto) {
@@ -93,8 +105,36 @@ public class StoryService {
         Story story = storyRepository.findByIdAndChildId(id, child)
                 .orElseThrow(() -> new RuntimeException("해당 동화를 찾을 수 없습니다."));
 
+        //1. 삽화 삭제
+        List<Illustration> illustrations = illustrationRepository.findAllByStory(story);
+        for (Illustration illustration : illustrations) {
+            if (illustration.getImageUrl() != null) {
+                s3Deleter.deleteFileFromUrl(illustration.getImageUrl());
+            }
+        }
+        illustrationRepository.deleteAll(illustrations);
+
+        //2. TTS 삭제 (S3 → DB)
+        List<Tts> ttsList = ttsRepository.findAllByStory(story);
+        for (Tts tts : ttsList) {
+            String url = tts.getTtsUrl();
+            if (url != null && url.isBlank()) {
+                try {s3Deleter.deleteFileFromUrl(url);} catch (Exception ignored) {}
+            }
+        }
+        ttsRepository.deleteAllByStory(story);
+
+        //3. 퀴즈 제출 → 퀴즈 생성
+        List<QuizCreate> quizCreates = quizCreateRepository.findAllByStory(story);
+        if (!quizCreates.isEmpty()) {
+            quizSubmitRepository.deleteAllByQuizCreateIn(quizCreates);
+        }
+        quizCreateRepository.deleteAllByStory(story);
+
+        //4. 동화 단락 삭제
         storySectionRepository.deleteAllByStory(story);
 
+        //5. 동화 삭제
         storyRepository.delete(story);
     }
 

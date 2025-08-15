@@ -2,6 +2,7 @@ package com.storycraft.illustration.service;
 
 
 import com.storycraft.ai.service.AiDalleService;
+import com.storycraft.global.util.S3Uploader;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.entity.Illustration;
@@ -12,6 +13,9 @@ import com.storycraft.story.entity.StorySection;
 import com.storycraft.story.repository.StoryRepository;
 import com.storycraft.story.repository.StorySectionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,39 +25,62 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IllustrationService {
 
+    private static final int GROUP_SIZE = 3;
+
     private final IllustrationRepository illustrationRepository;
     private final StoryRepository storyRepository;
     private final AiDalleService aiDalleService;
     private final StorySectionRepository storySectionRepository;
+    private final S3Uploader s3Uploader;
 
-/*    // 삽화(썸네일) 생성
-    public IllustrationResponseDto createIllustration(IllustrationRequestDto dto) {
-        Story story = storyRepository.findById(dto.getStoryId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 storyId입니다."));
-
-        List<String> keywords = story.getKeywords();
-
-        String prompt = "이 동화의 썸네일 삽화를 이 키워드들을 바탕으로 그려줘: "
-                + String.join(", ", keywords)
-                +" (어린이 동화 스타일로)";
-        //+ "\n \n처음 고른 삽화 스타일 대로."; -> TODO:스타일 추가 후 수정
-
-        String imageUrl = aiDalleService.generateImage(prompt);
-
-        int nextOrderIndex = illustrationRepository.findMaxOrderIndexByStory(story).orElse(-1) + 1;
-
-        Illustration illustration = Illustration.builder()
-                .story(story)
-                .imageUrl(imageUrl)
-                .description("(" + String.join(", ", keywords) + ")")
-                .build();
-
-        Illustration saved = illustrationRepository.save(illustration);
-        return saved.toDto();
-    }*/
-
-    //단락별 삽화 생성
+    //단락 3개씩 나눠서 삽화 생성
     public SectionIllustrationResponseDto createSectionIllustrations(Long storyId, ChildProfile child) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 동화입니다."));
+
+        List<IllustrationResponseDto> responses = new ArrayList<>();
+
+        int page = 0;
+        while (true) {
+            PageRequest pr = PageRequest.of(page, GROUP_SIZE, Sort.by(Sort.Direction.ASC, "orderIndex"));
+            Page<StorySection> sectionPage = storySectionRepository.findByStory(story, pr);
+
+            if (sectionPage.isEmpty()) {
+                break;
+            }
+
+            for (StorySection section : sectionPage.getContent()) {
+                int order = section.getOrderIndex();
+
+                if (illustrationRepository.existsByStoryAndOrderIndex(story, order)) {
+                    continue;
+                }
+
+                String prompt = section.getParagraphText() + "의 동화 내용을 어린이 동화 스타일로 그려줘."; //TODO: 이미지 생성 Prompt 고도화 및 스타일 고정 필요
+                byte[] imageBytes = aiDalleService.generateImage(prompt);
+
+                String imageUrl = s3Uploader.uploadBytes(imageBytes, "illustrations", "section-" + order + ".png");
+
+                Illustration illustration = illustrationRepository.save(
+                        Illustration.builder()
+                                .story(story)
+                                .orderIndex(order)
+                                .imageUrl(imageUrl)
+                                .description(section.getParagraphText()) // TODO: GPT 요약 적용
+                                .build()
+                );
+                responses.add(IllustrationResponseDto.from(illustration, section));
+            }
+            page++;
+        }
+        return SectionIllustrationResponseDto.builder()
+                .storyId(storyId)
+                .illustrations(responses)
+                .build();
+    }
+
+    /*//한번에 단락별 삽화 생성
+    public SectionIllustrationResponseDto createAllSectionIllustrations(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 동화입니다."));
 
@@ -78,7 +105,7 @@ public class IllustrationService {
                 .storyId(storyId)
                 .illustrations(responses)
                 .build();
-    }
+    }*/
 
     // 삽화 상세 조회
     public IllustrationResponseDto getIllustration(Long id, ChildProfile child) {

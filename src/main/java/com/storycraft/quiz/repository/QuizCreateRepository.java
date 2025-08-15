@@ -12,4 +12,5 @@ public interface QuizCreateRepository extends JpaRepository<QuizCreate, Long> {
     List<QuizCreate> findAllByStory_Id(Long storyId);
     List<QuizCreate> findAllByStoryOrderByQuizIdAsc(Story story);
     List<QuizCreate> findAllByStory(Story story);
+    void deleteAllByStory(Story story);
 }

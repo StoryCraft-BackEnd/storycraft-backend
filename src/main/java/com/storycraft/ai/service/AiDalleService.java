@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class AiDalleService {
         this.dalleUrl = dotenv.get("OPENAI_DALLE_URL");
     }
 
-    public String generateImage(String prompt) {
+    public byte[] generateImage(String prompt) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -33,13 +34,16 @@ public class AiDalleService {
         Map<String, Object> body = Map.of(
                 "prompt", prompt,
                 "n", 1,
-                "size", "512x512"
+                "size", "512x512",
+                "response_format", "b64_json"
         );
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(dalleUrl, request, Map.class);
 
         List<Map<String, String>> data = (List<Map<String, String>>) response.getBody().get("data");
-        return data.get(0).get("url");
+        String base64Image = data.get(0).get("b64_json");
+
+        return Base64.getDecoder().decode(base64Image);
     }
 }
