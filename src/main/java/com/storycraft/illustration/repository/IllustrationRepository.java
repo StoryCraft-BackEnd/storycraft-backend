@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface IllustrationRepository extends JpaRepository<Illustration, Long> {
     List<Illustration> findAllByStory_Id(Long storyId);
 
+    List<Illustration> findAllByStory(Story story);
+
     List<Illustration> findAllByStory_ChildId(ChildProfile child);
 
     Optional<Illustration> findByIdAndStory_ChildId(Long id, ChildProfile child);

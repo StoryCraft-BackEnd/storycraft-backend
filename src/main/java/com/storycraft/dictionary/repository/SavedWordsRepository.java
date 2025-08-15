@@ -3,6 +3,7 @@ package com.storycraft.dictionary.repository;
 import com.storycraft.dictionary.entity.DictionaryWords;
 import com.storycraft.dictionary.entity.SavedWords;
 import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.story.entity.Story;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

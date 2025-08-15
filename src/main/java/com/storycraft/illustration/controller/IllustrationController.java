@@ -4,7 +4,6 @@ import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
 import com.storycraft.global.security.OwnershipGuard;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
-import com.storycraft.illustration.dto.SectionIllustrationRequestDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.service.IllustrationService;
 import com.storycraft.profile.entity.ChildProfile;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -65,7 +63,7 @@ public class IllustrationController {
         );
     }
 
-    @Operation(summary = "동화 모든 단락별 삽화 생성", description = "storyId를 기반으로 해당 동화의 모든 단락 내용으로부터 삽화를 자동 생성합니다.")
+/*    @Operation(summary = "동화 모든 단락별 삽화 생성", description = "storyId를 기반으로 해당 동화의 모든 단락 내용으로부터 삽화를 자동 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
@@ -96,7 +94,7 @@ public class IllustrationController {
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201,"단락별 삽화 생성에 성공했습니다.",illustrationService.createAllSectionIllustrations(requestDto.getStoryId(), child))
         );
-    }
+    }*/
 
     @Operation(summary = "삽화 상세 조회", description = "삽화 ID로 특정 삽화를 조회합니다.")
     @ApiResponses(value = {

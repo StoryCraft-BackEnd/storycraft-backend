@@ -2,6 +2,7 @@ package com.storycraft.illustration.service;
 
 
 import com.storycraft.ai.service.AiDalleService;
+import com.storycraft.global.util.S3Uploader;
 import com.storycraft.illustration.dto.IllustrationResponseDto;
 import com.storycraft.illustration.dto.SectionIllustrationResponseDto;
 import com.storycraft.illustration.entity.Illustration;
@@ -30,6 +31,7 @@ public class IllustrationService {
     private final StoryRepository storyRepository;
     private final AiDalleService aiDalleService;
     private final StorySectionRepository storySectionRepository;
+    private final S3Uploader s3Uploader;
 
     //단락 3개씩 나눠서 삽화 생성
     public SectionIllustrationResponseDto createSectionIllustrations(Long storyId, ChildProfile child) {
@@ -55,7 +57,9 @@ public class IllustrationService {
                 }
 
                 String prompt = section.getParagraphText() + "의 동화 내용을 어린이 동화 스타일로 그려줘."; //TODO: 이미지 생성 Prompt 고도화 및 스타일 고정 필요
-                String imageUrl = aiDalleService.generateImage(prompt);
+                byte[] imageBytes = aiDalleService.generateImage(prompt);
+
+                String imageUrl = s3Uploader.uploadBytes(imageBytes, "illustrations", "section-" + order + ".png");
 
                 Illustration illustration = illustrationRepository.save(
                         Illustration.builder()
@@ -75,7 +79,7 @@ public class IllustrationService {
                 .build();
     }
 
-    //한번에 단락별 삽화 생성
+    /*//한번에 단락별 삽화 생성
     public SectionIllustrationResponseDto createAllSectionIllustrations(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 동화입니다."));
@@ -101,7 +105,7 @@ public class IllustrationService {
                 .storyId(storyId)
                 .illustrations(responses)
                 .build();
-    }
+    }*/
 
     // 삽화 상세 조회
     public IllustrationResponseDto getIllustration(Long id, ChildProfile child) {

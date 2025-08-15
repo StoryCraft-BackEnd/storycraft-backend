@@ -4,6 +4,7 @@ import com.storycraft.ai.dto.AiDalleRequestDto;
 import com.storycraft.ai.dto.AiDalleResponseDto;
 import com.storycraft.ai.service.AiDalleService;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.global.util.S3Uploader;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,8 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AiDalleController {
 
     private final AiDalleService aiDalleService;
+    private final S3Uploader s3Uploader;
 
-    @Operation(summary = "DALLE 이미지 생성", description = "prompt를 기반으로 이미지를 생성합니다.")
+    @Operation(summary = "DALLE 이미지 생성", description = "prompt를 기반으로 이미지를 생성하고, S3에 저장한 URL을 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -40,7 +42,9 @@ public class AiDalleController {
     public ApiResponseDto<AiDalleResponseDto> generateImage(
             @RequestBody AiDalleRequestDto request
     ) {
-        String imageUrl = aiDalleService.generateImage(request.getPrompt());
+        byte[] imageBytes = aiDalleService.generateImage(request.getPrompt());
+
+        String imageUrl = s3Uploader.uploadBytes(imageBytes, "illustrations", "prompt.png");
         return new ApiResponseDto<>(200, "이미지 생성 성공",  new AiDalleResponseDto(imageUrl));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -43,6 +44,19 @@ public class S3Uploader {
                         )
                 )
                 .build();
+    }
+
+    public String uploadBytes(byte[] bytes, String dirName, String fileName) {
+        String key = dirName + "/" + UUID.randomUUID() + "-" + fileName;
+
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+
+        s3Client.putObject(request, RequestBody.fromBytes(bytes));
+
+        return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
     }
 
     public String upload(File file, String dirName) throws IOException {
