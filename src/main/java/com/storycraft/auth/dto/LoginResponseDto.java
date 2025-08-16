@@ -13,5 +13,8 @@ public class LoginResponseDto {
 
     @JsonProperty("refresh_token")
     private String refreshToken;
+
+    @JsonProperty("user_id")
+    private Long userId;
 }
 
