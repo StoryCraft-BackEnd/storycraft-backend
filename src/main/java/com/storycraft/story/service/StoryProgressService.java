@@ -8,6 +8,7 @@ import com.storycraft.story.repository.StoryProgressRepository;
 import com.storycraft.story.repository.StoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,6 +22,7 @@ public class StoryProgressService {
     private final ChildProfileRepository childProfileRepository;
 
     //동화 읽음표시 & 읽은 시간 저장
+    @Transactional
     public void markAsRead(Long childId, Long storyId) {
         ChildProfile child = getChildOrThrow(childId);
         Story story = getStoryOrThrow(storyId);
@@ -36,6 +38,7 @@ public class StoryProgressService {
         storyProgressRepository.save(storyProgress);
     }
 
+    @Transactional
     public void updateLearnedTime(Long childId, Long storyId, int learnedTimeInSecond) {
         ChildProfile child = getChildOrThrow(childId);
         Story story = getStoryOrThrow(storyId);
