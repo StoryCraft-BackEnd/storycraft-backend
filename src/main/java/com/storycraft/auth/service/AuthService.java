@@ -77,7 +77,7 @@ public class AuthService {
                 )
         );
 
-        return new LoginResponseDto(accessToken, refreshToken);
+        return new LoginResponseDto(accessToken, refreshToken, user.getId());
     }
 
     @Transactional

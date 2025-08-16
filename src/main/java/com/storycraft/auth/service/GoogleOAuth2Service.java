@@ -111,7 +111,7 @@ public class GoogleOAuth2Service {
                         .build()
         );
 
-        return new LoginResponseDto(accessToken, refreshToken);
+        return new LoginResponseDto(accessToken, refreshToken, user.getId());
     }
 
     private User createNewGoogleUser(String email, String name, String picture) {
