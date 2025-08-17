@@ -113,7 +113,7 @@ public class DictionaryService {
 
         savedWordsRepository.saveAll(savedWordEntities);
 
-        return savedWordEntities.stream()
+        return savedWordsRepository.findByChildId(child).stream()
                 .map(SavedWords::toDto)
                 .toList();
     }
