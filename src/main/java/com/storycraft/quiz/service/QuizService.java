@@ -38,6 +38,8 @@ public class QuizService {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
 
+        verifyOwnershipOrThrow(story, child.getId());
+
         if (keywords == null || keywords.isEmpty()) {
             keywords = new ArrayList<>(dictionaryService.extractWords(story.getContent())); // Set -> List
         }
