@@ -258,4 +258,11 @@ public class QuizService {
             throw new IllegalArgumentException("정답은 A~D 중 하나이고, 실제 옵션 키여야 합니다.");
         }
     }
+
+    private void verifyOwnershipOrThrow(Story story, Long childId) {
+        Long ownerChildId = story.getChildId().getId();
+        if (!ownerChildId.equals(childId)) {
+            throw new IllegalStateException("요청한 자녀의 컨텐츠가 아닙니다.");
+        }
+    }
 }
