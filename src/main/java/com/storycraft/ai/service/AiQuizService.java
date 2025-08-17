@@ -19,6 +19,7 @@ import java.util.List;
 public class AiQuizService {
 
     private final StoryRepository storyRepository;
+    private final ChildProfileRepository childProfileRepository;
     private final AiGptService aiGptService;
     private final QuizService quizService;
     private final DictionaryService dictionaryService;
