@@ -44,7 +44,12 @@ public class SpeechController {
     })
     @PostMapping("/tts")
     public ResponseEntity<?> createTts(
-            @RequestBody TtsCreateRequestDto dto
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "child_id") Long childId,
+            @Parameter(description = "동화 단락 ID", example = "1") @RequestParam(name = "section_id") Long sectionId,
+            @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "story_id",required = false) Long storyId,
+            @Parameter(description = "성우 ID", example = "Joanna") @RequestParam(name = "voice_id") VoiceId voiceId,
+            @Parameter(description = "재생속도", example = "0.8") @RequestParam(name = "speech_rate", required = false, defaultValue = "0.8") Float speechRate
     ) {
         try {
             TtsCreateResponseDto responseDto = speechService.createTts(dto);
