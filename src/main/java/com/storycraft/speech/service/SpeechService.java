@@ -36,7 +36,7 @@ public class SpeechService {
     /**
      * TTS 생성 메소드
      */
-    public TtsCreateResponseDto createTts(TtsCreateRequestDto dto) {
+    public TtsCreateResponseDto createTts(TtsCreateRequestDto dto, ChildProfile child) {
         StorySection section = storySectionRepository.findById(dto.getSectionId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 단락이 존재하지 않습니다."));
 
