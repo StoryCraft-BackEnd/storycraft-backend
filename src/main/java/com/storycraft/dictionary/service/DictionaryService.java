@@ -76,6 +76,11 @@ public class DictionaryService {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 동화를 찾을 수 없습니다."));
 
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀를 찾을 수 없습니다."));
+
+        verifyOwnershipOrThrow(story, child);
+
         String content = story.getContent();
 
         Set<String> extractedWords = extractWords(content);
