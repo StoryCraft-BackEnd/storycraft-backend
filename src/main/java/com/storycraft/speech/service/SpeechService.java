@@ -42,6 +42,11 @@ public class SpeechService {
 
         Story story = section.getStory();
 
+        Long ownerChild = story.getChildId().getId();
+        if (!ownerChild.equals(child.getId())) {
+            throw new IllegalStateException("요청한 자녀의 컨텐츠가 아닙니다.");
+        }
+
         String text;
         String language;
 
