@@ -128,7 +128,7 @@ public class QuizService {
             String selected = selectedMap.get(q.getQuizId());
             String selectedSafe = (selected == null) ? "" : selected; // DB 컬럼(selected_answer)이 NOT NULL이므로 미응답이면 빈 문자열로 저장
 
-            String correctAnswer = String.valueOf(q.getCorrectAnswer()); // char/String 어느 쪽이든 안전
+            String correctAnswer = String.valueOf(q.getCorrectAnswer());
             boolean isCorrect = selected != null && selected.equalsIgnoreCase(correctAnswer);
             if (isCorrect) correctCount++;
 
