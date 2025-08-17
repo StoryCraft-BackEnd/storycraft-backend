@@ -48,7 +48,7 @@ public class DictionaryController {
         );
     }
 
-    @Operation(summary = "동화 ID로 단어 추출 및 자녀에게 단어 저장", description = "동화 본문에서 **로 감싼 단어들을 추출하고, 단어 정보를 GPT로 조회하여 DB에 저장 후 자녀에게 연동합니다.")
+    @Operation(summary = "동화 중요 단어 추출 및 자녀에게 단어 저장", description = "동화 본문에서 **로 감싼 단어들을 추출하고, 단어 정보를 GPT로 조회하여 DB에 저장 후 자녀에게 연동합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
