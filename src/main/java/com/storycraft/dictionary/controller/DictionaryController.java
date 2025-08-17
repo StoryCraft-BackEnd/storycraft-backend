@@ -25,6 +25,7 @@ import java.util.List;
 public class DictionaryController {
 
     private final DictionaryService dictionaryService;
+    private final OwnershipGuard ownershipGuard;
 
     @Operation(summary = "단어 조회", description = "영어 단어의 뜻과 예문을 반환 합니다.")
     @ApiResponses(value = {
