@@ -50,7 +50,7 @@ public class SpeechService {
         String text;
         String language;
 
-        if ("Seoyeon".equalsIgnoreCase(dto.getVoiceId()) || "Joon".equalsIgnoreCase(dto.getVoiceId())) {
+        if ("Seoyeon".equalsIgnoreCase(dto.getVoiceId().name())) {
             text = section.getParagraphTextKr();
             language = "ko";
         } else {
