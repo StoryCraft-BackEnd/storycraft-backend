@@ -81,6 +81,8 @@ public class QuizService {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
 
+        verifyOwnershipOrThrow(story, child.getId());
+
         List<QuizCreate> quizzes = quizCreateRepository.findAllByStoryOrderByQuizIdAsc(story);
 
         return quizzes.stream()
