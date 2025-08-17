@@ -65,6 +65,7 @@ public class DictionaryController {
             @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "storyId") Long storyId,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
+        ownershipGuard.getOwnedChildOrThrow(childId, userDetails.getUser().getId());
         List<SaveWordResponseDto> savedWords = dictionaryService.extractWordsAndSave(storyId, childId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단어 저장에 성공했습니다", savedWords)
