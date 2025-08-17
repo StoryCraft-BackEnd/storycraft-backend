@@ -88,7 +88,7 @@ public class DictionaryController {
     })
     @PostMapping("/words/save")
     public ResponseEntity<?> saveWord(
-            @Parameter(description = "유저 ID") @RequestParam(name = "userID") Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "자녀 프로필 ID") @RequestParam(name = "childID") Long childId,
             @Parameter(description = "하이라이트된 단어") @RequestParam(name = "word") String word
     ) {
