@@ -58,7 +58,9 @@ public class SpeechService {
             language = "en";
         }
 
-        String ttsUrl = pollyService.synthesizeTtsToS3(text, dto.getVoiceId(), dto.getSpeechRate(), "tts");
+        text = sanitizeForTts(text);
+
+        String ttsUrl = pollyService.synthesizeTtsToS3(text, dto.getVoiceId().name(), dto.getSpeechRate(), "tts");
 
         Tts saved = ttsRepository.save(Tts.builder()
                 .story(story)
