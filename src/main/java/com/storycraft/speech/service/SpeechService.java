@@ -74,6 +74,13 @@ public class SpeechService {
         return saved.toDto();
     }
 
+    private String sanitizeForTts(String raw) {
+        if (raw == null) return null;
+        String s = raw.replace("**", "")
+                .replace("*", "");
+        return s;
+    }
+
     /**
      * STT 변환 메소드
      */
