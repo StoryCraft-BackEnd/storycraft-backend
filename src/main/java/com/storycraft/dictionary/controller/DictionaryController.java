@@ -118,6 +118,8 @@ public class DictionaryController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "자녀 프로필 ID") @RequestParam(name = "childId") Long childId
     ) {
+        Long userId = userDetails.getUser().getId();
+        ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단어 목록 조회에 성공했습니다.", dictionaryService.getSavedWords(userId, childId))
         );
