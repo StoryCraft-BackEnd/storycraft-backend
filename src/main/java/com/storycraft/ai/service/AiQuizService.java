@@ -38,6 +38,6 @@ public class AiQuizService {
                 story.getContent(), keywords
         );
 
-        return quizService.createQuizList(requestDto.getStoryId(), keywords);
+        return quizService.createQuizList(requestDto.getStoryId(), child, keywords);
     }
 }
