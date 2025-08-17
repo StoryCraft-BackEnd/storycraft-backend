@@ -61,11 +61,9 @@ public class DictionaryController {
     })
     @PostMapping("/words/save-by-story")
     public ResponseEntity<?> extractAndSaveWordsByStoryId(
-            @Parameter(description = "동화 ID", example = "1")
-            @RequestParam(name = "storyId") Long storyId,
-
-            @Parameter(description = "자녀 프로필 ID", example = "3")
-            @RequestParam(name = "childId") Long childId
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "storyId") Long storyId,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         List<SaveWordResponseDto> savedWords = dictionaryService.extractWordsAndSave(storyId, childId);
         return ResponseEntity.ok(
