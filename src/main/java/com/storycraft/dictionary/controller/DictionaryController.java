@@ -75,7 +75,7 @@ public class DictionaryController {
 
 
 
-    @Operation(summary = "단어 조회 및 저장", description = "영어 단어를 조회하고 사용자 사전에 저장합니다.")
+    @Operation(summary = "단어 조회 및 저장", description = "추가로 저장하고 싶은 영어 단어를 조회하고 사용자 사전에 저장합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
