@@ -36,16 +36,21 @@ public class SpeechService {
     /**
      * TTS 생성 메소드
      */
-    public TtsCreateResponseDto createTts(TtsCreateRequestDto dto) {
+    public TtsCreateResponseDto createTts(TtsCreateRequestDto dto, ChildProfile child) {
         StorySection section = storySectionRepository.findById(dto.getSectionId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 단락이 존재하지 않습니다."));
 
         Story story = section.getStory();
 
+        Long ownerChild = story.getChildId().getId();
+        if (!ownerChild.equals(child.getId())) {
+            throw new IllegalStateException("요청한 자녀의 컨텐츠가 아닙니다.");
+        }
+
         String text;
         String language;
 
-        if ("Seoyeon".equalsIgnoreCase(dto.getVoiceId()) || "Joon".equalsIgnoreCase(dto.getVoiceId())) {
+        if ("Seoyeon".equalsIgnoreCase(dto.getVoiceId().name())) {
             text = section.getParagraphTextKr();
             language = "ko";
         } else {
@@ -53,7 +58,9 @@ public class SpeechService {
             language = "en";
         }
 
-        String ttsUrl = pollyService.synthesizeTtsToS3(text, dto.getVoiceId(), dto.getSpeechRate(), "tts");
+        text = sanitizeForTts(text);
+
+        String ttsUrl = pollyService.synthesizeTtsToS3(text, dto.getVoiceId().name(), dto.getSpeechRate(), "tts");
 
         Tts saved = ttsRepository.save(Tts.builder()
                 .story(story)
@@ -65,6 +72,13 @@ public class SpeechService {
                 .build());
 
         return saved.toDto();
+    }
+
+    private String sanitizeForTts(String raw) {
+        if (raw == null) return null;
+        String s = raw.replace("**", "")
+                .replace("*", "");
+        return s;
     }
 
     /**

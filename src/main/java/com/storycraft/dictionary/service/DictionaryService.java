@@ -31,6 +31,13 @@ public class DictionaryService {
     private final StoryRepository storyRepository;
 
 
+    private void verifyOwnershipOrThrow(Story story, ChildProfile child) {
+        Long ownerChildId = story.getChildId().getId();
+        if (!ownerChildId.equals(child.getId())) {
+            throw new IllegalStateException("요청한 자녀의 컨텐츠가 아닙니다.");
+        }
+    }
+
     //단어 뜻/예문 조회 (DB에 없을 경우 GPT로 단어 정보 생성 후 저장)
     public DictionaryWords getOrFetchWord(String word) {
         return dictionaryWordsRepository.findByWord(word)
@@ -69,6 +76,11 @@ public class DictionaryService {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 동화를 찾을 수 없습니다."));
 
+        ChildProfile child = childProfileRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀를 찾을 수 없습니다."));
+
+        verifyOwnershipOrThrow(story, child);
+
         String content = story.getContent();
 
         Set<String> extractedWords = extractWords(content);
@@ -82,9 +94,6 @@ public class DictionaryService {
         dictionaryWordsRepository.saveAll(newWordEntities);
 
         List<DictionaryWords> allWords = dictionaryWordsRepository.findAllByWordIn(extractedWords);
-
-        ChildProfile child = childProfileRepository.findById(childId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀 프로필을 찾을 수 없습니다."));
 
         Set<String> alreadySavedWords = savedWordsRepository.findByChildId(child)
                 .stream()
@@ -101,7 +110,7 @@ public class DictionaryService {
 
         savedWordsRepository.saveAll(savedWordEntities);
 
-        return savedWordEntities.stream()
+        return savedWordsRepository.findByChildId(child).stream()
                 .map(SavedWords::toDto)
                 .toList();
     }

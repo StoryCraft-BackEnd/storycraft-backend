@@ -3,6 +3,8 @@ package com.storycraft.ai.service;
 import com.storycraft.ai.dto.AiQuizRequestDto;
 import com.storycraft.ai.dto.AiQuizResponseDto;
 import com.storycraft.dictionary.service.DictionaryService;
+import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.quiz.dto.QuizCreateRequestDto;
 import com.storycraft.quiz.dto.QuizCreateResponseDto;
 import com.storycraft.quiz.service.QuizService;
@@ -19,13 +21,17 @@ import java.util.List;
 public class AiQuizService {
 
     private final StoryRepository storyRepository;
+    private final ChildProfileRepository childProfileRepository;
     private final AiGptService aiGptService;
     private final QuizService quizService;
     private final DictionaryService dictionaryService;
 
     public List<QuizCreateResponseDto> generateAndSaveQuiz(AiQuizRequestDto requestDto) {
         Story story = storyRepository.findById(requestDto.getStoryId())
-                .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 동화를 찾을 수 없습니다."));
+
+        ChildProfile child = childProfileRepository.findById(requestDto.getChildId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 자녀를 찾을 수 없습니다."));
 
         List<String> keywords = (requestDto.getHighlightedWords() != null && !requestDto.getHighlightedWords().isEmpty())
                 ? requestDto.getHighlightedWords()
@@ -35,6 +41,6 @@ public class AiQuizService {
                 story.getContent(), keywords
         );
 
-        return quizService.createQuizList(requestDto.getStoryId(), keywords);
+        return quizService.createQuizList(requestDto.getStoryId(), child, keywords);
     }
 }

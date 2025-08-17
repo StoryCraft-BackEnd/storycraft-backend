@@ -1,6 +1,9 @@
 package com.storycraft.quiz.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.global.security.OwnershipGuard;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.quiz.dto.*;
 import com.storycraft.quiz.service.QuizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,6 +31,7 @@ import java.util.List;
 public class QuizController {
 
     private final QuizService quizService;
+    private final OwnershipGuard ownershipGuard;
 
     @Operation(summary = "동화 기반 퀴즈 자동 생성(10문항)", description = "storyId의 본문에서 중요 단어(**)를 자동 추출하거나, query로 전달한 keywords를 사용해 GPT로 4지선다 10문항을 생성·저장합니다."
     )
@@ -43,11 +48,15 @@ public class QuizController {
     })
     @PostMapping
     public ResponseEntity<?> createQuiz(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "storyId") Long storyId,
-            @Parameter(description = "키워드들")@RequestParam(name = "keywords",required = false) List<String> keywords
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId,
+            @Parameter(description = "키워드들") @RequestParam(name = "keywords",required = false) List<String> keywords
     ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.status(201).body(
-                new ApiResponseDto<>(201, "퀴즈가 생성되었습니다.", quizService.createQuizList(storyId, keywords))
+                new ApiResponseDto<>(201, "퀴즈가 생성되었습니다.", quizService.createQuizList(storyId, child, keywords))
         );
     }
 
@@ -58,10 +67,14 @@ public class QuizController {
     })
     @GetMapping
     public ResponseEntity<?> getQuizList(
-            @RequestParam(name = "storyId") Long storyId
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(name = "storyId") Long storyId,
+            @RequestParam(name = "child_id") Long childId
     ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "퀴즈 리스트 조회 성공", quizService.getQuizList(storyId))
+                new ApiResponseDto<>(200, "퀴즈 리스트 조회 성공", quizService.getQuizList(storyId, child))
         );
     }
 
@@ -98,10 +111,13 @@ public class QuizController {
     )
     @PostMapping("/submit")
     public ResponseEntity<?> submitQuiz(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "storyId") Long storyId,
             @Parameter(description = "자녀 ID", example = "1") @RequestParam(name = "childId") Long childId,
             @RequestBody @Valid List<QuizSubmitRequestDto> answers
     ) {
+        Long userId = userDetails.getUser().getId();
+        ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.status(200).body(
                 new ApiResponseDto<>(200, "퀴즈 제출 완료.", quizService.submitQuiz(storyId, childId, answers))
         );
@@ -122,9 +138,12 @@ public class QuizController {
     })
     @GetMapping("/results")
     public ResponseEntity<?> getQuizResult(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "storyId") Long storyId,
             @Parameter(description = "자녀 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
+        Long userId = userDetails.getUser().getId();
+        ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "퀴즈 결과 조회 성공", quizService.getQuizResultSummary(storyId, childId))
         );

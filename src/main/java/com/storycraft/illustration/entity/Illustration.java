@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "illustrations")
+@Table(name = "illustrations", uniqueConstraints = @UniqueConstraint(columnNames = {"story_id", "order_index"}))
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor

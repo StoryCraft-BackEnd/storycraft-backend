@@ -34,9 +34,11 @@ public class QuizService {
     private final DictionaryService dictionaryService;
 
     //퀴즈 생성
-    public List<QuizCreateResponseDto> createQuizList(Long storyId, List<String> keywords) {
+    public List<QuizCreateResponseDto> createQuizList(Long storyId, ChildProfile child, List<String> keywords) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
+
+        verifyOwnershipOrThrow(story, child.getId());
 
         if (keywords == null || keywords.isEmpty()) {
             keywords = new ArrayList<>(dictionaryService.extractWords(story.getContent())); // Set -> List
@@ -75,9 +77,11 @@ public class QuizService {
         return saveQuizzes(storyId, dtoList);
     }
 
-    public List<QuizCreateResponseDto> getQuizList(Long storyId) {
+    public List<QuizCreateResponseDto> getQuizList(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
+
+        verifyOwnershipOrThrow(story, child.getId());
 
         List<QuizCreate> quizzes = quizCreateRepository.findAllByStoryOrderByQuizIdAsc(story);
 
@@ -101,7 +105,9 @@ public class QuizService {
         ChildProfile child = childProfileRepository.findById(childId)
                 .orElseThrow(() -> new IllegalArgumentException("자녀를 찾을 수 없습니다."));
 
-        // 2) 스토리의 퀴즈 목록 조회 (정렬 메서드가 있으면 그걸 쓰세요)
+        verifyOwnershipOrThrow(story, childId);
+
+        // 2) 스토리의 퀴즈 목록 조회
         // List<QuizCreate> quizzes = quizCreateRepository.findAllByStory_StoryIdOrderByQuizIdAsc(storyId);
         List<QuizCreate> quizzes = quizCreateRepository.findAllByStoryOrderByQuizIdAsc(story);
 
@@ -122,7 +128,7 @@ public class QuizService {
             String selected = selectedMap.get(q.getQuizId());
             String selectedSafe = (selected == null) ? "" : selected; // DB 컬럼(selected_answer)이 NOT NULL이므로 미응답이면 빈 문자열로 저장
 
-            String correctAnswer = String.valueOf(q.getCorrectAnswer()); // char/String 어느 쪽이든 안전
+            String correctAnswer = String.valueOf(q.getCorrectAnswer());
             boolean isCorrect = selected != null && selected.equalsIgnoreCase(correctAnswer);
             if (isCorrect) correctCount++;
 
@@ -164,6 +170,11 @@ public class QuizService {
 
     //퀴즈 결과 조회 (총 10문제 고정, 문제당 배점 10점)
     public QuizResultSummaryResponseDto getQuizResultSummary(Long storyId, Long childId) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
+
+        verifyOwnershipOrThrow(story, childId);
+
         // 1. 동화 ID로 퀴즈 목록 조회 (총 10문제 기준)
         List<QuizCreate> quizzes = quizCreateRepository.findAllByStory_Id(storyId);
 
@@ -245,6 +256,13 @@ public class QuizService {
         }
         if (dto.getAnswer() == null || !dto.getOptions().containsKey(dto.getAnswer())) {
             throw new IllegalArgumentException("정답은 A~D 중 하나이고, 실제 옵션 키여야 합니다.");
+        }
+    }
+
+    private void verifyOwnershipOrThrow(Story story, Long childId) {
+        Long ownerChildId = story.getChildId().getId();
+        if (!ownerChildId.equals(childId)) {
+            throw new IllegalStateException("요청한 자녀의 컨텐츠가 아닙니다.");
         }
     }
 }

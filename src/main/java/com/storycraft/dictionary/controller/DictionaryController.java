@@ -1,9 +1,11 @@
 package com.storycraft.dictionary.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.dictionary.dto.SaveWordResponseDto;
 import com.storycraft.dictionary.dto.WordResponseDto;
 import com.storycraft.dictionary.service.DictionaryService;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.global.security.OwnershipGuard;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.List;
 public class DictionaryController {
 
     private final DictionaryService dictionaryService;
+    private final OwnershipGuard ownershipGuard;
 
     @Operation(summary = "단어 조회", description = "영어 단어의 뜻과 예문을 반환 합니다.")
     @ApiResponses(value = {
@@ -47,7 +51,7 @@ public class DictionaryController {
         );
     }
 
-    @Operation(summary = "동화 ID로 단어 추출 및 자녀에게 단어 저장", description = "동화 본문에서 **로 감싼 단어들을 추출하고, 단어 정보를 GPT로 조회하여 DB에 저장 후 자녀에게 연동합니다.")
+    @Operation(summary = "동화 중요 단어 추출 및 자녀에게 단어 저장", description = "동화 본문에서 **로 감싼 단어들을 추출하고, 단어 정보를 GPT로 조회하여 DB에 저장 후 자녀에게 연동합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -61,12 +65,11 @@ public class DictionaryController {
     })
     @PostMapping("/words/save-by-story")
     public ResponseEntity<?> extractAndSaveWordsByStoryId(
-            @Parameter(description = "동화 ID", example = "1")
-            @RequestParam(name = "storyId") Long storyId,
-
-            @Parameter(description = "자녀 프로필 ID", example = "3")
-            @RequestParam(name = "childId") Long childId
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "storyId") Long storyId,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
+        ownershipGuard.getOwnedChildOrThrow(childId, userDetails.getUser().getId());
         List<SaveWordResponseDto> savedWords = dictionaryService.extractWordsAndSave(storyId, childId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단어 저장에 성공했습니다", savedWords)
@@ -75,7 +78,7 @@ public class DictionaryController {
 
 
 
-    @Operation(summary = "단어 조회 및 저장", description = "영어 단어를 조회하고 사용자 사전에 저장합니다.")
+    @Operation(summary = "단어 조회 및 저장", description = "추가로 저장하고 싶은 영어 단어를 조회하고 사용자 사전에 저장합니다.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
@@ -89,10 +92,12 @@ public class DictionaryController {
     })
     @PostMapping("/words/save")
     public ResponseEntity<?> saveWord(
-            @Parameter(description = "유저 ID") @RequestParam(name = "userID") Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "자녀 프로필 ID") @RequestParam(name = "childID") Long childId,
             @Parameter(description = "하이라이트된 단어") @RequestParam(name = "word") String word
     ) {
+        Long userId = userDetails.getUser().getId();
+        ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.status(201).body(
                 new ApiResponseDto<>(201, "단어 조회 및 저장에 성공했습니다.", dictionaryService.savedWord(userId, childId, word))
         );
@@ -114,9 +119,11 @@ public class DictionaryController {
     })
     @GetMapping("/words/list")
     public ResponseEntity<?> getSavedWords(
-            @Parameter(description = "로그인한 사용자 ID") @RequestParam(name = "userID") Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "자녀 프로필 ID") @RequestParam(name = "childId") Long childId
     ) {
+        Long userId = userDetails.getUser().getId();
+        ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단어 목록 조회에 성공했습니다.", dictionaryService.getSavedWords(userId, childId))
         );
@@ -131,9 +138,10 @@ public class DictionaryController {
     })
     @DeleteMapping("/words/{savedId}")
     public ResponseEntity<?> deleteSavedWord(
-            @Parameter(description = "로그인한 사용자 ID") @RequestParam(name = "userID") Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "삭제할 단어 ID",example = "1") @PathVariable(name = "savedId") Long savedId
     ) {
+        Long userId = userDetails.getUser().getId();
         dictionaryService.deleteSavedWord(userId, savedId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단어 삭제에 성공했습니다.", null)
