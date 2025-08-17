@@ -25,7 +25,10 @@ public class AiQuizService {
 
     public List<QuizCreateResponseDto> generateAndSaveQuiz(AiQuizRequestDto requestDto) {
         Story story = storyRepository.findById(requestDto.getStoryId())
-                .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 동화를 찾을 수 없습니다."));
+
+        ChildProfile child = childProfileRepository.findById(requestDto.getChildId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 자녀를 찾을 수 없습니다."));
 
         List<String> keywords = (requestDto.getHighlightedWords() != null && !requestDto.getHighlightedWords().isEmpty())
                 ? requestDto.getHighlightedWords()
