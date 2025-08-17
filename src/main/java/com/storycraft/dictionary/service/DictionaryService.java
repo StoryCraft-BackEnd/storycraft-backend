@@ -31,6 +31,13 @@ public class DictionaryService {
     private final StoryRepository storyRepository;
 
 
+    private void verifyOwnershipOrThrow(Story story, ChildProfile child) {
+        Long ownerChildId = story.getChildId().getId();
+        if (!ownerChildId.equals(child.getId())) {
+            throw new IllegalStateException("요청한 자녀의 컨텐츠가 아닙니다.");
+        }
+    }
+
     //단어 뜻/예문 조회 (DB에 없을 경우 GPT로 단어 정보 생성 후 저장)
     public DictionaryWords getOrFetchWord(String word) {
         return dictionaryWordsRepository.findByWord(word)
