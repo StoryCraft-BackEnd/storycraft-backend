@@ -105,7 +105,9 @@ public class QuizService {
         ChildProfile child = childProfileRepository.findById(childId)
                 .orElseThrow(() -> new IllegalArgumentException("자녀를 찾을 수 없습니다."));
 
-        // 2) 스토리의 퀴즈 목록 조회 (정렬 메서드가 있으면 그걸 쓰세요)
+        verifyOwnershipOrThrow(story, childId);
+
+        // 2) 스토리의 퀴즈 목록 조회
         // List<QuizCreate> quizzes = quizCreateRepository.findAllByStory_StoryIdOrderByQuizIdAsc(storyId);
         List<QuizCreate> quizzes = quizCreateRepository.findAllByStoryOrderByQuizIdAsc(story);
 
