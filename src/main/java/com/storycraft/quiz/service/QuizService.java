@@ -77,7 +77,7 @@ public class QuizService {
         return saveQuizzes(storyId, dtoList);
     }
 
-    public List<QuizCreateResponseDto> getQuizList(Long storyId) {
+    public List<QuizCreateResponseDto> getQuizList(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
 
