@@ -95,9 +95,6 @@ public class DictionaryService {
 
         List<DictionaryWords> allWords = dictionaryWordsRepository.findAllByWordIn(extractedWords);
 
-        ChildProfile child = childProfileRepository.findById(childId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 자녀 프로필을 찾을 수 없습니다."));
-
         Set<String> alreadySavedWords = savedWordsRepository.findByChildId(child)
                 .stream()
                 .map(sw -> sw.getWord().getWord())

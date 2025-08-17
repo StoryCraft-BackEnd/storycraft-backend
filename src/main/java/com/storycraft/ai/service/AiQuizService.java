@@ -3,6 +3,8 @@ package com.storycraft.ai.service;
 import com.storycraft.ai.dto.AiQuizRequestDto;
 import com.storycraft.ai.dto.AiQuizResponseDto;
 import com.storycraft.dictionary.service.DictionaryService;
+import com.storycraft.profile.entity.ChildProfile;
+import com.storycraft.profile.repository.ChildProfileRepository;
 import com.storycraft.quiz.dto.QuizCreateRequestDto;
 import com.storycraft.quiz.dto.QuizCreateResponseDto;
 import com.storycraft.quiz.service.QuizService;

@@ -1,21 +1,24 @@
 package com.storycraft.speech.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.global.security.OwnershipGuard;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.speech.dto.SttResponseDto;
 import com.storycraft.speech.dto.TtsCreateRequestDto;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
+import com.storycraft.speech.enums.VoiceId;
 import com.storycraft.speech.service.SpeechService;
-import com.storycraft.story.dto.StoryResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +45,7 @@ public class SpeechController {
             ),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PostMapping("/tts")
+    @PostMapping(value = "/tts")
     public ResponseEntity<?> createTts(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "child_id") Long childId,

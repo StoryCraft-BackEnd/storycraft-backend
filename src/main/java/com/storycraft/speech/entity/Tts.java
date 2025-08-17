@@ -2,6 +2,7 @@ package com.storycraft.speech.entity;
 
 import com.storycraft.global.entity.BaseTimeEntity;
 import com.storycraft.speech.dto.TtsCreateResponseDto;
+import com.storycraft.speech.enums.VoiceId;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.entity.StorySection;
 import jakarta.persistence.*;
@@ -28,8 +29,9 @@ public class Tts extends BaseTimeEntity {
     @JoinColumn(name = "section_id")
     private StorySection section;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "voice_id")
-    private String voiceId;
+    private VoiceId voiceId;
 
     @Column(name = "speech_rate")
     private float speechRate;
@@ -46,7 +48,7 @@ public class Tts extends BaseTimeEntity {
                 .ttsId(this.getTtsId())
                 .storyId(story.getId())
                 .sectionId(section != null ? (long) section.getSectionId() : null)
-                .voiceId(this.voiceId)
+                .voiceId(this.voiceId.name())
                 .speechRate(this.speechRate)
                 .language(this.language)
                 .ttsUrl(this.ttsUrl)
