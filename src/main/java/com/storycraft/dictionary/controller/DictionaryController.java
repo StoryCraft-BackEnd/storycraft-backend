@@ -115,7 +115,7 @@ public class DictionaryController {
     })
     @GetMapping("/words/list")
     public ResponseEntity<?> getSavedWords(
-            @Parameter(description = "로그인한 사용자 ID") @RequestParam(name = "userID") Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "자녀 프로필 ID") @RequestParam(name = "childId") Long childId
     ) {
         return ResponseEntity.ok(
