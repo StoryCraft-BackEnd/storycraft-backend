@@ -137,6 +137,7 @@ public class DictionaryController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "삭제할 단어 ID",example = "1") @PathVariable(name = "savedId") Long savedId
     ) {
+        Long userId = userDetails.getUser().getId();
         dictionaryService.deleteSavedWord(userId, savedId);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "단어 삭제에 성공했습니다.", null)
