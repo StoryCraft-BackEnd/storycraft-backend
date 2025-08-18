@@ -34,6 +34,7 @@ public class QuizService {
     private final DictionaryService dictionaryService;
 
     //퀴즈 생성
+    @Transactional
     public List<QuizCreateResponseDto> createQuizList(Long storyId, ChildProfile child, List<String> keywords) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
