@@ -40,6 +40,8 @@ public class QuizService {
 
         verifyOwnershipOrThrow(story, child.getId());
 
+        deleteExistingQuizzesAndSubmissions(story);
+
         if (keywords == null || keywords.isEmpty()) {
             keywords = new ArrayList<>(dictionaryService.extractWords(story.getContent())); // Set -> List
         }
