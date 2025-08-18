@@ -14,6 +14,7 @@ import com.storycraft.story.entity.Story;
 import com.storycraft.story.repository.StoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,11 +35,14 @@ public class QuizService {
     private final DictionaryService dictionaryService;
 
     //퀴즈 생성
+    @Transactional
     public List<QuizCreateResponseDto> createQuizList(Long storyId, ChildProfile child, List<String> keywords) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
 
         verifyOwnershipOrThrow(story, child.getId());
+
+        deleteExistingQuizzesAndSubmissions(story);
 
         if (keywords == null || keywords.isEmpty()) {
             keywords = new ArrayList<>(dictionaryService.extractWords(story.getContent())); // Set -> List
@@ -75,6 +79,14 @@ public class QuizService {
         }).toList();
 
         return saveQuizzes(storyId, dtoList);
+    }
+
+    private void deleteExistingQuizzesAndSubmissions(Story story) {
+        List<QuizCreate> existing = quizCreateRepository.findAllByStory(story);
+        if(existing.isEmpty()) return;
+
+        quizSubmitRepository.deleteAllByQuizCreateIn(existing);     //퀴즈 제출 먼저 제거
+        quizCreateRepository.deleteAllByStory(story);               //퀴즈 제거
     }
 
     public List<QuizCreateResponseDto> getQuizList(Long storyId, ChildProfile child) {
