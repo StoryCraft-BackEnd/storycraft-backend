@@ -1,33 +1,67 @@
 package com.storycraft.integration.controller;
 
+import com.storycraft.auth.service.UserDetailsImpl;
 import com.storycraft.global.response.ApiResponseDto;
+import com.storycraft.global.security.OwnershipGuard;
 import com.storycraft.illustration.service.IllustrationService;
+import com.storycraft.integration.service.IntegrationService;
 import com.storycraft.integration.dto.StoryIntegrationDto;
+import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.speech.service.SpeechService;
+import com.storycraft.story.dto.StoryRequestDto;
+import com.storycraft.story.dto.StoryResponseDto;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.service.StoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/integration/stories")
-@Tag(name = "Story Integration", description = "동화 전체 데이터 통합 조회 API")
+@Tag(name = "Integration", description = "통합 관련 API")
 public class StoryIntegrationController {
 
     private final StoryService storyService;
     private final IllustrationService illustrationService;
     private final SpeechService speechService;
+    private final IntegrationService integrationService;
+    private final OwnershipGuard ownershipGuard;
 
+    @Operation(summary = "동화 생성 및 단어/퀴즈 일괄 생성", description = "StoryService로 동화를 생성하고, 단어 추출/퀴즈 생성까지 처리합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "동화 생성 및 단어/퀴즈 일괄 생성에 성공했습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StoryResponseDto.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+
+    @PostMapping
+    public ResponseEntity<ApiResponseDto<StoryResponseDto>> createStoryAndWordsAndQuizzes(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "child_id") Long childId,
+            @RequestBody @Valid StoryRequestDto dto
+    ) {
+        Long userId = userDetails.getUser().getId();
+        ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
+        return ResponseEntity.status(201).body(
+                new ApiResponseDto<>(201, "동화 생성 및 자원 생성 완료", integrationService.createStoryAndWordsAndQuizzes(child, dto))
+        );
+    }
 
     @Operation(summary = "동화 통합 조회", description = "동화 ID 기반으로 본문, 삽화, TTS 음성을 함께 조회합니다.")
     @ApiResponses(value = {
