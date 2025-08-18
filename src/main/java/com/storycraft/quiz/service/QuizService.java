@@ -77,6 +77,14 @@ public class QuizService {
         return saveQuizzes(storyId, dtoList);
     }
 
+    private void deleteExistingQuizzesAndSubmissions(Story story) {
+        List<QuizCreate> existing = quizCreateRepository.findAllByStory(story);
+        if(existing.isEmpty()) return;
+
+        quizSubmitRepository.deleteAllByQuizCreateIn(existing);     //퀴즈 제출 먼저 제거
+        quizCreateRepository.deleteAllByStory(story);               //퀴즈 제거
+    }
+
     public List<QuizCreateResponseDto> getQuizList(Long storyId, ChildProfile child) {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화를 찾을 수 없습니다."));
