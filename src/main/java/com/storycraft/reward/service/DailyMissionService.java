@@ -155,4 +155,65 @@ public class DailyMissionService {
 
         return new DailyMissionCheckResponseDto(100, false);
     }
+
+    /**
+     * 포인트 지급 시 데일리 미션 상태 자동 업데이트
+     * @param childId 자녀 ID
+     * @param rewardType 포인트 타입 (POINT_STORY_READ, POINT_WORD_CLICK, POINT_QUIZ_CORRECT)
+     */
+    @Transactional
+    public void updateDailyMissionStatusOnPointGrant(Long childId, String rewardType) {
+        try {
+            ChildProfile child = childProfileRepository.findById(childId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 자녀입니다."));
+
+            LocalDate today = LocalDate.now();
+            LocalDateTime todayStart = today.atStartOfDay();
+            LocalDateTime todayEnd = today.plusDays(1).atStartOfDay().minusNanos(1);
+
+            // 포인트 타입에 따른 미션 코드 매핑
+            String missionCode = getMissionCodeFromRewardType(rewardType);
+            if (missionCode == null) {
+                return; // 데일리 미션과 관련 없는 포인트 타입
+            }
+
+            // 해당 미션의 목표 횟수 찾기
+            MissionDefinition missionDef = MISSION_DEFINITIONS.stream()
+                    .filter(def -> def.getMissionCode().equals(missionCode))
+                    .findFirst()
+                    .orElse(null);
+            
+            if (missionDef == null) {
+                return;
+            }
+
+            // 오늘 진행 상황 계산
+            int progressCount = getTodayProgressCount(child, missionCode, todayStart, todayEnd);
+            
+            // 미션 완료 여부 확인
+            boolean completed = progressCount >= missionDef.getTargetCount();
+            
+            // DB에 미션 상태 저장/업데이트
+            updateMissionStatus(child, missionCode, progressCount, completed);
+            
+            // log.info("데일리 미션 상태 업데이트 완료 - childId: {}, missionCode: {}, progressCount: {}, completed: {}", 
+            //         childId, missionCode, progressCount, completed);
+                    
+        } catch (Exception e) {
+            // log.error("데일리 미션 상태 업데이트 실패 - childId: {}, rewardType: {}, error: {}", 
+            //         childId, rewardType, e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 포인트 타입을 미션 코드로 변환
+     */
+    private String getMissionCodeFromRewardType(String rewardType) {
+        return switch (rewardType) {
+            case "POINT_STORY_READ" -> "DAILY_STORY_READ";
+            case "POINT_WORD_CLICK" -> "DAILY_WORD_CLICK";
+            case "POINT_QUIZ_CORRECT" -> "DAILY_QUIZ_PASS";
+            default -> null;
+        };
+    }
 } 
