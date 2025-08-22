@@ -8,6 +8,10 @@ import com.storycraft.profile.dto.ChildProfileResponseDto;
 import com.storycraft.profile.dto.ChildProfileUpdateRequestDto;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.profile.repository.ChildProfileRepository;
+import com.storycraft.reward.entity.DailyMissionStatus;
+import com.storycraft.reward.entity.StreakStatus;
+import com.storycraft.reward.repository.DailyMissionStatusRepository;
+import com.storycraft.reward.repository.StreakStatusRepository;
 import com.storycraft.user.entity.User;
 import com.storycraft.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,8 @@ public class ChildProfileService {
 
     private final ChildProfileRepository childProfileRepository;
     private final UserRepository userRepository;
+    private final DailyMissionStatusRepository dailyMissionStatusRepository;
+    private final StreakStatusRepository streakStatusRepository;
 
     @Transactional
     public ChildProfileIdResponseDto createChildProfile(String email, ChildProfileCreateRequestDto request) {
@@ -44,7 +50,53 @@ public class ChildProfileService {
                 .build();
 
         childProfileRepository.save(child);
+        
+        // 새 프로필 생성 시 rewards 관련 기본 데이터 생성
+        initializeRewardsData(child);
+        
         return new ChildProfileIdResponseDto(child.getId());
+    }
+
+    /**
+     * 새 자녀 프로필에 대한 rewards 관련 기본 데이터를 초기화합니다.
+     */
+    private void initializeRewardsData(ChildProfile child) {
+        // 1. 데일리 미션 상태 초기화
+        initializeDailyMissionStatus(child);
+        
+        // 2. 연속 학습 상태 초기화
+        initializeStreakStatus(child);
+    }
+
+    /**
+     * 데일리 미션 상태를 초기화합니다.
+     */
+    private void initializeDailyMissionStatus(ChildProfile child) {
+        String[] missionCodes = {"DAILY_STORY_READ", "DAILY_WORD_CLICK", "DAILY_QUIZ_PASS"};
+        
+        for (String missionCode : missionCodes) {
+            DailyMissionStatus missionStatus = DailyMissionStatus.builder()
+                    .child(child)
+                    .missionCode(missionCode)
+                    .progressCount(0)
+                    .completed(false)
+                    .build();
+            
+            dailyMissionStatusRepository.save(missionStatus);
+        }
+    }
+
+    /**
+     * 연속 학습 상태를 초기화합니다.
+     */
+    private void initializeStreakStatus(ChildProfile child) {
+        StreakStatus streakStatus = StreakStatus.builder()
+                .child(child)
+                .currentStreak(0)
+                .lastLearnedDate(null)
+                .build();
+        
+        streakStatusRepository.save(streakStatus);
     }
 
     @Transactional(readOnly = true)
