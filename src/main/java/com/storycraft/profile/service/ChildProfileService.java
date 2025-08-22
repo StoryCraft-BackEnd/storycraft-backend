@@ -15,12 +15,14 @@ import com.storycraft.reward.repository.StreakStatusRepository;
 import com.storycraft.user.entity.User;
 import com.storycraft.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChildProfileService {
@@ -75,14 +77,19 @@ public class ChildProfileService {
         String[] missionCodes = {"DAILY_STORY_READ", "DAILY_WORD_CLICK", "DAILY_QUIZ_PASS"};
         
         for (String missionCode : missionCodes) {
-            DailyMissionStatus missionStatus = DailyMissionStatus.builder()
-                    .child(child)
-                    .missionCode(missionCode)
-                    .progressCount(0)
-                    .completed(false)
-                    .build();
-            
-            dailyMissionStatusRepository.save(missionStatus);
+            try {
+                DailyMissionStatus missionStatus = DailyMissionStatus.builder()
+                        .child(child)
+                        .missionCode(missionCode)
+                        .progressCount(0)
+                        .completed(false)
+                        .build();
+                
+                dailyMissionStatusRepository.save(missionStatus);
+            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                // UNIQUE 제약 조건 위반 시 이미 존재하는 것으로 간주하고 무시
+                log.warn("DailyMissionStatus가 이미 존재합니다 - childId: {}, missionCode: {}", child.getId(), missionCode);
+            }
         }
     }
 
@@ -90,13 +97,18 @@ public class ChildProfileService {
      * 연속 학습 상태를 초기화합니다.
      */
     private void initializeStreakStatus(ChildProfile child) {
-        StreakStatus streakStatus = StreakStatus.builder()
-                .child(child)
-                .currentStreak(0)
-                .lastLearnedDate(null)
-                .build();
-        
-        streakStatusRepository.save(streakStatus);
+        try {
+            StreakStatus streakStatus = StreakStatus.builder()
+                    .child(child)
+                    .currentStreak(0)
+                    .lastLearnedDate(java.time.LocalDate.now()) // 오늘 날짜로 초기화
+                    .build();
+            
+            streakStatusRepository.save(streakStatus);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // UNIQUE 제약 조건 위반 시 이미 존재하는 것으로 간주하고 무시
+            log.warn("StreakStatus가 이미 존재합니다 - childId: {}", child.getId());
+        }
     }
 
     @Transactional(readOnly = true)
