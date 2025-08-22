@@ -96,23 +96,34 @@ public class DailyMissionService {
     }
 
     private void updateMissionStatus(ChildProfile child, String missionCode, int progressCount, boolean completed) {
-        Optional<DailyMissionStatus> existingStatus = dailyMissionStatusRepository.findByChildAndMissionCode(child, missionCode);
-        
-        DailyMissionStatus missionStatus;
-        if (existingStatus.isPresent()) {
-            missionStatus = existingStatus.get();
-            missionStatus.setProgressCount(progressCount);
-            missionStatus.setCompleted(completed);
-        } else {
-            missionStatus = DailyMissionStatus.builder()
-                    .child(child)
-                    .missionCode(missionCode)
-                    .progressCount(progressCount)
-                    .completed(completed)
-                    .build();
+        try {
+            Optional<DailyMissionStatus> existingStatus = dailyMissionStatusRepository.findByChildAndMissionCode(child, missionCode);
+            
+            DailyMissionStatus missionStatus;
+            if (existingStatus.isPresent()) {
+                missionStatus = existingStatus.get();
+                missionStatus.setProgressCount(progressCount);
+                missionStatus.setCompleted(completed);
+            } else {
+                missionStatus = DailyMissionStatus.builder()
+                        .child(child)
+                        .missionCode(missionCode)
+                        .progressCount(progressCount)
+                        .completed(completed)
+                        .build();
+            }
+            
+            dailyMissionStatusRepository.save(missionStatus);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // UNIQUE 제약 조건 위반 시 재시도 (동시성 문제 해결)
+            Optional<DailyMissionStatus> existingStatus = dailyMissionStatusRepository.findByChildAndMissionCode(child, missionCode);
+            if (existingStatus.isPresent()) {
+                DailyMissionStatus missionStatus = existingStatus.get();
+                missionStatus.setProgressCount(progressCount);
+                missionStatus.setCompleted(completed);
+                dailyMissionStatusRepository.save(missionStatus);
+            }
         }
-        
-        dailyMissionStatusRepository.save(missionStatus);
     }
 
     /**
@@ -155,4 +166,6 @@ public class DailyMissionService {
 
         return new DailyMissionCheckResponseDto(100, false);
     }
+
+
 } 

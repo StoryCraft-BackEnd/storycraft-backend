@@ -8,21 +8,29 @@ import com.storycraft.profile.dto.ChildProfileResponseDto;
 import com.storycraft.profile.dto.ChildProfileUpdateRequestDto;
 import com.storycraft.profile.entity.ChildProfile;
 import com.storycraft.profile.repository.ChildProfileRepository;
+import com.storycraft.reward.entity.DailyMissionStatus;
+import com.storycraft.reward.entity.StreakStatus;
+import com.storycraft.reward.repository.DailyMissionStatusRepository;
+import com.storycraft.reward.repository.StreakStatusRepository;
 import com.storycraft.user.entity.User;
 import com.storycraft.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChildProfileService {
 
     private final ChildProfileRepository childProfileRepository;
     private final UserRepository userRepository;
+    private final DailyMissionStatusRepository dailyMissionStatusRepository;
+    private final StreakStatusRepository streakStatusRepository;
 
     @Transactional
     public ChildProfileIdResponseDto createChildProfile(String email, ChildProfileCreateRequestDto request) {
@@ -44,7 +52,63 @@ public class ChildProfileService {
                 .build();
 
         childProfileRepository.save(child);
+        
+        // 새 프로필 생성 시 rewards 관련 기본 데이터 생성
+        initializeRewardsData(child);
+        
         return new ChildProfileIdResponseDto(child.getId());
+    }
+
+    /**
+     * 새 자녀 프로필에 대한 rewards 관련 기본 데이터를 초기화합니다.
+     */
+    private void initializeRewardsData(ChildProfile child) {
+        // 1. 데일리 미션 상태 초기화
+        initializeDailyMissionStatus(child);
+        
+        // 2. 연속 학습 상태 초기화
+        initializeStreakStatus(child);
+    }
+
+    /**
+     * 데일리 미션 상태를 초기화합니다.
+     */
+    private void initializeDailyMissionStatus(ChildProfile child) {
+        String[] missionCodes = {"DAILY_STORY_READ", "DAILY_WORD_CLICK", "DAILY_QUIZ_PASS"};
+        
+        for (String missionCode : missionCodes) {
+            try {
+                DailyMissionStatus missionStatus = DailyMissionStatus.builder()
+                        .child(child)
+                        .missionCode(missionCode)
+                        .progressCount(0)
+                        .completed(false)
+                        .build();
+                
+                dailyMissionStatusRepository.save(missionStatus);
+            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                // UNIQUE 제약 조건 위반 시 이미 존재하는 것으로 간주하고 무시
+                log.warn("DailyMissionStatus가 이미 존재합니다 - childId: {}, missionCode: {}", child.getId(), missionCode);
+            }
+        }
+    }
+
+    /**
+     * 연속 학습 상태를 초기화합니다.
+     */
+    private void initializeStreakStatus(ChildProfile child) {
+        try {
+            StreakStatus streakStatus = StreakStatus.builder()
+                    .child(child)
+                    .currentStreak(0)
+                    .lastLearnedDate(java.time.LocalDate.now()) // 오늘 날짜로 초기화
+                    .build();
+            
+            streakStatusRepository.save(streakStatus);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // UNIQUE 제약 조건 위반 시 이미 존재하는 것으로 간주하고 무시
+            log.warn("StreakStatus가 이미 존재합니다 - childId: {}", child.getId());
+        }
     }
 
     @Transactional(readOnly = true)

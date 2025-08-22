@@ -12,11 +12,15 @@ import com.storycraft.reward.service.RewardLevelService;
 import com.storycraft.reward.service.RewardBadgeCheckService;
 import com.storycraft.reward.dto.BadgeCheckRequestDto;
 import com.storycraft.reward.dto.BadgeCheckResponseDto;
+import com.storycraft.story.service.StoryProgressService;
+import com.storycraft.reward.service.DailyMissionUpdateService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RewardPointService {
@@ -24,6 +28,8 @@ public class RewardPointService {
     private final ChildProfileRepository childProfileRepository;
     private final RewardLevelService rewardLevelService;
     private final RewardBadgeCheckService rewardBadgeCheckService; // 추가
+    private final DailyMissionUpdateService dailyMissionUpdateService;
+    private final StoryProgressService storyProgressService;
 
     @Transactional
     public RewardPointGrantResponseDto grantPoint(String userEmail, RewardPointGrantRequestDto request) {
@@ -48,6 +54,30 @@ public class RewardPointService {
                 .points(points)
                 .build();
         rewardPointRepository.save(rewardPoint);
+
+        // 동화 읽기 완료 시 StoryProgress 자동 업데이트
+        if ("POINT_STORY_READ".equals(request.getRewardType()) && request.getStoryId() != null) {
+            try {
+                storyProgressService.markAsRead(request.getChildId(), request.getStoryId());
+                log.debug("동화 읽기 완료 표시 업데이트 완료 - childId: {}, storyId: {}", request.getChildId(), request.getStoryId());
+            } catch (Exception e) {
+                log.error("동화 읽기 완료 표시 업데이트 실패 - childId: {}, storyId: {}, error: {}", 
+                        request.getChildId(), request.getStoryId(), e.getMessage());
+                // StoryProgress 업데이트 실패해도 포인트 지급은 계속 진행
+            }
+        }
+
+        // 포인트 지급 후 데일리 미션 상태 자동 업데이트 (LEVEL_UP 타입이 아닐 때만)
+        if (!"LEVEL_UP".equals(request.getRewardType())) {
+            try {
+                dailyMissionUpdateService.updateDailyMissionStatusOnPointGrant(request.getChildId(), request.getRewardType());
+                log.debug("데일리 미션 상태 업데이트 완료 - childId: {}, rewardType: {}", request.getChildId(), request.getRewardType());
+            } catch (Exception e) {
+                log.error("데일리 미션 상태 업데이트 실패 - childId: {}, rewardType: {}, error: {}", 
+                        request.getChildId(), request.getRewardType(), e.getMessage());
+                // 데일리 미션 업데이트 실패해도 포인트 지급은 계속 진행
+            }
+        }
 
         int totalPoint = rewardPointRepository.sumPointsByChild(child);
         
