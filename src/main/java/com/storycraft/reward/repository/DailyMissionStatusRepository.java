@@ -12,4 +12,6 @@ public interface DailyMissionStatusRepository extends JpaRepository<DailyMission
     List<DailyMissionStatus> findAllByChild(ChildProfile child);
     Optional<DailyMissionStatus> findByChildAndMissionCode(ChildProfile child, String missionCode);
     List<DailyMissionStatus> findAllByChildAndCreatedAtBetween(ChildProfile child, LocalDateTime from, LocalDateTime to);
+    
+    void deleteAllByChild(ChildProfile child);
 } 
