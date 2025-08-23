@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface StreakStatusRepository extends JpaRepository<StreakStatus, Long> {
     Optional<StreakStatus> findByChild(ChildProfile child);
+    
+    void deleteByChild(ChildProfile child);
 } 

@@ -195,6 +195,21 @@ public class ChildProfileService {
             throw new CustomException(ErrorCode.CHILD_PROFILE_ACCESS_DENIED);
         }
 
+        // ChildProfile 삭제 전에 관련 데이터 먼저 삭제
+        try {
+            // StreakStatus 삭제
+            streakStatusRepository.deleteByChild(child);
+        } catch (Exception e) {
+            log.warn("StreakStatus 삭제 중 오류 발생 - childId: {}", childId, e);
+        }
+
+        try {
+            // DailyMissionStatus 삭제
+            dailyMissionStatusRepository.deleteAllByChild(child);
+        } catch (Exception e) {
+            log.warn("DailyMissionStatus 삭제 중 오류 발생 - childId: {}", childId, e);
+        }
+
         childProfileRepository.delete(child);
         return new ChildProfileIdResponseDto(childId);
     }
