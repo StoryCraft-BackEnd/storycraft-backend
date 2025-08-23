@@ -14,4 +14,6 @@ public interface StoryProgressRepository extends JpaRepository<StoryProgress, Lo
     List<StoryProgress> findAllByChild(ChildProfile child);
 
     Optional<StoryProgress> findByStory_IdAndChild_Id(Long storyId, Long childId);
+    
+    void deleteByStory(Story story);
 }

@@ -17,6 +17,7 @@ import com.storycraft.story.dto.StoryUpdateDto;
 import com.storycraft.story.entity.Story;
 import com.storycraft.story.repository.StoryRepository;
 import com.storycraft.story.repository.StorySectionRepository;
+import com.storycraft.story.repository.StoryProgressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ public class StoryService {
     private final TtsRepository ttsRepository;
     private final QuizSubmitRepository quizSubmitRepository;
     private final QuizCreateRepository quizCreateRepository;
+    private final StoryProgressRepository storyProgressRepository;
 
     // 동화 생성(child를 Controller에서 검증 후 주입)
     public StoryResponseDto createStory(ChildProfile child, StoryRequestDto dto) {
@@ -134,7 +136,10 @@ public class StoryService {
         //4. 동화 단락 삭제
         storySectionRepository.deleteAllByStory(story);
 
-        //5. 동화 삭제
+        //5. 동화 진행 상황 삭제
+        storyProgressRepository.deleteByStory(story);
+
+        //6. 동화 삭제
         storyRepository.delete(story);
     }
 
