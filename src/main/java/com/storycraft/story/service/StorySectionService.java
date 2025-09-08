@@ -26,7 +26,7 @@ public class StorySectionService {
         int count = Math.min(enParagraphs.size(), krParagraphs.size()); //둘중 더 작은 갯수의 단락을 for문 범위로 설정
 
         List<StorySection> sections = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {                       //단락 리스트들 순회 하면서 StorySection 리스트에 다시 넣기
             StorySection section = StorySection.builder()
                     .story(story)
                     .orderIndex(i + 1)
