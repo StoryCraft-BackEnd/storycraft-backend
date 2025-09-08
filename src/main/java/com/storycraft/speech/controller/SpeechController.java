@@ -48,11 +48,11 @@ public class SpeechController {
     @PostMapping(value = "/tts")
     public ResponseEntity<?> createTts(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "child_id") Long childId,
-            @Parameter(description = "동화 단락 ID", example = "1") @RequestParam(name = "section_id") Long sectionId,
-            @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "story_id",required = false) Long storyId,
-            @Parameter(description = "성우 ID", example = "Joanna") @RequestParam(name = "voice_id") VoiceId voiceId,
-            @Parameter(description = "재생속도", example = "0.8") @RequestParam(name = "speech_rate", required = false, defaultValue = "0.8") Float speechRate
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId,
+            @Parameter(description = "동화 단락 ID", example = "1") @RequestParam(name = "sectionId") Long sectionId,
+            @Parameter(description = "동화 ID", example = "1") @RequestParam(name = "storyId",required = false) Long storyId,
+            @Parameter(description = "성우 ID", example = "Joanna") @RequestParam(name = "voiceId") VoiceId voiceId,
+            @Parameter(description = "재생속도", example = "0.8") @RequestParam(name = "speechRate", required = false, defaultValue = "0.8") Float speechRate
     ) {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
