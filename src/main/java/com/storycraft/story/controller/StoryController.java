@@ -187,7 +187,7 @@ public class StoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStory(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Parameter(description = "삭제할 동화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "삭제할 동화 ID", example = "1") @PathVariable(name = "storyId") Long storyId,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         Long userId = userDetails.getUser().getId();
