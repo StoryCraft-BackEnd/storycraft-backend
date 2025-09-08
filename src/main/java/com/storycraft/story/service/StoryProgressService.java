@@ -61,6 +61,7 @@ public class StoryProgressService {
         return storyProgressRepository.findByStory_IdAndChild_Id(storyId, childId);
     }
 
+    //자녀 정보 가져오는 메소드
     private ChildProfile getChildOrThrow(Long childId) {
         return childProfileRepository.findById(childId)
                 .orElseThrow(() -> new IllegalArgumentException("자녀 정보를 찾을 수 없습니다."));
