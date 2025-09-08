@@ -109,8 +109,8 @@ public class StoryController {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
-        StoryResponseDto storyDto = storyService.getStory(id, child);
-        Optional<StoryProgress> progressOpt = storyProgressService.findByStoryIdAndChildId(id, childId);
+        StoryResponseDto storyDto = storyService.getStory(storyId, child);
+        Optional<StoryProgress> progressOpt = storyProgressService.findByStoryIdAndChildId(storyId, childId);
 
         if (progressOpt.isPresent()) {
             storyDto.setProgress(StoryProgressResponseDto.fromEntity(progressOpt.get()));
