@@ -193,7 +193,7 @@ public class StoryController {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
-        storyService.deleteStory(id, child);
+        storyService.deleteStory(storyId, child);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "동화가 성공적으로 삭제되었습니다.", null)
         );
