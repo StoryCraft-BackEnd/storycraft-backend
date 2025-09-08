@@ -112,7 +112,7 @@ public class IllustrationController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getIllustration(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Parameter(description = "조회할 삽화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "조회할 삽화 ID", example = "1") @PathVariable(name = "illustrationId") Long illustrationId,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         Long userId = userDetails.getUser().getId();
