@@ -20,8 +20,8 @@ public class StorySectionService {
     private final StoryRepository storyRepository;
 
     public void saveSectionsFromContent(Story story, String content, String contentKr) {
-        List<String> enParagraphs = splitParagraph(content);
-        List<String> krParagraphs = splitParagraph(contentKr);
+        List<String> enParagraphs = splitParagraph(content);    //영어 본문 단락 리스트 저장
+        List<String> krParagraphs = splitParagraph(contentKr);  //한국어 본문 단락 리스트 저장
 
         int count = Math.min(enParagraphs.size(), krParagraphs.size());
 
