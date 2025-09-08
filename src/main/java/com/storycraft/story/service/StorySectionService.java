@@ -23,7 +23,7 @@ public class StorySectionService {
         List<String> enParagraphs = splitParagraph(content);    //영어 본문 단락 리스트 저장
         List<String> krParagraphs = splitParagraph(contentKr);  //한국어 본문 단락 리스트 저장
 
-        int count = Math.min(enParagraphs.size(), krParagraphs.size());
+        int count = Math.min(enParagraphs.size(), krParagraphs.size()); //둘중 더 작은 갯수의 단락을 for문 범위로 설정
 
         List<StorySection> sections = new ArrayList<>();
         for (int i = 0; i < count; i++) {
