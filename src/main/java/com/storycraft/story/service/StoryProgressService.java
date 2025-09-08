@@ -38,6 +38,7 @@ public class StoryProgressService {
         storyProgressRepository.save(storyProgress);
     }
 
+    //학습 시간 업데이트 메소드
     @Transactional
     public void updateLearnedTime(Long childId, Long storyId, int learnedTimeInSecond) {
         ChildProfile child = getChildOrThrow(childId);
