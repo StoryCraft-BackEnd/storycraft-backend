@@ -168,7 +168,7 @@ public class IllustrationController {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
-        illustrationService.deleteIllustration(id, child);
+        illustrationService.deleteIllustration(illustrationId, child);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "삽화가 성공적으로 삭제 되었습니다.", null)
         );
