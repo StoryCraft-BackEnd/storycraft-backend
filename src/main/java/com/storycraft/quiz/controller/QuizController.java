@@ -69,7 +69,7 @@ public class QuizController {
     public ResponseEntity<?> getQuizList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(name = "storyId") Long storyId,
-            @RequestParam(name = "child_id") Long childId
+            @RequestParam(name = "childId") Long childId
     ) {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
