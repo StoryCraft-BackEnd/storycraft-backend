@@ -112,13 +112,13 @@ public class IllustrationController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getIllustration(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Parameter(description = "조회할 삽화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "조회할 삽화 ID", example = "1") @PathVariable(name = "illustrationId") Long illustrationId,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
         return ResponseEntity.ok(
-                new ApiResponseDto<>(200, "삽화 조회에 성공했습니다.", illustrationService.getIllustration(id, child))
+                new ApiResponseDto<>(200, "삽화 조회에 성공했습니다.", illustrationService.getIllustration(illustrationId, child))
         );
     }
 
@@ -162,13 +162,13 @@ public class IllustrationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteIllustration(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Parameter(description = "삭제할 삽화 ID", example = "1") @PathVariable(name = "id") Long id,
+            @Parameter(description = "삭제할 삽화 ID", example = "1") @PathVariable(name = "illustrationId") Long illustrationId,
             @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
 
-        illustrationService.deleteIllustration(id, child);
+        illustrationService.deleteIllustration(illustrationId, child);
         return ResponseEntity.ok(
                 new ApiResponseDto<>(200, "삽화가 성공적으로 삭제 되었습니다.", null)
         );

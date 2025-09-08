@@ -38,6 +38,7 @@ public class StoryProgressService {
         storyProgressRepository.save(storyProgress);
     }
 
+    //학습 시간 업데이트 메소드
     @Transactional
     public void updateLearnedTime(Long childId, Long storyId, int learnedTimeInSecond) {
         ChildProfile child = getChildOrThrow(childId);
@@ -60,11 +61,13 @@ public class StoryProgressService {
         return storyProgressRepository.findByStory_IdAndChild_Id(storyId, childId);
     }
 
+    //자녀 정보 가져오는 메소드
     private ChildProfile getChildOrThrow(Long childId) {
         return childProfileRepository.findById(childId)
                 .orElseThrow(() -> new IllegalArgumentException("자녀 정보를 찾을 수 없습니다."));
     }
 
+    //동화 정보 가져오는 메소드
     private Story getStoryOrThrow(Long storyId) {
         return storyRepository.findById(storyId)
                 .orElseThrow(() -> new IllegalArgumentException("동화 정보를 찾을 수 없습니다."));

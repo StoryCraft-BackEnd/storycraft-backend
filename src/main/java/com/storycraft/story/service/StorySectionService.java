@@ -19,14 +19,15 @@ public class StorySectionService {
     private final StorySectionRepository storySectionRepository;
     private final StoryRepository storyRepository;
 
+    //본문 컨텐츠에서 단락 구별후 단락 저장 메소드
     public void saveSectionsFromContent(Story story, String content, String contentKr) {
-        List<String> enParagraphs = splitParagraph(content);
-        List<String> krParagraphs = splitParagraph(contentKr);
+        List<String> enParagraphs = splitParagraph(content);    //영어 본문 단락 리스트 저장
+        List<String> krParagraphs = splitParagraph(contentKr);  //한국어 본문 단락 리스트 저장
 
-        int count = Math.min(enParagraphs.size(), krParagraphs.size());
+        int count = Math.min(enParagraphs.size(), krParagraphs.size()); //둘중 더 작은 갯수의 단락을 for문 범위로 설정
 
         List<StorySection> sections = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {                       //단락 리스트들 순회 하면서 StorySection 리스트에 다시 넣기
             StorySection section = StorySection.builder()
                     .story(story)
                     .orderIndex(i + 1)
