@@ -19,6 +19,7 @@ public class StorySectionService {
     private final StorySectionRepository storySectionRepository;
     private final StoryRepository storyRepository;
 
+    //본문 컨텐츠에서 단락 구별후 단락 저장 메소드
     public void saveSectionsFromContent(Story story, String content, String contentKr) {
         List<String> enParagraphs = splitParagraph(content);    //영어 본문 단락 리스트 저장
         List<String> krParagraphs = splitParagraph(contentKr);  //한국어 본문 단락 리스트 저장
