@@ -135,7 +135,7 @@ public class StoryController {
     @GetMapping("/lists")
     public ResponseEntity<?> getList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "id") Long childId
+            @Parameter(description = "자녀 프로필 ID", example = "1") @RequestParam(name = "childId") Long childId
     ) {
         Long userId = userDetails.getUser().getId();
         ChildProfile child = ownershipGuard.getOwnedChildOrThrow(childId, userId);
